@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 /dist
+node_BK_modules
 
 
 # local env files
