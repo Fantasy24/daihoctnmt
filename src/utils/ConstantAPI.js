@@ -145,6 +145,11 @@ export const ConstantAPI = {
       method: GET,
       buttons: ['[BTN_USER_PERMISSION]QLND']
     },
+    UPDATE_USER_PERMISSION: {
+      url: `${API_DEFAULT}/api/user/auth/update-permission`,
+      method: POST,
+      buttons: ['[BTN_USER_PERMISSION]QLND']
+    },
     RESET_PASS: {
       url: `${API_DEFAULT}/user/changepass-user`,
       method: PUT

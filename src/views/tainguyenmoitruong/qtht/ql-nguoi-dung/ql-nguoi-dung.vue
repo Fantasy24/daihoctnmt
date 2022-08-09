@@ -81,7 +81,7 @@
 
           <el-form-item style="float: right">
             <el-button
-              v-if="checkPermissionShowButton('[BTN_SEARCH]ql-nguoi-dung')"
+              v-if="checkPermissionShowButton('[BTN_SEARCH]QLND')"
               id="btnSearch"
               ref="btnSearch"
               icon="el-icon-search"
@@ -91,7 +91,7 @@
               {{ $t("baseLabel.btnSearch") }}
             </el-button>
             <el-button
-              v-if="checkPermissionShowButton('[BTN_SEARCH]ql-nguoi-dung')"
+              v-if="checkPermissionShowButton('[BTN_SEARCH]QLND')"
               id="btnClear"
               icon="el-icon-refresh-left"
               type="primary"
@@ -101,7 +101,7 @@
             </el-button>
 
             <el-button
-              v-if="checkPermissionShowButton('[BTN_INSERT]ql-nguoi-dung')"
+              v-if="checkPermissionShowButton('[BTN_INSERT]QLND')"
               id="btnCreate"
               icon="el-icon-plus"
               style="float: right; margin-left: 10px"
@@ -152,17 +152,13 @@
                     <el-dropdown-item
                       icon="el-icon-edit"
                       @click.native="onPrepareEdit(scope.row)"
-                      v-if="
-                        checkPermissionShowButton('[BTN_UPDATE]ql-nguoi-dung')
-                      "
+                      v-if="checkPermissionShowButton('[BTN_UPDATE]QLND')"
                     >
                       Sửa
                     </el-dropdown-item>
                     <el-dropdown-item
                       v-if="
-                        checkPermissionShowButton(
-                          '[BTN_CHANGE_PASSWORD]ql-nguoi-dung'
-                        )
+                        checkPermissionShowButton('[BTN_CHANGE_PASSWORD]QLND')
                       "
                       icon="el-icon-unlock"
                       @click.native="onPrepareResetPass(scope.row)"
@@ -171,9 +167,7 @@
                     </el-dropdown-item>
                     <el-dropdown-item
                       icon="el-icon-delete"
-                      v-if="
-                        checkPermissionShowButton('[BTN_DELETE]ql-nguoi-dung')
-                      "
+                      v-if="checkPermissionShowButton('[BTN_DELETE]QLND')"
                       @click.native="onDelete(scope.row)"
                     >
                       <!-- :disabled="scope.row.status === 0" -->
@@ -189,9 +183,7 @@
                     <el-dropdown-item
                       icon="el-icon-s-operation"
                       v-if="
-                        checkPermissionShowButton(
-                          '[BTN_USER_PERMISSION]ql-nguoi-dung'
-                        )
+                        checkPermissionShowButton('[BTN_USER_PERMISSION]QLND')
                       "
                       @click.native="onPreparePermission(scope.row)"
                     >
@@ -199,11 +191,7 @@
                       Người dùng truy cập vào chức năng
                     </el-dropdown-item>
                     <el-dropdown-item
-                      v-if="
-                        checkPermissionShowButton(
-                          '[BTN_USER_GROUP]ql-nguoi-dung'
-                        )
-                      "
+                      v-if="checkPermissionShowButton('[BTN_USER_GROUP]QLND')"
                       @click.native="onPrepareGroupUser(scope.row)"
                     >
                       <font-awesome-icon icon="users" />
@@ -280,7 +268,7 @@
                 placement="top-start"
               >
                 <el-button
-                  v-if="checkPermissionShowButton('[BTN_UPDATE]ql-nguoi-dung')"
+                  v-if="checkPermissionShowButton('[BTN_UPDATE]QLND')"
                   id="btnPreEdit"
                   :loading="loadEditBtn"
                   circle
@@ -293,7 +281,7 @@
 
               <el-tooltip :open-delay="350" content="Đặt lại mật khẩu" effect="light" placement="top-start">
                 <el-button
-                  v-if="checkPermissionShowButton('[BTN_CHANGE_PASSWORD]ql-nguoi-dung')"
+                  v-if="checkPermissionShowButton('[BTN_CHANGE_PASSWORD]QLND')"
                   id="btnPreResetPass"
                   :disabled="scope.row.status === 0"
                   circle
@@ -311,7 +299,7 @@
                 placement="top-start"
               >
                 <el-button
-                  v-if="checkPermissionShowButton('[BTN_DELETE]ql-nguoi-dung')"
+                  v-if="checkPermissionShowButton('[BTN_DELETE]QLND')"
                   id="btnDel"
                   :disabled="scope.row.status === 0"
                   circle
@@ -427,7 +415,7 @@
                 placement="top-start"
               >
                 <el-button
-                  v-if="checkPermissionShowButton('[BTN_USER_PERMISSION]ql-nguoi-dung')"
+                  v-if="checkPermissionShowButton('[BTN_USER_PERMISSION]QLND')"
                   id="btnUserPermis"
                   :disabled="scope.row.status === 0"
                   circle
@@ -445,7 +433,7 @@
                 placement="top-start"
               >
                 <el-button
-                  v-if="checkPermissionShowButton('[BTN_USER_GROUP]ql-nguoi-dung')"
+                  v-if="checkPermissionShowButton('[BTN_USER_GROUP]QLND')"
                   id="btnUserGroupPermis"
                   :disabled="scope.row.status === 0"
                   circle
@@ -467,7 +455,7 @@
                 placement="top-start"
               >
                 <el-button
-                  v-if="checkPermissionShowButton('[BTN_UPDATE]ql-nguoi-dung')"
+                  v-if="checkPermissionShowButton('[BTN_UPDATE]QLND')"
                   id="btnPreEdit"
                   :loading="loadEditBtn"
                   circle
@@ -480,7 +468,7 @@
 
               <el-tooltip :open-delay="350" content="Đặt lại mật khẩu" effect="light" placement="top-start">
                 <el-button
-                  v-if="checkPermissionShowButton('[BTN_CHANGE_PASSWORD]ql-nguoi-dung')"
+                  v-if="checkPermissionShowButton('[BTN_CHANGE_PASSWORD]QLND')"
                   id="btnPreResetPass"
                   :disabled="scope.row.status === 0"
                   circle
@@ -498,7 +486,7 @@
                 placement="top-start"
               >
                 <el-button
-                  v-if="checkPermissionShowButton('[BTN_DELETE]ql-nguoi-dung')"
+                  v-if="checkPermissionShowButton('[BTN_DELETE]QLND')"
                   id="btnDel"
                   :disabled="scope.row.status === 0"
                   circle
@@ -739,7 +727,7 @@
           <el-button
             v-if="
               flagShowDialog === FORM_MODE.CREATE &&
-              checkPermissionShowButton('[BTN_INSERT]ql-nguoi-dung')
+              checkPermissionShowButton('[BTN_INSERT]QLND')
             "
             id="btnSave"
             :loading="loading"
@@ -752,7 +740,7 @@
           <el-button
             v-if="
               flagShowDialog === FORM_MODE.EDIT &&
-              checkPermissionShowButton('[BTN_UPDATE]ql-nguoi-dung')
+              checkPermissionShowButton('[BTN_UPDATE]QLND')
             "
             id="btnUpdate"
             :loading="loadingUpdate"
@@ -888,6 +876,22 @@
                   >UPDATE</el-tag
                 >
               </span>
+              <span v-if="data.rowKey.startsWith('[BTN_USER_GROUP]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="warning"
+                  >GROUP</el-tag
+                >
+              </span>
+              <span v-if="data.rowKey.startsWith('[BTN_USER_PERMISSION]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="warning"
+                  >PERMISSION</el-tag
+                >
+              </span>
               <span v-if="data.rowKey.startsWith('[BTN_POST]')">
                 <el-tag
                   class="method-label-color"
@@ -943,9 +947,7 @@
             $t("baseLabel.btnCancel")
           }}</el-button>
           <el-button
-            v-if="
-              checkPermissionShowButton('[BTN_USER_PERMISSION]ql-nguoi-dung')
-            "
+            v-if="checkPermissionShowButton('[BTN_USER_PERMISSION]QLND')"
             id="btnSavePermis"
             :loading="loading"
             icon="el-icon-check"
@@ -1026,7 +1028,7 @@
               @click="isShowDlgGroupPermission = false"
             >{{ $t('baseLabel.btnCancel') }}</el-button>
             <el-button
-              v-if="checkPermissionShowButton('[BTN_USER_GROUP]ql-nguoi-dung')"
+              v-if="checkPermissionShowButton('[BTN_USER_GROUP]QLND')"
               id="btnSaveGroupPermis"
               :loading="loading"
               icon="el-icon-check"
@@ -1097,7 +1099,7 @@
                   <el-button
                     v-if="
                       checkPermissionShowButton(
-                        '[BTN_CHANGE_PASSWORD]ql-nguoi-dung'
+                        '[BTN_CHANGE_PASSWORD]QLND'
                       )
                     "
                     id="btnSaveReset"

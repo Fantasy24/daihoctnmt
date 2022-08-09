@@ -213,7 +213,7 @@ export default {
 			loadPermissionTree: false,
 			objParamPermissionUpdate: {
 				appCode: "",
-				listMenuCode: [],
+				lstMenuCode: [],
 				status: 1,
 				username: "",
 			},
@@ -479,14 +479,15 @@ export default {
 			};
 			this.listPermission = [];
 			this.listCheckedPermission = [];
-			this.objParamPermissionUpdate.listMenuCode = [];
+			this.objParamPermissionUpdate.lstMenuCode = [];
 			this.loadPermissionTree = true;
 			apiFactory
 				.callAPI(ConstantAPI[MENU_CODE_API].GET_MENU_BY_PERMISSION, {}, params)
 				.then(async (rs) => {
 					console.log(rs)
 					await this.listPermission.push(rs[0]);
-					await this.recLoadListSelected(rs[0].children);					
+					await this.recLoadListSelected(rs[0].children);	
+					console.log(this.listCheckedPermission)
 					await this.$refs.permissionTree.setCheckedNodes(
 						this.listCheckedPermission
 					);
@@ -502,15 +503,13 @@ export default {
 		},
 
 		recLoadListSelected(listChild) {
-			console.log(listChild)
 			if (listChild && listChild.length > 0) {
 				listChild.forEach((childItem) => {
 					if (childItem.selected) {
 						this.listCheckedPermission = [
 							...this.listCheckedPermission,
 							childItem.rowKey,
-						];
-						console.log(this.listCheckedPermission)
+						];						
 					}
 					this.recLoadListSelected(childItem.children);
 				});
@@ -526,7 +525,8 @@ export default {
 					...this.$refs.permissionTree.getHalfCheckedKeys(),
 					...this.$refs.permissionTree.getCheckedKeys(),
 				];
-				this.objParamPermissionUpdate.listMenuCode = [...new Set(selectedKey)];
+				console.log(this.selectedKey)
+				this.objParamPermissionUpdate.lstMenuCode = [...new Set(selectedKey)];
 				this.loading = true;
 				apiFactory
 					.callAPI(
@@ -534,7 +534,7 @@ export default {
 						this.objParamPermissionUpdate
 					)
 					.then(() => {
-						showAlert(this.$message, SUCCESS, "Phân quyền thành công!");
+						showAlert(this, SUCCESS, "Phân quyền thành công!");
 						this.loading = false;
 						this.isShowPermissionDlg = false;
 					})
@@ -614,7 +614,7 @@ export default {
 				apiFactory
 					.callAPI(ConstantAPI[MENU_CODE_API].UPDATE_GROUP_PERMIS, paramUpdate)
 					.then(() => {
-						showAlert(this.$message, SUCCESS, "Phân quyền thành công!");
+						showAlert(this, SUCCESS, "Phân quyền thành công!");
 						this.loading = false;
 						this.isShowDlgGroupPermission = false;
 					})
@@ -652,7 +652,7 @@ export default {
 					.callAPI(ConstantAPI[MENU_CODE_API].RESET_PASS, this.formResetPass)
 					.then(() => {
 						showAlert(
-							this.$message,
+							this,
 							SUCCESS,
 							`Đặt lại mật khẩu thành công : Tài khoản [${this.formResetPass.username}]`
 						);
@@ -678,7 +678,7 @@ export default {
 			apiFactory
 				.callAPI(ConstantAPI[MENU_CODE_API].SYNC_USERS_LDAP)
 				.then((rsMsg) => {
-					showAlert(this.$message, SUCCESS, rsMsg.key);
+					showAlert(this, SUCCESS, rsMsg.key);
 					this.loadingSyncUser = false;
 					this.isShowDlgSyncUser = rsMsg.value && rsMsg.value.length > 0;
 					this.msgUserSyncFailure = rsMsg;
