@@ -40,6 +40,7 @@ module.exports = {
   devServer: {
     port: port,
     open: false,
+    allowedHosts: "all",
     client: {
       overlay: {
         warnings: true,
