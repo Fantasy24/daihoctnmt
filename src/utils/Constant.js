@@ -1,6 +1,7 @@
 /* API_KIEMDINH*/
 import { PAGINATION_PARAM as PAGING } from 'ff24-js/src/utils/Constant'
 
+
 const V1 = process.env.VUE_APP_API_VER
 const CATE = process.env.VUE_APP_API_CATE
 const CATEGORY_COMMON = process.env.VUE_APP_API_CATEGORY_COMMON
@@ -8,7 +9,7 @@ const API_GATEWAY = process.env.VUE_APP_API_GATEWAY
 export const API_AUTH = API_GATEWAY + CATE
 /** ************ENDPOINT API LOCAL**************/
 export const API_DEFAULT = API_GATEWAY
-
+export const APP_CODE = process.env.VUE_APP_APP_CODE
 /** ************ENDPOINT API SERVER**************/
 // export const API_DEFAULT = API_GATEWAY + process.env.VUE_APP_ENDPOINT_DEFAULT + V1
 

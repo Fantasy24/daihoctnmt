@@ -150,6 +150,16 @@ export const ConstantAPI = {
       method: POST,
       buttons: ['[BTN_USER_PERMISSION]QLND']
     },
+    GET_GROUP_PERMISSION: {
+      url: `${API_DEFAULT}/api/user/auth/get-group-permission`,
+      method: GET,
+      buttons: ['[BTN_GROUP_PERMISSION]QLND']
+    },
+    UPDATE_GROUP_PERMISSION: {
+      url: `${API_DEFAULT}/api/user/auth/update-group-permission`,
+      method: POST,
+      buttons: ['[BTN_GROUP_PERMISSION]QLND']
+    },
     RESET_PASS: {
       url: `${API_DEFAULT}/user/changepass-user`,
       method: PUT
@@ -174,7 +184,78 @@ export const ConstantAPI = {
         url: `${API_DEFAULT}/user/get-org-history-current`,
         method: GET
     }
-  },  
+  },
+  QLNND: {
+    SEARCH: {
+      url: `${API_DEFAULT}/api/qlnnd/search`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]QLNND']
+    },
+    SELECT_ITEM: {
+      url: `${API_DEFAULT}/api/qlnnd/select-item`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]QLNND', '[BTN_UPDATE]QLNND']
+    },
+    INSERT: {
+      url: `${API_DEFAULT}/api/qlnnd/`,
+      method: POST,
+      buttons: ['[BTN_INSERT]QLNND']
+    },
+    UPDATE: {
+      url: `${API_DEFAULT}/api/qlnnd/`,
+      method: PUT,
+      buttons: ['[BTN_UPDATE]QLND']
+    },
+    DELETE: {
+      url: `${API_DEFAULT}/api/qlnnd/`,
+      method: DELETE,
+      buttons: ['[BTN_DELETE]QLNND']
+    },
+    GET_MENU_BY_PERMISSION: {
+      url: `${API_DEFAULT}/api/menu/get-menu-by-group-permission`,
+      method: GET,
+      buttons: ['[BTN_USER_PERMISSION]QLNND']
+    },
+    UPDATE_GROUP_PERMISSION: {
+      url: `${API_DEFAULT}/api/user/auth/update-permission-group`,
+      method: POST,
+      buttons: ['[BTN_USER_PERMISSION]QLNND']
+    },
+    UPDATE_USER_PERMISSION: {
+      url: `${API_DEFAULT}/api/user/auth/update-group-permission-by-user`,
+      method: POST,
+      buttons: ['[BTN_GROUP_PERMISSION]QLNND']
+    },
+    GET_GROUP_PERMISSION: {
+      url: `${API_DEFAULT}/api/user/auth/get-user-permission-by-group`,
+      method: GET,
+      buttons: ['[BTN_GROUP_PERMISSION]QLNND']
+    },    
+    RESET_PASS: {
+      url: `${API_DEFAULT}/user/changepass-user`,
+      method: PUT
+    },
+    GET_TOTP_SECRET: {
+        url: `${API_DEFAULT}/user/get-totp-secret`,
+        method: GET
+    },
+    UPDATE_TOTP_SECRET: {
+        url: `${API_DEFAULT}/user/update-totp-secret`,
+        method: PUT
+    },
+    GET_RESEND_TOTP_KEY: {
+        url: `${API_DEFAULT}/user/get-totp-key`,
+        method: GET
+    },
+    CHECK_TOTP_KEY: {
+        url: `${API_DEFAULT}/user/check-totp-key`,
+        method: POST
+    },
+    TRANSFER_ORG: {
+        url: `${API_DEFAULT}/user/get-org-history-current`,
+        method: GET
+    }
+  },
   YCPTPL: {
     SEARCH: {
       url: `${API_DEFAULT}/nv/pycptpl/search`,

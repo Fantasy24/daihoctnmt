@@ -5,6 +5,7 @@ import {
 	SUCCESS,
 } from "ff24-js/src/utils/AlertMessage";
 import {
+	APP_CODE,
 	FORM_MODE,
 	LIST_LV_CUSTOM,
 	PAGINATION_PARAM,
@@ -13,7 +14,7 @@ import {
 import { formatFullDate_VN } from '../../../../filters/index'
 import apiFactory from "@/api/apiFactory";
 import Pagination from "ff24-customs-lib/src/components/Pagination";
-import SelectMaHq from "ff24-customs-lib/src//lib-components/BaseFormCustoms/SelectListMaHq";
+import SelectMaHq from "ff24-customs-lib/src/lib-components/BaseFormCustoms/SelectListMaHq";
 import SelectPosCode from "ff24-customs-lib/src/lib-components/BaseFormCustoms/SelectListPosition";
 import SelectDepCode from "ff24-customs-lib/src/lib-components/BaseFormCustoms/SelectListDepartment";
 import {
@@ -91,6 +92,7 @@ export default {
 			FORM_MODE,
 			MENU_CODE_API,
 			isHiddenInput: false,
+			formatFullDate_VN,
 			formSearch: {
 				username: "",
 				fullName: "",
@@ -219,6 +221,7 @@ export default {
 			},
 			filterText: "",
 			listCheckedPermission: [],
+			listUnChecked: [],
 			isShowDlgGroupPermission: false,
 			targetGroupPermis: [],
 			sourceGroupPermis: [],
@@ -284,9 +287,9 @@ export default {
 					console.log(rs);
 					this.loadDataTable = false;
 					this.listDataTable = rs.result;
-					this.listDataTable.forEach((item) => {
-						item.orgName = getTenHqByMa(item.orgCode);
-					});
+					// this.listDataTable.forEach((item) => {
+					// 	item.orgName = getTenHqByMa(item.orgCode);
+					// });
 					this.total = rs["totalElements"];
 				})
 				.catch((err) => {
@@ -341,7 +344,7 @@ export default {
 					.catch((err) => {
 						this.loading = false;
 						this.isShowAddEditDlg = false;
-						errAlert(this, err.message);
+						errAlert(this, err);
 					});
 			});
 		},
@@ -362,7 +365,7 @@ export default {
 						this.isShowAddEditDlg = false;
 					})
 					.catch((err) => {
-						errAlert(this, err.message);
+						errAlert(this, err);
 						this.isShowAddEditDlg = false;
 						this.loadingUpdate = false;
 					});
@@ -384,7 +387,7 @@ export default {
 							this.onSearch("");
 						})
 						.catch((err) => {
-							errAlert(this, err.message);
+							errAlert(this, err);
 						});
 				},
 				"idConfirmDelete",
@@ -474,26 +477,32 @@ export default {
 				// orgCode: this.$store.getters.org,
 				// permissionCode: this.objParamPermissionUpdate.username,
 				// permissionTable: "USER",
-				appCode: "HUNRE",
+				appCode: APP_CODE,
 				username: this.objParamPermissionUpdate.username
 			};
 			this.listPermission = [];
 			this.listCheckedPermission = [];
+			this.listUnChecked = [];
 			this.objParamPermissionUpdate.lstMenuCode = [];
 			this.loadPermissionTree = true;
 			apiFactory
 				.callAPI(ConstantAPI[MENU_CODE_API].GET_MENU_BY_PERMISSION, {}, params)
 				.then(async (rs) => {
-					console.log(rs)
 					await this.listPermission.push(rs[0]);
 					await this.recLoadListSelected(rs[0].children);	
 					console.log(this.listCheckedPermission)
-					await this.$refs.permissionTree.setCheckedNodes(
-						this.listCheckedPermission
-					);
+					//this.listCheckedPermission = this.listCheckedPermission.filter(obj => obj.indexOf("BTN_")>-1);
+					// await this.$refs.permissionTree.setCheckedNodes(
+					// 	this.listCheckedPermission
+					// );
 					await this.$refs.permissionTree.setCheckedKeys(
 						this.listCheckedPermission
 					);
+					let len = this.listUnChecked.length;
+					while (len--) {
+						await this.$refs.permissionTree.setChecked(this.listUnChecked[len], false);						
+					}
+					
 					this.loadPermissionTree = false;
 				})
 				.catch((err) => {
@@ -510,6 +519,8 @@ export default {
 							...this.listCheckedPermission,
 							childItem.rowKey,
 						];						
+					} else {
+						this.listUnChecked.push(childItem.rowKey);
 					}
 					this.recLoadListSelected(childItem.children);
 				});
@@ -562,13 +573,14 @@ export default {
 			this.isShowDlgGroupPermission = true;
 			this.formGroupPermis.username = rowData.username;
 			this.formGroupPermis.orgCode = rowData.orgCode;
+			this.onGetListGroupPermis("HUNRE");
 		},
 
 		onGetListGroupPermis(eventValue) {
 			this.formGroupPermis.appCode = eventValue;
 			const paramSearch = {
 				appCode: eventValue,
-				orgCode: this.formGroupPermis.orgCode.substring(0, 4),
+				//orgCode: this.formGroupPermis.orgCode.substring(0, 4),
 				username: this.formGroupPermis.username,
 			};
 			this.sourceGroupPermis = [];
@@ -581,7 +593,7 @@ export default {
 				)
 				.then((rs) => {
 					for (const item of rs) {
-						if (item.status === 1) {
+						if (item.status === '1') {
 							this.targetGroupPermis = [
 								...this.targetGroupPermis,
 								item.groupCode,
@@ -606,13 +618,13 @@ export default {
 				this.loading = true;
 				const paramUpdate = {
 					appCode: this.formGroupPermis.appCode,
-					listGroupCode: this.targetGroupPermis,
-					orgCode: this.formAddEdit.orgCode.substring(0, 4),
+					lstRole: this.targetGroupPermis,
+					//orgCode: this.formAddEdit.orgCode.substring(0, 4),
 					username: this.formAddEdit.username,
 					status: 1,
 				};
 				apiFactory
-					.callAPI(ConstantAPI[MENU_CODE_API].UPDATE_GROUP_PERMIS, paramUpdate)
+					.callAPI(ConstantAPI[MENU_CODE_API].UPDATE_GROUP_PERMISSION, paramUpdate)
 					.then(() => {
 						showAlert(this, SUCCESS, "Phân quyền thành công!");
 						this.loading = false;
@@ -694,13 +706,15 @@ export default {
 			this.$refs[formName].resetFields();
 			this.listDataTable = [];
 			this.total = 0;
+			this.formSearch.username = '';
+			this.formSearch.fullName = '';
 			this.resetFiltersTranfer("transfer");
 		},
 
 		onCloseDialog(formName) {
 			this.$refs[formName].resetFields();
 			if (this.listDataTable && this.listDataTable.length > 0) {
-				this.getListUser();
+				this.onSearch();
 			}
 		},
 

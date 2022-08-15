@@ -12,7 +12,7 @@
           :model="formSearch"
           :rules="ruleSearch"
           label-width="170px"
-          @keyup.enter.native="getListUser('')"
+          @keyup.enter.native="onSearch('')"
         >
           <el-row :gutter="20">
             <el-col :span="12">
@@ -148,7 +148,10 @@
                 >
                   <i class="el-icon-view" />
                   Xem
-                  <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-menu slot="dropdown" class="dropdown-table">
+                    <el-dropdown-item class="keyMenu" disabled>
+                      {{ scope.row.username }}
+                    </el-dropdown-item>
                     <el-dropdown-item
                       icon="el-icon-edit"
                       @click.native="onPrepareEdit(scope.row)"
@@ -185,6 +188,7 @@
                       v-if="
                         checkPermissionShowButton('[BTN_USER_PERMISSION]QLND')
                       "
+                      :disabled="scope.row.status === 0"
                       @click.native="onPreparePermission(scope.row)"
                     >
                       <!-- :disabled="scope.row.status === 0" -->
@@ -192,6 +196,7 @@
                     </el-dropdown-item>
                     <el-dropdown-item
                       v-if="checkPermissionShowButton('[BTN_USER_GROUP]QLND')"
+                      :disabled="scope.row.status === 0"
                       @click.native="onPrepareGroupUser(scope.row)"
                     >
                       <font-awesome-icon icon="users" />
@@ -201,6 +206,7 @@
                 </el-dropdown>
               </template>
             </el-table-column>
+
             <!-- <el-table-column
               :label="$t('baseLabel.labelTableAction')"
               align="center"
@@ -525,7 +531,7 @@
           :limit.sync="formSearch.size"
           :page.sync="formSearch.page"
           :total="total"
-          @pagination="getListUser"
+          @pagination="onSearch"
         />
       </div> -->
 
@@ -548,14 +554,10 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
               <el-form-item label="Tên đăng nhập" prop="username" required>
-                <span v-if="isHiddenInput" id="usernameView" class="viewSpan">{{
-                  formAddEdit.username
-                }}</span>
-                <el-input
-                  v-else
+                <el-input-etc
                   id="username"
-                  v-model="formAddEdit.username"
-                  :disabled="flagShowDialog === 2"
+                  :v-model.sync="formAddEdit.username"
+                  :disabled="flagShowDialog === 2 || isHiddenInput"
                   :maxlength="25"
                   placeholder="Tên đăng nhập"
                   show-word-limit
@@ -564,14 +566,11 @@
             </el-col>
             <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
               <el-form-item label="Họ và tên" prop="fullName" required>
-                <span v-if="isHiddenInput" id="fullnameView" class="viewSpan">{{
-                  formAddEdit.fullName
-                }}</span>
                 <el-input-etc
-                  v-else
                   id="fullName"
                   :v-model.sync="formAddEdit.fullName"
                   :maxlength="500"
+                  :disabled="isHiddenInput"
                   placeholder="Họ và tên"
                   show-word-limit
                   @input="
@@ -586,18 +585,11 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
               <el-form-item label="Ngày sinh" prop="dateOfBirth">
-                <span
-                  v-if="isHiddenInput"
-                  id="dateOfBirthView"
-                  class="viewSpan"
-                >
-                  {{ formAddEdit.dateOfBirth | formatFullDate_VN }}
-                </span>
                 <el-date-picker
-                  v-else
                   id="dateOfBirth"
                   v-model="formAddEdit.dateOfBirth"
                   :picker-options="maxDateOfBirth"
+                  :disabled="isHiddenInput"
                   clearable
                   format="dd/MM/yyyy"
                   placeholder="DD/MM/YYYY"
@@ -608,14 +600,11 @@
             </el-col>
             <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
               <el-form-item label="Địa chỉ email" prop="email" required>
-                <span v-if="isHiddenInput" id="emailView" class="viewSpan">{{
-                  formAddEdit.email
-                }}</span>
                 <el-input
-                  v-else
                   id="email"
                   v-model="formAddEdit.email"
                   :maxlength="254"
+                  :disabled="isHiddenInput"
                   placeholder="Địa chỉ email"
                   show-word-limit
                   @input="
@@ -630,17 +619,11 @@
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
               <el-form-item label="Số điện thoại" prop="phoneNumber">
-                <span
-                  v-if="isHiddenInput"
-                  id="phoneNumberView"
-                  class="viewSpan"
-                  >{{ formAddEdit.phoneNumber }}</span
-                >
                 <el-input
-                  v-else
                   id="phoneNumber"
                   v-model="formAddEdit.phoneNumber"
                   :maxlength="11"
+                  :disabled="isHiddenInput"
                   placeholder="Số điện thoại"
                   show-word-limit
                   @keypress.native="onPreventChar"
@@ -659,36 +642,11 @@
             </el-form-item>
             <select-pos-code v-else id="posCode" :pos-code.sync="formAddEdit.posCode" prop-form="posCode"/> -->
 
-              <el-form-item
-                v-if="isHiddenInput"
-                label="Trạng thái"
-                prop="status"
-                required
-              >
-                <span id="statusView" class="viewSpan">
-                  {{ getStatusSelected(formAddEdit.status) }}
-                </span>
-                <!-- <el-select
-                  v-else
-                  id="status"
-                  v-model="formAddEdit.status"
-                  popper-class="idStatusIU"
-                  placeholder="Chọn"
-                  style="width: 100%"
-                >
-                  <el-option
-                    v-for="item in statusSelect"
-                    :key="item.key"
-                    :label="item.value"
-                    :value="item.key"
-                  />
-                </el-select> -->
-              </el-form-item>
               <select-trang-thai
-                v-else
                 label="Trạng thái"
                 :is-show-option-all="false"
                 :v-model.sync="formAddEdit.status"
+                :disabled="isHiddenInput"
                 prop-form="status"
                 @change="changeValue"
               />
@@ -916,6 +874,13 @@
                   >GET</el-tag
                 >
               </span>
+              <span>{{ data.name.substring(0, data.name.indexOf("[")) }}</span>
+              <span>{{
+                data.name.substring(
+                  data.name.indexOf("]") + 1,
+                  data.name.length
+                )
+              }}</span>
               <!-- <span v-if="data.rowKey.startsWith('[BTN')">
                 <el-tag
                   class="method-label-color"
@@ -930,7 +895,7 @@
                 :open-delay="400"
                 effect="dark"
                 placement="bottom"
-              > -->
+              > 
               <span>{{ data.name.substring(0, data.name.indexOf("[")) }}</span>
               <span>{{
                 data.name.substring(
@@ -938,7 +903,7 @@
                   data.name.length
                 )
               }}</span>
-              <!-- </el-tooltip> -->
+              </el-tooltip> -->
             </span>
           </el-tree>
         </el-card>
@@ -972,72 +937,73 @@
         top="5vh"
         @close="onCloseDialog('formGroupPermis')"
       >
-        <!-- <el-card shadow="never">
-            <div slot="header">
-              <el-form
-                id="formGroupPermis"
-                ref="formGroupPermis"
-                :model="formGroupPermis"
-                :rules="rulesPermission"
-                label-width="130px"
-              >
-                <el-row>
-                  <el-col :span="24">
-                    <select-list-app
-                      :app-code.sync="formGroupPermis.appCode"
-                      :is-require="true"
-                      :menu-code-api="appCodeMenuApi"
-                      popper-class="idSelectAppGroup"
-                      :prop-form="'appCode'"
-                      :rules="rulesPermission.appCode"
-                      @customEvent="onGetListGroupPermis"
-                    />
-                  </el-col>
-                </el-row>
-
-                <el-row>
-                  <el-col :span="12">
-                    <el-form-item label="Tên đăng nhập" prop="username">
-                      <el-input
-                        id="idUsername"
-                        v-model="formGroupPermis.username"
-                        disabled
-                      />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </div>
-
-            <el-transfer
-              id="transfer"
-              ref="transfer"
-              v-model="targetGroupPermis"
-              :data="sourceGroupPermis"
-              :filter-method="filterByKeyAndValue"
-              :render-content="renderFunc"
-              :titles="['Nhóm chưa gán quyền', 'Nhóm đã gán quyền']"
-              filter-placeholder="Tìm nhóm"
-              filterable
-              style="width: 100%"
-            />
-          </el-card>
-          <span slot="footer" class="dialog-footer">
-            <el-button
-              id="btnCancelDlg"
-              @click="isShowDlgGroupPermission = false"
-            >{{ $t('baseLabel.btnCancel') }}</el-button>
-            <el-button
-              v-if="checkPermissionShowButton('[BTN_USER_GROUP]QLND')"
-              id="btnSaveGroupPermis"
-              :loading="loading"
-              icon="el-icon-check"
-              type="primary"
-              @click="onSaveGroupPermission('formGroupPermis')"
+        <el-card shadow="never">
+          <div slot="header">
+            <el-form
+              id="formGroupPermis"
+              ref="formGroupPermis"
+              :model="formGroupPermis"
+              :rules="rulesPermission"
+              label-width="130px"
             >
-              Lưu
-            </el-button>
-          </span> -->
+              <el-row>
+                <el-col :span="24">
+                  <select-list-app
+                    :app-code.sync="formGroupPermis.appCode"
+                    :is-require="true"
+                    :menu-code-api="appCodeMenuApi"
+                    popper-class="idSelectAppGroup"
+                    :prop-form="'appCode'"
+                    :rules="rulesPermission.appCode"
+                    @customEvent="onGetListGroupPermis"
+                  />
+                </el-col>
+              </el-row>
+
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="Tên đăng nhập" prop="username">
+                    <el-input
+                      id="idUsername"
+                      v-model="formGroupPermis.username"
+                      disabled
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </div>
+
+          <el-transfer
+            id="transfer"
+            ref="transfer"
+            v-model="targetGroupPermis"
+            :data="sourceGroupPermis"
+            :filter-method="filterByKeyAndValue"
+            :render-content="renderFunc"
+            :titles="['Nhóm chưa gán quyền', 'Nhóm đã gán quyền']"
+            filter-placeholder="Tìm nhóm"
+            filterable
+            style="width: 100%"
+          />
+        </el-card>
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            id="btnCancelDlg"
+            @click="isShowDlgGroupPermission = false"
+            >{{ $t("baseLabel.btnCancel") }}</el-button
+          >
+          <el-button
+            v-if="checkPermissionShowButton('[BTN_USER_GROUP]QLND')"
+            id="btnSaveGroupPermis"
+            :loading="loading"
+            icon="el-icon-check"
+            type="primary"
+            @click="onSaveGroupPermission('formGroupPermis')"
+          >
+            Lưu
+          </el-button>
+        </span>
       </el-dialog>
     </div>
 

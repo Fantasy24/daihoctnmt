@@ -22,7 +22,7 @@ export default {
     tkKct: 'Không chứng từ'
   },
   login: {
-    title: 'Đại Học Tài Nguyên & Môi Trường',
+    title: 'Trường Đại Học Tài Nguyên & Môi Trường Hà Nội',
     logIn: 'ĐĂNG NHẬP',
     forgotPass: 'GỬI YÊU CẦU ĐẶT LẠI MẬT KHẨU',
     forgotPassLabel: 'Quên mật khẩu?',

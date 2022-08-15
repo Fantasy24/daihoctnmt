@@ -16,7 +16,7 @@ import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import { FORM_MODE } from '@/utils/Constant'
 // import SelectHinhThucKiemTra from '../../../../components/CommonComponent/SelectHinhThucKiemTra'
 
-const MENU_CODE_API = 'EXAMPLE'
+const MENU_CODE_API = 'QLND'
 
 export default {
   components: {

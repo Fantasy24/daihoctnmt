@@ -228,3 +228,33 @@ li.el-menu-item .is-active {
     text-align: center !important;
     margin-right: 10px !important;
 }
+.dropdown-table{
+    font-weight: bold;
+}
+.keytext{
+    text-align: center;
+    background-color: #67c23a;
+}
+.keyMenu, keyMenu:disabled {
+    text-align: center;
+    color: #606266;
+    background-color: #42ba83;
+}
+.el-dropdown-menu__item.is-disabled {
+    cursor: default;
+    color: #606266;
+    pointer-events: none;
+}
+.el-button--primary.is-disabled, .el-button--primary.is-disabled:active, .el-button--primary.is-disabled:focus, .el-button--primary.is-disabled:hover {
+    color: #FFF;
+    background-color: #c1e8ae;
+    border-color: #c1e8ae;
+}
+.el-transfer-panel__item:hover {
+    color: #67c23a;
+}
+.method-label-color {
+    width: 85px !important;
+    text-align: center !important;
+    margin-right: 10px !important;
+}
