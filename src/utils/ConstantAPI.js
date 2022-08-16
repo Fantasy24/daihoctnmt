@@ -256,6 +256,33 @@ export const ConstantAPI = {
         method: GET
     }
   },
+  DMHC: {
+    SEARCH: {
+      url: `${API_DEFAULT}/api/dmhc/search`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]QLND']
+    },
+    SELECT_ITEM: {
+      url: `${API_DEFAULT}/api/dmhc/select-item`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]QLND', '[BTN_UPDATE]QLND']
+    },
+    INSERT: {
+      url: `${API_DEFAULT}/api/dmhc/`,
+      method: POST,
+      buttons: ['[BTN_INSERT]QLND']
+    },
+    UPDATE: {
+      url: `${API_DEFAULT}/api/dmhc/`,
+      method: PUT,
+      buttons: ['[BTN_UPDATE]QLND']
+    },
+    DELETE: {
+      url: `${API_DEFAULT}/api/dmhc/`,
+      method: DELETE,
+      buttons: ['[BTN_DELETE]QLND']
+    }    
+  },
   YCPTPL: {
     SEARCH: {
       url: `${API_DEFAULT}/nv/pycptpl/search`,

@@ -96,7 +96,17 @@ export default {
       listData: [
         { key: "CAI", label: "Cái" },
         { key: "CHIEC", label: "Chiếc" },
+        { key: "CHAI", label: "Chai" },
+        { key: "HOP", label: "Hộp" },
+        { key: "QUA", label: "Quả" },
+        { key: "BO", label: "Bộ" },
         { key: "KG", label: "Kg" },
+        { key: "GAM", label: "Gam" },
+        { key: "LIT", label: "Lit" },
+        { key: "ML", label: "Ml" },
+        { key: "TO", label: "Tờ" },
+        { key: "LO_NHO", label: "Lọ nhỏ" },
+        { key: "LO_TO", label: "Lọ to" },
       ],
     };
   },

@@ -31,7 +31,7 @@ import SelectListMaHq from 'ff24-customs-lib/src/lib-components/BaseFormCustoms/
 import ElTableEtc from 'ff24-customs-lib/src/components/ElTableETC/ElTableEtc'
 import { getToken } from 'ff24-js/src/utils/authCookie'
 import { cacheCategories } from 'ff24-js/src/utils/ECustomsUtils'
-import { numberRule, requiredRule, specialCharRule } from 'ff24-js/src/utils'
+import { numberRule, requiredRule, specialCharRule, validateRegex } from 'ff24-js/src/utils'
 import ElTableEtcCustom from './components/BaseFormCustoms/ElTableEtcCustom'
 import { cacheLocal } from './utils/ECustomsUtils'
 
@@ -50,7 +50,8 @@ Vue.mixin({
   methods: {
     requiredRule,
     numberRule,
-    specialCharRule
+    specialCharRule,
+    validateRegex
   }
 })
 

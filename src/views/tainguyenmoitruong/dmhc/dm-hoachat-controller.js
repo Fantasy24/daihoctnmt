@@ -134,7 +134,7 @@ export default {
       showDlgTemplate: false,
       showDlgHistory: false,
       buttonTemplateLoading: false,
-      maDonVi: this.$store.getters.userInfo.org,
+      disableAppCodeModeEdit: false,
       loaiHoSo: MA_CHUC_NANG,
       windowHeight: screen.height,
       paramHis: {},
@@ -168,7 +168,7 @@ export default {
       lenTLKTHS: 0,
       currentTLKTHS: {},
       currentIndex: -1,
-      lstHinhThucKiemTra: [],
+      lstDVT: [],
       lstNguoiKhaiLayLaiMau: [],
       lstLoaiPheDuyet: [],
       excelData: [],
@@ -180,17 +180,14 @@ export default {
       // formSearch: new KeySearchListObj(),
       formSearch: {
         fromToDate: [],
-        maChucNang: MA_CHUC_NANG,
-        maHqYeuCau: '', // '_0000000000',
-        maHqTiepNhan: '_'.concat(this.$store.getters.userInfo.org),
         soPhieuYeuCau: '',
         code: '',
         name: '',
         resourceType: '',
         unit: '',
-        maHangKb: '',
-        soToKhai: '',
-        maDvxnk: '',
+        quantity: '',
+        origin: '',
+        storageLocation: '',
         status: null,
         maTrangThai: null,
         page: null,
@@ -210,19 +207,19 @@ export default {
       lstLyDoKhongDinhKem: [],
       formAddEdit: {
         id: 0,
-        id_phieu_yeu_cau: 0,
-        so_phieu_yeu_cau: '',
-        ngay_lap: null,
-        hq_yeu_cau_phan_tich: '',
-        hq_tiep_nhan_yeu_cau_phan_tich: '',
-        so_to_khai: '',
-        ngay_dk_to_khai: null,
-        ma_dvxnk: '',
-        ma_lhxnk: '',
-        ma_hang_khai_bao: '',
-        ten_hang_khai_bao: '',
-        noi_dung_yeu_cau_phan_tich: '',
-        so_chung_nhan_xuat_xu: '',
+        resourceId: 0,
+        resourceCode: '',
+        resourceName: '',        
+        createdAt: null,
+        resourceType: '',
+        so_to_kunithai: '',
+        quantity: 0,
+        unit: '',
+        origin: '',
+        storageLocation: '',
+        image: '',
+        description: '',
+        createdBy: '',
         ngay_chung_nhan_xuat_xu: null,
         dia_diem_lay_mau: '',
         ngay_lay_mau: null,
@@ -280,48 +277,19 @@ export default {
             return time.getTime() > maxTime || time.getTime() < minTime
           }
         }
-      },
-      ruleLHXNK: [this.requiredRule('Loại hình XNK')],
-      ruleCongChucLayMau1: [this.requiredRule('Công chức HQ lấy mẫu 1')],
-      // ruleCongChucLayMau2: [this.requiredRule('Công chức HQ lấy mẫu 2')],
-      ruleHTKT: [this.requiredRule('Hình thức kiểm tra')],
-      ruleNguoiKhai: [this.requiredRule('Người khai yêu cầu lấy lại mẫu')],
-      rulesFormEdit: {
-        ma_hq: [
-          this.requiredRule('Mã hải quan'),
-          this.specialCharRule('Mã hải quan')
+      },      
+      ruleDVT: [this.requiredRule('Đơn vị tính')],
+      rules: {
+        resourceCode: [
+          this.requiredRule('Mã hóa chất'),
+          this.specialCharRule('Mã hóa chất')
         ],
-
-        ngay_lap: [this.requiredRule('Ngày lập')],
-        hq_yeu_cau_phan_tich: [this.requiredRule('Hải quan YCPT')],
-        hq_tiep_nhan_yeu_cau_phan_tich: [
-          this.requiredRule('Hải quan phân tích'),
-          this.specialCharRule('Hải quan phân tích ')
-        ],
-        so_to_khai: [this.requiredRule('Số tờ khai')],
-        ngay_dk_to_khai: [this.requiredRule('Ngày đăng ký TK')],
-        ma_dvxnk: [this.requiredRule('Đơn vị XNK')],
-        ma_lhxnk: [this.requiredRule('Loại hình XNK')],
-        ma_hang_khai_bao: [this.requiredRule('Mã hàng khai báo')],
-        ten_hang_khai_bao: [this.requiredRule('Tên hàng khai báo')],
-        noi_dung_yeu_cau_phan_tich: [
-          this.requiredRule('Nội dung yêu cầu phân tích')
-        ],
-        dia_diem_lay_mau: [this.requiredRule('Địa điểm lấy mẫu')],
-        ngay_lay_mau: [this.requiredRule('Ngày lấy mẫu')],
-        // cong_chuc_hq_lay_mau1: [this.requiredRule('Công chức HQ lấy mẫu 1')],
-        dai_dien_nguoi_khai_hq: [this.requiredRule('Đại diện người khai HQ')],
-        so_luong_mau: [this.requiredRule('Số lượng mẫu/Chi tiết mẫu')],
-        dac_diem_quy_cach_dong_goi: [
-          this.requiredRule('Đặc điểm quy cách đóng gói')
-        ],
-        hinh_thuc_kiem_tra: [this.requiredRule('Hình thức kiểm tra')],
-        mau_duoc_niem_phong_hq_so: [
-          this.requiredRule('Mẫu được niêm phong HQ số')
-        ],
-        nguoi_khai_yeu_cau_lay_lai_mau: [
-          this.requiredRule('Người khai yêu cầu lấy lại mẫu')
-        ]
+        createdAt: [this.requiredRule('Ngày tạo')],
+        resourceName: [this.requiredRule('Tên hóa chất')],        
+        resourceType: [this.requiredRule('Loại hóa chất')],
+        origin: [this.requiredRule('Xuất xứ')],
+        storageLocation: [this.requiredRule('Khu lưu trữ')],
+        quantity: [this.requiredRule('Số lượng'),this.validateRegex('^[0-9\.]*$',"Số lượng")],
       },
       disableWhenEdit: false,
       isHiddenInput: false,
@@ -335,100 +303,80 @@ export default {
       joinNameByCodeColumnExcel: [],
       columns: [
         {
-          prop: 'so_phieu_yeu_cau',
-          label: 'Số phiếu yêu cầu',
+          prop: 'resourceCode',
+          label: 'Mã hóa chất',
           width: '150',
           align: 'center',
+          sortable: true,
           show: true
         },
         {
-          prop: 'ngay_lap',
-          label: 'Ngày lập phiếu',
-          width: '100',
-          align: 'center',
-          formatter: row => {
-            return formatFullDate_VN(row.ngay_lap)
-          },
-          show: true
-        },
-        {
-          prop: 'so_to_khai',
-          label: 'Số tờ khai',
-          width: '150',
-          align: 'center',
-          show: true
-        },
-        {
-          prop: 'ma_dvxnk',
-          label: 'Đơn vị XNK',
+          prop: 'resourceName',
+          label: 'Tên hóa chất',
           width: '170',
-          align: 'center',
-          formatter: row => {
-            const tenDvxnk = row.ten_dvxnk !== null ? row.ten_dvxnk : ''
-            return row.ma_dvxnk.concat(' - ', tenDvxnk)
-          },
+          align: 'left',
+          sortable: true,
           show: true
         },
         {
-          prop: 'hq_tiep_nhan_yeu_cau_phan_tich',
-          label: 'Đơn vị tiếp nhận phân tích',
+          prop: 'quantity',
+          label: 'Số lượng',
+          width: '120',
+          align: 'center',
+          sortable: true,
+          show: true
+        },
+        {
+          prop: 'unit',
+          label: 'Đơn vị tính',
+          width: '150',
+          align: 'center',
           formatter: row => {
-            return (
-              row.hq_tiep_nhan_yeu_cau_phan_tich +
-              ' - ' +
-              getNameByIdOnGrid(
-                row.hq_tiep_nhan_yeu_cau_phan_tich,
-                'code',
-                'name',
-                JSON.parse(localStorage.getItem(LIST_CUSTOMS))
-              )
+            return getNameByIdOnGrid(
+              row.unit,
+              'key',
+              'label',
+              this.lstDVT
             )
           },
-          width: '170',
+          sortable: true,
           show: true
         },
         {
-          prop: 'ma_hang_khai_bao',
-          label: 'Mã hàng KB',
+          prop: 'origin',
+          label: 'Xuất xứ',
           width: '150',
+          sortable: true,
           show: true
         },
         {
-          prop: 'ma_trang_thai',
-          label: 'Trạng thái',
+          prop: 'storageLocation',
+          label: 'Khu lưu trữ',
           width: '150',
           align: 'center',
-          // formatter: TrangThaiPhieuYeuCauPtpl,
+          sortable: true,
           show: true
         },
         {
-          prop: 'ngay_bo_sung_ho_so',
-          label: 'Hạn nộp bổ sung hồ sơ',
+          prop: 'createdAt',
+          label: 'Ngày tạo',
           width: '150',
           align: 'center',
           formatter: row => {
-            return formatFullDate_VN(row.ngay_bo_sung_ho_so)
+            return formatFullDate_VN(new Date(row.createdAt))
           },
+          sortable: true,
           show: true
         },
         {
-          prop: 'ket_qua_phan_loai',
-          label: 'Kết quả phân loại',
-          width: '150',
-          show: false
-        },
-        {
-          prop: 'ket_qua_ktcl_attp',
-          label: 'Kết quả KTCL, ATTP',
-          width: '150',
-          show: false
-        },
-        {
-          prop: 'ket_qua_phan_tich',
-          label: 'Kết quả phân tích',
-          width: '150',
-          show: false
-        }
+					prop: "status",
+					label: "Trạng thái",
+					width: "100",
+					align: "center",
+					formatter: TrangThaiRecord,
+					show: true,
+					sortable: true,
+				}      
       ],
       MENU_CODE_API,
       MA_CHUC_NANG,
@@ -440,55 +388,7 @@ export default {
   created() {
     this.loading = true
   },
-  computed: {
-    rules() {
-      return {
-        nguoi_uy_quyen_nhan_lai_mau: [
-          {
-            required: this.isNguoiKhaiYcLayMau,
-            message: 'Người ủy quyền nhận lại mẫu bắt buộc nhập',
-            trigger: 'change'
-          }
-        ],
-        ma_hq: this.rulesFormEdit.ma_hq,
-        ngay_lap: this.rulesFormEdit.ngay_lap,
-        hq_yeu_cau_phan_tich: this.rulesFormEdit.hq_yeu_cau_phan_tich,
-        hq_tiep_nhan_yeu_cau_phan_tich: this.rulesFormEdit
-          .hq_tiep_nhan_yeu_cau_phan_tich,
-        so_to_khai: this.rulesFormEdit.so_to_khai,
-        ngay_dk_to_khai: this.rulesFormEdit.ngay_dk_to_khai,
-        ma_dvxnk: this.rulesFormEdit.ma_dvxnk,
-        ma_lhxnk: this.rulesFormEdit.ma_lhxnk,
-        ma_hang_khai_bao: this.rulesFormEdit.ma_hang_khai_bao,
-        ten_hang_khai_bao: this.rulesFormEdit.ten_hang_khai_bao,
-        noi_dung_yeu_cau_phan_tich: this.rulesFormEdit
-          .noi_dung_yeu_cau_phan_tich,
-        dia_diem_lay_mau: this.rulesFormEdit.dia_diem_lay_mau,
-        ngay_lay_mau: this.rulesFormEdit.ngay_lay_mau,
-        cong_chuc_hq_lay_mau1: this.rulesFormEdit.cong_chuc_hq_lay_mau1,
-        dai_dien_nguoi_khai_hq: this.rulesFormEdit.dai_dien_nguoi_khai_hq,
-        so_luong_mau: this.rulesFormEdit.so_luong_mau,
-        dac_diem_quy_cach_dong_goi: this.rulesFormEdit
-          .dac_diem_quy_cach_dong_goi,
-        hinh_thuc_kiem_tra: this.rulesFormEdit.hinh_thuc_kiem_tra,
-        mau_duoc_niem_phong_hq_so: this.rulesFormEdit.mau_duoc_niem_phong_hq_so,
-        nguoi_khai_yeu_cau_lay_lai_mau: this.rulesFormEdit
-          .nguoi_khai_yeu_cau_lay_lai_mau
-      }
-    }
-    // formatted: {
-    // get: function () {
-    //     var value = this.value;
-    //     var formatted = currencyFilter(value, "", 0);
-    //     return formatted;
-    // },
-    // set: function (newValue) {
-    //     var cleanValue = newValue.replace(",", "");
-    //     var intValue = parseInt(cleanValue, 10);
-    //     this.value = 0;
-    //     this.value = intValue;
-    // }
-    // }
+  computed: {    
   },
   mounted() {
     this.resetDateSearch()
@@ -500,7 +400,6 @@ export default {
     // this.formSearch.maHq = this.$refs.selectHQ.listMaHq[0].code
 
     console.log(this.$store)
-    console.log(this.$store.getters.token)
     console.log(this.$store.getters.token)
   },
   methods: {
@@ -633,12 +532,9 @@ export default {
         this.formSearch.size = this.$refs.tblMain.size
         this.loadDataTable = true
         const fromToDate = this.formSearch.fromToDate
-        // Custom properties KeySearchObj API
-        this.formSearch.maHqTiepNhanTmp = this.formSearch.maHqTiepNhan
-        this.formSearch.maHqTiepNhan = this.formSearch.maHqTiepNhan.toString().indexOf('_') === 0 ? '' : this.formSearch.maHqTiepNhan
-        this.formSearch.maChucNang = MA_CHUC_NANG
-        this.formSearch.tuNgay = fromToDate[0]
-        this.formSearch.denNgay = fromToDate[1]
+        // Custom properties KeySearchObj API        
+        this.formSearch.fromDate = fromToDate[0]
+        this.formSearch.toDate = fromToDate[1]
         apiFactory
           .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, {}, this.formSearch)
           .then(rs => {
@@ -711,34 +607,23 @@ export default {
           return false
         }
 
-        const phieuYeuCau = this.getPhieuYeuCauByForm()
-        if (!this.validateFileUpload(phieuYeuCau.files)) {
-          return false
-        }
-        // console.log(JSON.stringify(phieuYeuCau))
-
-        this.buttonAction =
-          this.buttonAction !== ACTION_MODE.SEND
-            ? ACTION_MODE.INSERT
-            : ACTION_MODE.SEND
-
-        this.showBtnLoading(true)
+        this.buttonSaveLoading = true
         apiFactory
           .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].INSERT,
-            phieuYeuCau,
+            this.formAddEdit,
             this.fileListUpload
           )
           .then(rs => {
             showAlert(this, SUCCESS, 'Thêm mới thành công!')
-            this.showBtnLoading(false)
+            this.buttonSaveLoading = false
             this.onSearch('')
             this.isShowDlgAddEdit = false
             // console.log(rs)
           })
           .catch(err => {
             errAlert(this, err)
-            this.showBtnLoading(false)
+            this.buttonSaveLoading = false
             this.isShowDlgAddEdit = false
           })
       })
@@ -750,48 +635,31 @@ export default {
           return false
         }
 
-        const phieuYeuCau = this.getPhieuYeuCauByFormUpdate()
-        if (!this.validateFileUpload(phieuYeuCau.files)) {
-          return false
-        }
-        // console.log(phieuYeuCau)
-        this.buttonAction =
-          this.buttonAction !== ACTION_MODE.SEND
-            ? ACTION_MODE.UPDATE
-            : ACTION_MODE.SEND
-        this.showBtnLoading(true)
+            this.buttonUpdateLoading = true
         apiFactory
           .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].UPDATE,
-            phieuYeuCau,
+            this.formAddEdit,
             this.fileListUpload
           )
           .then(() => {
             showAlert(this, SUCCESS, 'Cập nhật thành công!')
-            this.showBtnLoading(false)
+            this.buttonUpdateLoading = false
             this.onSearch('')
             this.isShowDlgAddEdit = false
           })
           .catch(err => {
             showAlert(this, ERROR, 'Lỗi! ' + err.message)
-            this.showBtnLoading(false)
+            this.buttonUpdateLoading = false
             this.isShowDlgAddEdit = true
           })
       })
     },
 
-    onDelete(code) {
-      if (code.ma_trang_thai === GUI_PHIEU_YC) {
-        showAlert(
-          this,
-          WARNING,
-          'Phiếu yêu cầu đã được gửi, bạn không thể xóa!'
-        )
-        return false
-      }
+    onDelete(code) {      
       showConfirmDelete(this.$confirm, () => {
         const param = {
-          id: code.id_phieu_yeu_cau
+          resourceId: code.resourceId
         }
         this.iconDelLoading = true
         apiFactory
@@ -860,10 +728,11 @@ export default {
       this.isPrint = false
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
-      this.titleDialog = 'Thêm mới phiếu yêu cầu phân tích phân loại'
+      this.titleDialog = 'Thêm mới Hóa chất'
       this.flagShowDialog = FORM_MODE.CREATE
       this.isShowDlgAddEdit = true
       this.disableWhenEdit = false
+      this.disableAppCodeModeEdit = false;
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
@@ -891,67 +760,23 @@ export default {
         ' - ' +
         this.$store.getters.userInfo.orgName
       this.formAddEdit.id = 0
-      this.formAddEdit.id_phieu_yeu_cau = 0
-      this.formAddEdit.so_phieu_yeu_cau = ''
-      this.formAddEdit.ngay_lap = getCurrentDateNoTime()
-      this.formAddEdit.hq_tiep_nhan_yeu_cau_phan_tich = ''
-      this.formAddEdit.so_to_khai = ''
-      this.formAddEdit.ngay_dk_to_khai = null
-      this.formAddEdit.ma_dvxnk = ''
-      this.formAddEdit.ma_lhxnk = ''
-      this.formAddEdit.ma_hang_khai_bao = ''
+      this.formAddEdit.resourceId = 0
+      this.formAddEdit.resourceCode = ''
+      this.formAddEdit.createdAt = getCurrentDateNoTime()
+      this.formAddEdit.resourceName = ''
+      this.formAddEdit.resourceType = ''
+      this.formAddEdit.quantity = 0
+      this.formAddEdit.unit = ''
+      this.formAddEdit.origin = ''
+      this.formAddEdit.storageLocation = ''
       this.formAddEdit.ten_hang_khai_bao = ''
-      this.formAddEdit.noi_dung_yeu_cau_phan_tich = ''
-      this.formAddEdit.so_chung_nhan_xuat_xu = ''
-      this.formAddEdit.ngay_chung_nhan_xuat_xu = null
-      this.formAddEdit.dia_diem_lay_mau = ''
-      this.formAddEdit.ngay_lay_mau = getCurrentDateNoTime()
-      this.formAddEdit.cong_chuc_hq_lay_mau1 = ''
-      this.formAddEdit.cong_chuc_hq_lay_mau2 = ''
-      this.formAddEdit.dai_dien_nguoi_khai_hq = ''
-      this.formAddEdit.so_luong_mau = ''
-      this.formAddEdit.dac_diem_quy_cach_dong_goi = ''
-      this.formAddEdit.hinh_thuc_kiem_tra = ''
-      this.formAddEdit.mau_duoc_niem_phong_hq_so = ''
-      this.formAddEdit.nguoi_khai_yeu_cau_lay_lai_mau = ''
-      this.formAddEdit.nguoi_uy_quyen_nhan_lai_mau = ''
-      this.formAddEdit.ngay_gui_yeu_cau = ''
-      this.formAddEdit.ngay_thuc_hien_ptpl = ''
-      this.formAddEdit.so_phieu_tiep_nhan_ptpl = ''
-      this.formAddEdit.so_luong_mau_tiep_nhan_ptpl = ''
-      this.formAddEdit.luu_y_ptpl = ''
-      this.formAddEdit.ly_do_ptpl = ''
-      this.formAddEdit.nguoi_giao_ptpl = ''
-      this.formAddEdit.nguoi_tiep_nhan_ptpl = ''
+      this.formAddEdit.description = ''
       this.formAddEdit.giay_to_khac = ''
       this.formAddEdit.fileDinhKem = ''
       this.formAddEdit.lstFileDelete = ''
       this.formAddEdit.is_change_detail = false
-      this.formAddEdit.status = 1
+      this.formAddEdit.status = '1'
       this.formAddEdit.ma_trang_thai = 1
-      // thông tin tiếp nhận
-      this.formAddEdit.status_pyc = null
-      this.formAddEdit.luu_yptpl = ''
-      // thông tin phê duyệt
-      this.formAddEdit.loai_phe_duyet = null
-      this.formAddEdit.so_phan_cong = ''
-      this.formAddEdit.ngay_phan_cong = null
-      this.formAddEdit.noi_dung = ''
-      this.formAddEdit.user_phan_cong = ''
-      this.formAddEdit.user_phan_tich = ''
-      this.formAddEdit.user_phan_loai = ''
-      this.formAddEdit.ten_user_phan_cong = ''
-      this.formAddEdit.ten_user_phan_tich = ''
-      this.formAddEdit.ten_user_phan_loai = ''
-      this.formAddEdit.loai_dieu_chinh = null
-      this.formAddEdit.so_dieu_chinh = ''
-      this.formAddEdit.version = null
-      this.formAddEdit.is_latest = null
-      this.formAddEdit.is_change_detail = false
-      this.isTemplate = false
-
-      this.showHideBtnSend()
-      this.initQuestion(this.lenTLKTHS)
     },
     onPrepareEdit(code) {
       if (this.$refs.formAddEdit) {
@@ -981,18 +806,19 @@ export default {
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
       this.disableWhenEdit = true
-      this.titleDialog = 'Cập nhật phiếu yêu cầu phân tích phân loại'
+      this.titleDialog = 'Cập nhật Hóa chất'
       this.flagShowDialog = FORM_MODE.EDIT
       this.iconEditLoading = true
       // this.hideColumnTinhTrang(false)
       const param = {
-        id: code
+        code: code
       }
       apiFactory
-        .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM_BY_ID, {}, param)
+        .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
         .then(rs => {
           this.preEditDetails(rs)
           this.showHideBtnSend()
+          this.disableAppCodeModeEdit = true;
           this.iconEditLoading = false
           this.isShowDlgAddEdit = true
         })
@@ -1005,32 +831,11 @@ export default {
       const arrDK = [undefined, null, '']
       if (arrDK.indexOf(rs) === -1) {
         this.formAddEdit = rs
-
-        let numTmp = parseInt(
-          this.formAddEdit.hinh_thuc_kiem_tra
-        )
-        this.formAddEdit.hinh_thuc_kiem_tra = numTmp
-
-        numTmp = parseInt(
-          this.formAddEdit.nguoi_khai_yeu_cau_lay_lai_mau
-        )
-        this.formAddEdit.nguoi_khai_yeu_cau_lay_lai_mau = numTmp
-        this.formAddEdit.hq_yeu_cau_phan_tich =
-          this.$store.getters.userInfo.org +
-          ' - ' +
-          this.$store.getters.userInfo.orgName
-
-        // Don vi XNK
-        const tenDvxnk =
-          this.formAddEdit.ten_dvxnk !== null ? this.formAddEdit.ten_dvxnk : ''
-        this.formAddEdit.ma_dvxnk = ''.concat(
-          this.formAddEdit.ma_dvxnk,
-          ' - ',
-          tenDvxnk
-        )
+        this.formAddEdit.quantity = '' + this.formAddEdit.quantity;
+        
         // File
-        this.getLstAttachment(rs)
-        this.checkGuiHoSoPreEdit()
+        // this.getLstAttachment(rs)
+        // this.checkGuiHoSoPreEdit()
       }
     },
     getLstAttachment(rs) {
@@ -1115,12 +920,11 @@ export default {
         this.setTimeoutDownload()
       }
     },
-    onView(code) {
+    onView(row) {
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
 
-      this.isNguoiUyQuyen = false
       this.tabIndex = '0'
       this.lstAttachment = []
       this.lstAttachmentGroup = []
@@ -1130,7 +934,7 @@ export default {
       this.isHiddenInput = true
       this.flagShowDialog = FORM_MODE.VIEW
       this.isPrint = true
-      this.titleDialog = 'Chi tiết phiếu yêu cầu phân tích phân loại'
+      this.titleDialog = 'Chi tiết Hóa chất'
       if (this.$refs.uploadTLKTHS !== undefined && this.$refs.uploadTLKTHS !== null) {
         for (const objUpload of this.$refs.uploadTLKTHS) {
           objUpload.clearFiles()
@@ -1139,14 +943,14 @@ export default {
       }
 
       const param = {
-        id: code.id_phieu_yeu_cau
+        code: row.resourceCode
       }
       this.iconViewLoading = true
       apiFactory
         .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
         .then(rs => {
           this.viewDetails(rs)
-          this.showHideBtnSend()
+          this.disableAppCodeModeEdit = true;
         })
     },
     viewDetails(rs) {
@@ -1154,19 +958,14 @@ export default {
       if (arrDK.indexOf(rs) === -1) {
         // console.log(rs)
         this.formAddEdit = rs
-        this.formAddEdit.hinh_thuc_kiem_tra = parseInt(
-          this.formAddEdit.hinh_thuc_kiem_tra
-        )
-        this.formAddEdit.nguoi_khai_yeu_cau_lay_lai_mau = parseInt(
-          this.formAddEdit.nguoi_khai_yeu_cau_lay_lai_mau
-        )
+        this.formAddEdit.quantity = ''+ this.formAddEdit.quantity
         // File
-        this.getLstAttachment(rs)
+        //this.getLstAttachment(rs)
       }
       this.totalKBBK = 0
       this.iconViewLoading = false
       this.isShowDlgAddEdit = true
-      this.checkGuiHoSoView()
+      //this.checkGuiHoSoView()
     },
     checkGuiHoSoView() {
       if (this.formAddEdit.ma_trang_thai === GUI_PHIEU_YC) {
@@ -1453,6 +1252,9 @@ export default {
           this.formAddEdit.ma_dvxnk = ''
           this.formAddEdit.ten_dvxnk = ''
         })
+    },
+    getListDataDVT(lstValue) {
+      this.lstDVT = lstValue
     },
     getListDataHinhThucKiemTra(lstValue) {
       this.lstHinhThucKiemTra = lstValue
