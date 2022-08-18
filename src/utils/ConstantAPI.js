@@ -37,36 +37,14 @@ export const ConstantAPI = {
         tableName: ConstantTableEndPoint.STRADE_TYPE
       }
     },
-    SCOMPANY_EXIM: {
-      url: `${API_CATEGORIES_V1}/scompany-exim/search`,
-      method: GET,
-      params: {
-        tableName: ConstantTableEndPoint.SCOMPANY_EXIM
-      }
-    },
     USER: {
       url: `${API_CATEGORIES_V1}/user/search`,
       method: GET,
       params: {
         orgCode: ConstantTableEndPoint.USER
       }
-    },
-    DMPHAN: {
-      url: `${API_DEFAULT}/dm/search-phan-hh-all`,
-      method: GET
-    },
-    DMCHUONG: {
-      url: `${API_DEFAULT}/dm/search-chuong-hh-all`,
-      method: GET
     }
-  },
-  DMCVPTPL: {
-    SEARCH_BY_MA_DV: {
-      url: `${API_DEFAULT}/dm/chuyen-vien-phan-tich-phan-loai/search-list-chuyen-vien-by-dvkd`,
-      method: GET,
-      buttons: ['[BTN_SEARCH]DMCVPTPL']
-    }
-  },
+  },  
   DMNV: {
     STATUS_PTPL: {
       url: `${API_DEFAULT}/dm/search-trangthai-phieu-ptpl-all`,
@@ -87,31 +65,11 @@ export const ConstantAPI = {
       method: GET
     }
   },
-  DMKD: {
-    SEARCH: {
-      url: `${API_DEFAULT}/dm/loai-kiem-dinh/search`,
+  MASTER: {
+    SEARCH_ALL: {
+      url: `${API_DEFAULT}/api/master/search-all`,
       method: GET,
-      buttons: ['[BTN_SEARCH]DMKD']
-    },
-    SELECT_ITEM: {
-      url: `${API_DEFAULT}/dm/loai-kiem-dinh/search`,
-      method: GET,
-      buttons: ['[BTN_SEARCH]DMKD', '[BTN_UPDATE]DMKD']
-    },
-    INSERT: {
-      url: `${API_DEFAULT}/dm/loai-kiem-dinh/`,
-      method: POST,
-      buttons: ['[BTN_INSERT]DMKD']
-    },
-    UPDATE: {
-      url: `${API_DEFAULT}/dm/loai-kiem-dinh/`,
-      method: PUT,
-      buttons: ['[BTN_UPDATE]DMKD']
-    },
-    DELETE: {
-      url: `${API_DEFAULT}/dm/loai-kiem-dinh/`,
-      method: DELETE,
-      buttons: ['[BTN_DELETE]DMKD']
+      buttons: ['[BTN_SEARCH]MASTER']
     }
   },  
   QLND: {

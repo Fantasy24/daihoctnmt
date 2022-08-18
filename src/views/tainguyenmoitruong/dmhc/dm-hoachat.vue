@@ -8,7 +8,7 @@
         @keyup.enter.native="onSearchHandling('[BTN_SEARCH]DMHC')"
       >
         <el-row v-show="false" :gutter="20">
-          <select-don-vi-tinh :get-list="getListDataDVT" />
+          <select-master-data :get-list="getListDataDVT" />
         </el-row>
 
         <el-row :gutter="20">
@@ -55,12 +55,14 @@
 
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <select-don-vi-tinh
-              label-option="Tất cả"
+            <select-master-data
               :is-show-option-all="false"
               :v-model.sync="formSearch.unit"
               label="Đơn vị tính"
               prop-form="unit"
+              :required="false"
+              :is-filter="true"
+              :filter-data="masterType"
             />
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -258,7 +260,7 @@
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Ngày tạo" prop="createdAt">
                   <el-date-picker
-                    id="ngayLapAddEdit"
+                    id="createdAt"
                     v-model="formAddEdit.createdAt"
                     clearable
                     format="dd/MM/yyyy"
@@ -316,13 +318,16 @@
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <select-don-vi-tinh
+                <select-master-data
                   :is-show-option-all="false"
                   :v-model.sync="formAddEdit.unit"
+                  label="Đơn vị tính"
                   prop-form="unit"
                   :required="true"
                   :disabled="isHiddenInput"
                   :rules="ruleDVT"
+                  :is-filter="true"
+                  :filter-data="masterType"
                 />
               </el-col>
             </el-row>

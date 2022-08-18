@@ -79,14 +79,18 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
-
-if (getToken()) {
-  cacheCategories()
-  cacheLocal()
-  setInterval(() => {
+setTimeout(() => {
+  if (getToken()) {
     cacheCategories()
-  }, 120 * 1000)
-}
+    cacheLocal()
+    setInterval(() => {
+      cacheCategories()
+    }, 120 * 1000)
+  }
+}, 5000);
+
+
+
 
 new Vue({
   el: '#app',

@@ -9,9 +9,7 @@ export const LIST_POSITIONS = 'LIST_POSITIONS'
 export const LIST_DEPARTMENT = 'LIST_DEPARTMENT'
 export const LIST_MENU_BUTTON_FE = 'LIST_MENU_BUTTON_FE'
 
-export const LIST_TRANG_THAI_PTPL = 'LIST_TRANG_THAI_PTPL'
-export const LIST_PHAN_HH = 'LIST_PHAN_HH'
-export const LIST_CHUONG_HH = 'LIST_CHUONG_HH'
+export const LIST_MASTER_DATA = 'LIST_MASTER_DATA'
 
 export const getListHq = JSON.parse(localStorage.getItem(LIST_CUSTOMS))
 export const getListPosition = JSON.parse(localStorage.getItem(LIST_POSITIONS))
@@ -44,46 +42,21 @@ export function getListCustoms() {
     })
 }
 
-export function getListTrangThaiPtpl() {
+export function getListMasterData() {
+  console.log("LIST_MASTER_DATA")
   apiFactory
-    .callAPI(ConstantAPI['DMNV'].STATUS_PTPL)
+    .callAPI(ConstantAPI['MASTER'].SEARCH_ALL)
     .then(response => {
-      // console.log(response)
-      localStorage.setItem(LIST_TRANG_THAI_PTPL, JSON.stringify(response))
+      console.log(response)
+      localStorage.setItem(LIST_MASTER_DATA, JSON.stringify(response))
     })
     .catch(response => {
-      console.log('Lỗi API LIST_TRANG_THAI_PTPL:', response.message)
-    })
-}
-
-export function getDmPhanHH() {
-  apiFactory
-    .callAPI(ConstantAPI['DMDC'].DMPHAN)
-    .then(response => {
-      // console.log(response)
-      localStorage.setItem(LIST_PHAN_HH, JSON.stringify(response))
-    })
-    .catch(response => {
-      console.log('Lỗi API LIST_PHAN_HH:', response.message)
-    })
-}
-
-export function getDmChuongHH() {
-  apiFactory
-    .callAPI(ConstantAPI['DMDC'].DMCHUONG)
-    .then(response => {
-      // console.log(response)
-      localStorage.setItem(LIST_CHUONG_HH, JSON.stringify(response))
-    })
-    .catch(response => {
-      console.log('Lỗi API LIST_CHUONG_HH:', response.message)
+      console.log('Lỗi API LIST_MASTER_DATA:', response.message)
     })
 }
 
 export function cacheLocal() {
-  getListTrangThaiPtpl()
-  getDmPhanHH()
-  getDmChuongHH()
+  getListMasterData()
 }
 
 export function getListPositions() {

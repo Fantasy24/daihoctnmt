@@ -16,7 +16,7 @@ import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord
 // import SelectHinhThucKiemTra from '../../../components/CommonComponent/SelectHinhThucKiemTra'
 // import SelectTrangThaiPhieuPtpl from '../../../components/CommonComponent/SelectTrangThaiPhieuPtpl'
 import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
-import SelectDonViTinh from '../../../components/CommonComponent/SelectDonViTinh'
+import SelectMasterData from '../../../components/CommonComponent/SelectMasterData'
 import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
 // import SelectChuyenVienPhanTichPhanLoai from '../../../components/CommonComponent/SelectChuyenVienPhanTichPhanLoai'
 // import SelectLoaiPheDuyet from '../../../components/CommonComponent/SelectLoaiPheDuyet'
@@ -44,7 +44,7 @@ const MENU_CODE_API = 'DMHC'
 
 
 const LOAI_NGUOI_KHAI_UQ = 'NDUY'
-const MA_CHUC_NANG = 1
+const MASTER_DATA_DVT = 'DVT'
 const GUI_PHIEU_YC = 2
 const PHIEU_YC_PRINT_FILE_NAME = 'PhieuYeuCauPtpl.pdf'
 const ACTION_MODE = { DEFAULT: 0, INSERT: 1, UPDATE: 2, SEND: 3 }
@@ -59,7 +59,7 @@ export default {
   components: {
     //TrangThaiRecord,
     DateRangePicker,
-    SelectDonViTinh,
+    SelectMasterData,
     SelectTrangThai
     // SelectTrangThaiPhieuYeuCau,
     // SelectLoaiHinhXnk,
@@ -135,7 +135,7 @@ export default {
       showDlgHistory: false,
       buttonTemplateLoading: false,
       disableAppCodeModeEdit: false,
-      loaiHoSo: MA_CHUC_NANG,
+      masterType: MASTER_DATA_DVT,
       windowHeight: screen.height,
       paramHis: {},
       // Trang thai tiep nhan YCPTPL
@@ -379,7 +379,6 @@ export default {
 				}      
       ],
       MENU_CODE_API,
-      MA_CHUC_NANG,
       FORM_MODE,
       STATUS_ROW_UPDATE,
       TAI_LIEU_KHAC
