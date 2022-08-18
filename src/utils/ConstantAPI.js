@@ -324,6 +324,33 @@ export const ConstantAPI = {
       method: DELETE,
       buttons: ['[BTN_DELETE]YCPTPL']
     }
+  },
+  DMTB: {
+    SEARCH: {
+      url: `${API_DEFAULT}/api/devices/search`,
+      method: POST,
+      buttons: ['[BTN_SEARCH]DMTB']
+    },
+    SELECT_ITEM: {
+      url: `${API_DEFAULT}/api/devices/select-item`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMTB', '[BTN_UPDATE]DMTB']
+    },
+    INSERT: {
+      url: `${API_DEFAULT}/api/devices/`,
+      method: POST,
+      buttons: ['[BTN_INSERT]DMTB']
+    },
+    UPDATE: {
+      url: `${API_DEFAULT}/api/devices/`,
+      method: PUT,
+      buttons: ['[BTN_UPDATE]DMTB']
+    },
+    DELETE: {
+      url: `${API_DEFAULT}/api/devices/`,
+      method: DELETE,
+      buttons: ['[BTN_DELETE]DMTB']
+    }    
   }
 }
 export default ConstantAPI

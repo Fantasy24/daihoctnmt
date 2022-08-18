@@ -10,19 +10,9 @@ import {
 
 import ConstantAPI from '../../../utils/ConstantAPI'
 import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord'
-// import SelectTrangThaiPhieuYeuCau from '../../../components/CommonComponent/SelectTrangThaiPhieuYeuCau'
-// import SelectLoaiHinhXnk from '../../../components/CommonComponent/SelectLoaiHinhXnk'
-// import SelectCanBoHq from '../../../components/CommonComponent/SelectCanBoHq'
-// import SelectHinhThucKiemTra from '../../../components/CommonComponent/SelectHinhThucKiemTra'
-// import SelectTrangThaiPhieuPtpl from '../../../components/CommonComponent/SelectTrangThaiPhieuPtpl'
 import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
 import SelectDonViTinh from '../../../components/CommonComponent/SelectDonViTinh'
 import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
-// import SelectChuyenVienPhanTichPhanLoai from '../../../components/CommonComponent/SelectChuyenVienPhanTichPhanLoai'
-// import SelectLoaiPheDuyet from '../../../components/CommonComponent/SelectLoaiPheDuyet'
-// import TrangThaiPhieuYeuCauPtpl from '../../../components/CommonComponent/TrangThaiPhieuYeuCauPtpl'
-// import DanhSachTemplate from '../../../components/CommonComponent/DanhSachTemplate'
-// import SelectListMaHq from 'ff24-customs-lib/src/lib-components/BaseFormCustoms/SelectListMaHq.vue'
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
 
@@ -40,7 +30,7 @@ import { FORM_MODE } from '../../../utils/Constant'
 // import XLSX from 'xlsx'
 import _ from 'lodash'
 
-const MENU_CODE_API = 'DMHC'
+const MENU_CODE_API = 'DMTB'
 
 
 const LOAI_NGUOI_KHAI_UQ = 'NDUY'
@@ -179,17 +169,11 @@ export default {
       tabIndex: '',
       // formSearch: new KeySearchListObj(),
       formSearch: {
-        fromToDate: [],
-        soPhieuYeuCau: '',
-        code: '',
-        name: '',
-        resourceType: '',
-        unit: '',
-        quantity: '',
+        itemName: '',
+        itemCode: '',
+        itemType: '',
+        status: '',
         origin: '',
-        storageLocation: '',
-        status: null,
-        maTrangThai: null,
         page: null,
         size: null
       },
@@ -281,12 +265,12 @@ export default {
       ruleDVT: [this.requiredRule('Đơn vị tính')],
       rules: {
         resourceCode: [
-          this.requiredRule('Mã hóa chất'),
-          this.specialCharRule('Mã hóa chất')
+          this.requiredRule('Mã thiết bị'),
+          this.specialCharRule('Mã thiết bị')
         ],
         createdAt: [this.requiredRule('Ngày tạo')],
-        resourceName: [this.requiredRule('Tên hóa chất')],        
-        resourceType: [this.requiredRule('Loại hóa chất')],
+        resourceName: [this.requiredRule('Tên thiết bị')],        
+        resourceType: [this.requiredRule('Loại thiết bị')],
         origin: [this.requiredRule('Xuất xứ')],
         storageLocation: [this.requiredRule('Khu lưu trữ')],
         quantity: [this.requiredRule('Số lượng'),this.validateRegex('^[0-9\.]*$',"Số lượng")],
@@ -303,16 +287,24 @@ export default {
       joinNameByCodeColumnExcel: [],
       columns: [
         {
-          prop: 'resourceCode',
-          label: 'Mã hóa chất',
+          prop: 'deviceCode',
+          label: 'Mã thiết bị',
           width: '150',
           align: 'center',
           sortable: true,
           show: true
         },
         {
-          prop: 'resourceName',
-          label: 'Tên hóa chất',
+          prop: 'deviceName',
+          label: 'Tên thiết bị',
+          width: '170',
+          align: 'left',
+          sortable: true,
+          show: true
+        },
+        {
+          prop: 'serial',
+          label: 'Serial',
           width: '170',
           align: 'left',
           sortable: true,
@@ -327,23 +319,7 @@ export default {
           show: true
         },
         {
-          prop: 'unit',
-          label: 'Đơn vị tính',
-          width: '150',
-          align: 'center',
-          formatter: row => {
-            return getNameByIdOnGrid(
-              row.unit,
-              'key',
-              'label',
-              this.lstDVT
-            )
-          },
-          sortable: true,
-          show: true
-        },
-        {
-          prop: 'origin',
+          prop: 'brand',
           label: 'Xuất xứ',
           width: '150',
           sortable: true,
@@ -373,10 +349,16 @@ export default {
 					label: "Trạng thái",
 					width: "100",
 					align: "center",
-					formatter: TrangThaiRecord,
 					show: true,
 					sortable: true,
-				}      
+				},
+        {
+          prop: 'description',
+          label: 'Ghi chu',
+          width: '150',
+          align: 'center',
+          show: true
+        }    
       ],
       MENU_CODE_API,
       MA_CHUC_NANG,
@@ -407,11 +389,6 @@ export default {
       return checkPermissionShowButton(MENU_CODE_API, idButton)
     },
     resetDateSearch() {
-      const dt = new Date()
-      const y = dt.getFullYear()
-      const m = dt.getMonth()
-      const d = dt.getDate()
-      this.formSearch.fromToDate = [new Date(y, m, d), new Date(y, m, d)]
     },
     onLoadListTaiLieuKemTheo() {
       if (!this.lstTaiLieuKemTheo.length) {
@@ -531,15 +508,11 @@ export default {
         this.formSearch.page = mode === '' ? 0 : this.formSearch.page
         this.formSearch.size = this.$refs.tblMain.size
         this.loadDataTable = true
-        const fromToDate = this.formSearch.fromToDate
-        // Custom properties KeySearchObj API        
-        this.formSearch.fromDate = fromToDate[0]
-        this.formSearch.toDate = fromToDate[1]
         apiFactory
-          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, {}, this.formSearch)
+          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, this.formSearch,{})
           .then(rs => {
             this.loadDataTable = false
-            this.listDataTable = rs.result
+            this.listDataTable = rs.content
             // console.log(rs)
             this.total = rs['totalElements']
             // console.log(this.total)
@@ -728,7 +701,7 @@ export default {
       this.isPrint = false
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
-      this.titleDialog = 'Thêm mới Hóa chất'
+      this.titleDialog = 'Thêm mới thiết bị'
       this.flagShowDialog = FORM_MODE.CREATE
       this.isShowDlgAddEdit = true
       this.disableWhenEdit = false
@@ -806,7 +779,7 @@ export default {
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
       this.disableWhenEdit = true
-      this.titleDialog = 'Cập nhật Hóa chất'
+      this.titleDialog = 'Cập nhật thiết bị'
       this.flagShowDialog = FORM_MODE.EDIT
       this.iconEditLoading = true
       // this.hideColumnTinhTrang(false)
@@ -934,7 +907,7 @@ export default {
       this.isHiddenInput = true
       this.flagShowDialog = FORM_MODE.VIEW
       this.isPrint = true
-      this.titleDialog = 'Chi tiết Hóa chất'
+      this.titleDialog = 'Chi tiết thiết bị'
       if (this.$refs.uploadTLKTHS !== undefined && this.$refs.uploadTLKTHS !== null) {
         for (const objUpload of this.$refs.uploadTLKTHS) {
           objUpload.clearFiles()

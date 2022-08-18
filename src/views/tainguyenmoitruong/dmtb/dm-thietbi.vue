@@ -5,7 +5,7 @@
         ref="formSearch"
         :model="formSearch"
         label-width="190px"
-        @keyup.enter.native="onSearchHandling('[BTN_SEARCH]DMHC')"
+        @keyup.enter.native="onSearchHandling('[BTN_SEARCH]DMTB')"
       >
         <el-row v-show="false" :gutter="20">
           <select-don-vi-tinh :get-list="getListDataDVT" />
@@ -13,64 +13,43 @@
 
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Ngày tìm kiếm" prop="fromToDate" required>
-              <date-range-picker
-                v-model="formSearch.fromToDate"
-                :picker-options="pickerOptions"
-                format="dd/MM/yyyy"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Loại hóa chất" prop="resourceType">
+            <el-form-item label="Loại thiết bị" prop="resourceType">
               <el-input-etc
-                :v-model.sync="formSearch.resourceType"
-                placeholder="Loại hóa chất"
+                :v-model.sync="formSearch.itemType"
+                placeholder="Loại thiết bị"
                 :maxlength="255"
               />
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Mã hóa chất" prop="code">
+            <el-form-item label="Mã thiết bị" prop="code">
               <el-input-etc
-                :v-model.sync="formSearch.code"
-                placeholder="Mã hóa chất"
+                :v-model.sync="formSearch.itemCode"
+                placeholder="Mã thiết bị"
                 :maxlength="50"
               />
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Tên hóa chất" prop="name">
-              <el-input-etc
-                :v-model.sync="formSearch.name"
-                placeholder="Tên hóa chất"
-                :maxlength="255"
-              />
-            </el-form-item>
-          </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <select-don-vi-tinh
-              label-option="Tất cả"
+            <el-form-item label="Tên thiết bị" prop="name">
+              <el-input-etc
+                :v-model.sync="formSearch.itemName"
+                placeholder="Tên thiết bị"
+                :maxlength="255"
+              />
+            </el-form-item>
+          </el-col>
+           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <select-trang-thai
+              label="Trạng thái"
               :is-show-option-all="false"
-              :v-model.sync="formSearch.unit"
-              label="Đơn vị tính"
-              prop-form="unit"
+              :v-model.sync="formSearch.status"
+              prop-form="status"
+              @change="changeValue"
             />
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Số lượng" prop="quantity">
-              <el-input-etc
-                :v-model.sync="formSearch.quantity"
-                placeholder="Số lượng"
-                :maxlength="50"
-              />
-            </el-form-item>
           </el-col>
         </el-row>
 
@@ -84,32 +63,11 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Khu lưu trữ" prop="storageLocation">
-              <el-input-etc
-                :v-model.sync="formSearch.storageLocation"
-                placeholder="Khu lưu trữ"
-                :maxlength="255"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <select-trang-thai
-              label="Trạng thái"
-              :is-show-option-all="false"
-              :v-model.sync="formSearch.status"
-              prop-form="status"
-              @change="changeValue"
-            />
-          </el-col>
         </el-row>
 
         <el-form-item style="float: right">
           <el-button
-            v-if="checkPermissionShowButton('[BTN_SEARCH]DMHC')"
+            v-if="checkPermissionShowButton('[BTN_SEARCH]DMTB')"
             ref="btnSearch"
             icon="el-icon-search"
             type="primary"
@@ -118,7 +76,7 @@
             {{ $t("baseLabel.btnSearch") }}
           </el-button>
           <el-button
-            v-if="checkPermissionShowButton('[BTN_SEARCH]DMHC')"
+            v-if="checkPermissionShowButton('[BTN_SEARCH]DMTB')"
             icon="el-icon-refresh-left"
             type="primary"
             @click="resetForm('formSearch')"
@@ -126,7 +84,7 @@
             Xóa tìm kiếm
           </el-button>
           <el-button
-            v-if="checkPermissionShowButton('[BTN_INSERT]DMHC')"
+            v-if="checkPermissionShowButton('[BTN_INSERT]DMTB')"
             id="btnAddCo"
             icon="el-icon-plus"
             style="float: right"
@@ -174,7 +132,7 @@
                 >
                   <el-button
                     id="btnEditCo"
-                    v-if="checkPermissionShowButton('[BTN_UPDATE]DMHC')"
+                    v-if="checkPermissionShowButton('[BTN_UPDATE]DMTB')"
                     :loading="iconEditLoading"
                     circle
                     icon="el-icon-edit"
@@ -192,7 +150,7 @@
                 >
                   <el-button
                     id="btnDelCo"
-                    v-if="checkPermissionShowButton('[BTN_DELETE]DMHC')"
+                    v-if="checkPermissionShowButton('[BTN_DELETE]DMTB')"
                     :loading="iconDelLoading"
                     circle
                     icon="el-icon-delete"
@@ -243,11 +201,11 @@
           <el-tabs v-model="tabIndex" type="border-card">
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Mã hóa chất" prop="resourceCode">
+                <el-form-item label="Mã thiết bị" prop="resourceCode">
                   <el-input-etc
                     id="resourceCode"
                     :v-model.sync="formAddEdit.resourceCode"
-                    placeholder="Mã hóa chất"
+                    placeholder="Mã thiết bị"
                     :maxlength="50"
                     :disabled="disableAppCodeModeEdit"
                     show-word-limit
@@ -274,11 +232,11 @@
 
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Tên hóa chất" prop="resourceName">
+                <el-form-item label="Tên thiết bị" prop="resourceName">
                   <el-input-etc
                     id="resourceName"
                     :v-model.sync="formAddEdit.resourceName"
-                    placeholder="Tên hóa chất"
+                    placeholder="Tên thiết bị"
                     :maxlength="255"
                     :required="true"
                     :disabled="isHiddenInput"
@@ -287,11 +245,11 @@
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Loại hóa chất" prop="resourceType">
+                <el-form-item label="Loại thiết bị" prop="resourceType">
                   <el-input-etc
                     id="resourceType"
                     :v-model.sync="formAddEdit.resourceType"
-                    placeholder="Loại hóa chất"
+                    placeholder="Loại thiết bị"
                     :maxlength="255"
                     :required="true"
                     :disabled="isHiddenInput"
@@ -547,7 +505,7 @@
           <el-button
             v-if="
               flagShowDialog === FORM_MODE.CREATE &&
-              checkPermissionShowButton('[BTN_INSERT]DMHC')
+              checkPermissionShowButton('[BTN_INSERT]DMTB')
             "
             id="btnSaveCo"
             :loading="buttonSaveLoading"
@@ -560,7 +518,7 @@
           <el-button
             v-if="
               flagShowDialog === FORM_MODE.EDIT &&
-              checkPermissionShowButton('[BTN_UPDATE]DMHC')
+              checkPermissionShowButton('[BTN_UPDATE]DMTB')
             "
             id="btnUpdateCo"
             :loading="buttonUpdateLoading"
@@ -599,7 +557,7 @@
         <span slot="footer" class="dialog-footer">
           <el-button
             id="btnPrintPDF"
-            :disabled="!checkPermissionShowButton('[BTN_SEARCH]DMHC')"
+            :disabled="!checkPermissionShowButton('[BTN_SEARCH]DMTB')"
             :loading="buttonPrintLoading"
             icon="el-icon-printer"
             type="primary"
