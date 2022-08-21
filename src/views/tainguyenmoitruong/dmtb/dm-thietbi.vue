@@ -13,7 +13,7 @@
 
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Loại thiết bị" prop="resourceType">
+            <el-form-item label="Loại thiết bị" prop="deviceType">
               <el-input-etc
                 :v-model.sync="formSearch.itemType"
                 placeholder="Loại thiết bị"
@@ -55,9 +55,9 @@
 
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Xuất xứ" prop="origin">
+            <el-form-item label="Xuất xứ" prop="brand">
               <el-input-etc
-                :v-model.sync="formSearch.origin"
+                :v-model.sync="formSearch.brand"
                 placeholder="Xuất xứ"
                 :maxlength="150"
               />
@@ -138,7 +138,7 @@
                     icon="el-icon-edit"
                     size="mini"
                     type="primary"
-                    @click="onPrepareEdit(scope.row['resourceCode'])"
+                    @click="onPrepareEdit(scope.row)"
                   />
                 </el-tooltip>
 
@@ -188,7 +188,6 @@
         :title="titleDialog"
         :visible.sync="isShowDlgAddEdit"
         width="80%"
-        @close="resetFrm('formAddEdit')"
       >
         <el-form
           id="formAddEdit"
@@ -201,10 +200,10 @@
           <el-tabs v-model="tabIndex" type="border-card">
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Mã thiết bị" prop="resourceCode">
+                <el-form-item label="Mã thiết bị" prop="deviceCode">
                   <el-input-etc
-                    id="resourceCode"
-                    :v-model.sync="formAddEdit.resourceCode"
+                    id="deviceCode"
+                    :v-model.sync="formAddEdit.deviceCode"
                     placeholder="Mã thiết bị"
                     :maxlength="50"
                     :disabled="disableAppCodeModeEdit"
@@ -217,7 +216,7 @@
                 <el-form-item label="Ngày tạo" prop="createdAt">
                   <el-date-picker
                     id="ngayLapAddEdit"
-                    v-model="formAddEdit.createdAt"
+                    :model="formAddEdit.createdAt"
                     clearable
                     format="dd/MM/yyyy"
                     placeholder="DD/MM/YYYY"
@@ -232,10 +231,10 @@
 
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Tên thiết bị" prop="resourceName">
+                <el-form-item label="Tên thiết bị" prop="deviceName">
                   <el-input-etc
-                    id="resourceName"
-                    :v-model.sync="formAddEdit.resourceName"
+                    id="deviceName"
+                    :v-model.sync="formAddEdit.deviceName"
                     placeholder="Tên thiết bị"
                     :maxlength="255"
                     :required="true"
@@ -245,10 +244,10 @@
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Loại thiết bị" prop="resourceType">
+                <el-form-item label="Loại thiết bị" prop="deviceType">
                   <el-input-etc
-                    id="resourceType"
-                    :v-model.sync="formAddEdit.resourceType"
+                    id="deviceType"
+                    :v-model.sync="formAddEdit.deviceType"
                     placeholder="Loại thiết bị"
                     :maxlength="255"
                     :required="true"
@@ -274,32 +273,6 @@
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <select-don-vi-tinh
-                  :is-show-option-all="false"
-                  :v-model.sync="formAddEdit.unit"
-                  prop-form="unit"
-                  :required="true"
-                  :disabled="isHiddenInput"
-                  :rules="ruleDVT"
-                />
-              </el-col>
-            </el-row>
-
-            <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Xuất xứ" prop="origin">
-                  <el-input-etc
-                    id="origin"
-                    :v-model.sync="formAddEdit.origin"
-                    placeholder="Xuất xứ"
-                    :maxlength="150"
-                    :required="true"
-                    :disabled="isHiddenInput"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Khu lưu trữ" prop="storageLocation">
                   <el-input-etc
                     id="storageLocation"
@@ -315,15 +288,26 @@
             </el-row>
 
             <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Xuất xứ" prop="brand">
+                  <el-input-etc
+                    id="brand"
+                    :v-model.sync="formAddEdit.brand"
+                    placeholder="Xuất xứ"
+                    :maxlength="150"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Mô tả" prop="description">
                   <el-input-etc
                     id="description"
                     :v-model.sync="formAddEdit.description"
                     placeholder="Mô tả"
                     :maxlength="1000"
-                    type="textarea"
-                    :rows="2"
                     :disabled="isHiddenInput"
                     :required="true"
                     show-word-limit
@@ -332,173 +316,6 @@
               </el-col>
             </el-row>
 
-            <!-- <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item
-                  label="Đại diện người khai HQ"
-                  prop="dai_dien_nguoi_khai_hq"
-                >
-                  <span
-                    v-if="isHiddenInput"
-                    id="viewDaiDienNguoiKhaiHQ"
-                    class="viewSpan"
-                    >{{ formAddEdit.dai_dien_nguoi_khai_hq }}</span
-                  >
-
-                  <el-input-etc
-                    v-else
-                    id="daiDienNguoiKhaiHqAddEdit"
-                    :v-model.sync="formAddEdit.dai_dien_nguoi_khai_hq"
-                    placeholder="Đại diện người khai HQ"
-                    :maxlength="250"
-                    :required="true"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item
-                  label="Số lượng mẫu/Chi tiết mẫu"
-                  prop="so_luong_mau"
-                >
-                  <span
-                    v-if="isHiddenInput"
-                    id="viewSoLuongMau"
-                    class="viewSpan"
-                    >{{ formAddEdit.so_luong_mau }}</span
-                  >
-
-                  <el-input-etc
-                    v-else
-                    id="soLuongMauAddEdit"
-                    :v-model.sync="formAddEdit.so_luong_mau"
-                    placeholder="Số lượng mẫu/Chi tiết mẫu"
-                    :maxlength="50"
-                    :required="true"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <el-form-item
-                  label="Đặc điểm quy cách đóng gói"
-                  prop="dac_diem_quy_cach_dong_goi"
-                >
-                  <span
-                    v-if="isHiddenInput"
-                    id="viewDacDiemDongGoi"
-                    class="viewSpan"
-                    >{{ formAddEdit.dac_diem_quy_cach_dong_goi }}</span
-                  >
-
-                  <el-input-etc
-                    v-else
-                    id="dacDiemDongGoiAddEdit"
-                    :v-model.sync="formAddEdit.dac_diem_quy_cach_dong_goi"
-                    placeholder="Đặc điểm quy cách đóng gói"
-                    :maxlength="250"
-                    :required="true"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item
-                  v-if="isHiddenInput"
-                  label="Hình thức kiểm tra"
-                  prop="hinh_thuc_kiem_tra"
-                >
-                  <span id="viewHinhThucKiemTra" class="viewSpan">{{
-                    getMaHinhThucKiemTraSelected(formAddEdit.hinh_thuc_kiem_tra)
-                  }}</span>
-                </el-form-item>
-               <select-hinh-thuc-kiem-tra
-                  v-else
-                  :is-show-option-all="false"
-                  :v-model.sync="formAddEdit.hinh_thuc_kiem_tra"
-                  prop-form="hinh_thuc_kiem_tra"
-                  :required="true"
-                  :rules="ruleHTKT"
-                  :get-list="getListDataHinhThucKiemTra"
-                />
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item
-                  label="Mẫu được niêm phong HQ số"
-                  prop="mau_duoc_niem_phong_hq_so"
-                >
-                  <span
-                    v-if="isHiddenInput"
-                    id="viewMauDuocNiemPhongSo"
-                    class="viewSpan"
-                    >{{ formAddEdit.mau_duoc_niem_phong_hq_so }}</span
-                  >
-
-                  <el-input-etc
-                    v-else
-                    id="mauDuocNiemPhongSoAddEdit"
-                    :v-model.sync="formAddEdit.mau_duoc_niem_phong_hq_so"
-                    placeholder="Mẫu được niêm phong HQ số"
-                    :maxlength="50"
-                    :required="true"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item
-                  v-if="isHiddenInput"
-                  label="Người khai yêu cầu lấy lại mẫu"
-                  prop="nguoi_khai_yeu_cau_lay_lai_mau"
-                >
-                  <span id="viewHinhThucKiemTra" class="viewSpan">{{
-                    getListNguoiKhaiLayLaiMauSelected(
-                      formAddEdit.nguoi_khai_yeu_cau_lay_lai_mau
-                    )
-                  }}</span>
-                </el-form-item>
-                <select-yes-no
-                  v-else
-                  label="Người khai yêu cầu lấy lại mẫu"
-                  :is-show-option-all="false"
-                  :value.sync="formAddEdit.nguoi_khai_yeu_cau_lay_lai_mau"
-                  prop-form="nguoi_khai_yeu_cau_lay_lai_mau"
-                  :required="true"
-                  :rules="ruleNguoiKhai"
-                  :get-list="getListNguoiKhaiLayLaiMau"
-                  @change="changeSelectNguoiKhaiYCLayLaiMau"
-                />
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item
-                  label="Người ủy quyền nhận lại mẫu"
-                  prop="nguoi_uy_quyen_nhan_lai_mau"
-                >
-                  <span
-                    v-if="isHiddenInput"
-                    id="viewNguoiUyQuyenNhanLaiMau"
-                    class="viewSpan"
-                    >{{ formAddEdit.nguoi_uy_quyen_nhan_lai_mau }}</span
-                  >
-
-                  <el-input-etc
-                    v-else
-                    id="nguoiUyQuyenNhanLaiMauAddEdit"
-                    :v-model.sync="formAddEdit.nguoi_uy_quyen_nhan_lai_mau"
-                    placeholder="Người ủy quyền nhận lại mẫu"
-                    :maxlength="250"
-                    :required="isNguoiKhaiYcLayMau"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row> -->
           </el-tabs>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -541,37 +358,6 @@
         :loai-hs="loaiHoSo"
       />
     </div>
-    <!-- <div>
-      <el-dialog
-        :close-on-click-modal="false"
-        :title="titleDialogPrint"
-        :visible.sync="showPrint"
-        width="90%"
-      >
-        <el-form
-          id="formAddEdit"
-          label-width="275px"
-        >
-          <iframe :src="pdfSource" style="width: 100%;height: 500px; border: none;" />
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button
-            id="btnPrintPDF"
-            :disabled="!checkPermissionShowButton('[BTN_SEARCH]DMTB')"
-            :loading="buttonPrintLoading"
-            icon="el-icon-printer"
-            type="primary"
-            @click="onPrintPhieuYeuCau()"
-          >
-            In
-          </el-button>
-
-          <el-button id="btnCancelCo" @click="showPrint = false">{{
-            $t('baseLabel.btnCancel')
-          }}</el-button>
-        </span>
-      </el-dialog>
-    </div> -->
   </div>
 </template>
 <script src="./dm-thietbi-controller.js" />

@@ -87,6 +87,36 @@ class ApiFactory {
       })
   }
 
+  static callAPIWithPath(constantApi, payload = {}, params = {}, pathVariables = {}, files) {
+    var urlPath = constantApi['url'];
+    for (const [key, value] of Object.entries(pathVariables)) {
+      urlPath = urlPath.replace("{"+`${key}`+"}", `${value}`);
+    }
+    const url = `${urlPath}?${objectToParams(params)}`
+    const method = constantApi['method']
+    const header = getHeader()
+    if (files !== undefined && files !== null && files.length > 0) {
+      let i
+      const len = files.length
+      for (i = 0; i < len; i++) {
+        formData.append('file', files[i].raw)
+      }
+    }
+
+    return Axios({
+      method: method,
+      url: url,
+      data: payload,
+      headers: header
+    })
+      .then(res => {
+        return res.data
+      })
+      .catch(err => {
+        return Promise.reject(err)
+      })
+  }
+
   static callAPIUpload(constantApi, payload, params = {}) {
     const url = `${constantApi['url']}?${objectToParams(params)}`
     const formData = new FormData()

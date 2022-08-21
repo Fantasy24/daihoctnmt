@@ -300,26 +300,32 @@ export const ConstantAPI = {
       method: POST,
       buttons: ['[BTN_SEARCH]DMTB']
     },
-    SELECT_ITEM: {
-      url: `${API_DEFAULT}/api/devices/select-item`,
+    ITEM_DETAIL: {
+      url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
       method: GET,
       buttons: ['[BTN_SEARCH]DMTB', '[BTN_UPDATE]DMTB']
     },
     INSERT: {
-      url: `${API_DEFAULT}/api/devices/`,
+      url: `${API_DEFAULT}/api/devices/device`,
       method: POST,
       buttons: ['[BTN_INSERT]DMTB']
     },
     UPDATE: {
-      url: `${API_DEFAULT}/api/devices/`,
+      url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
       method: PUT,
       buttons: ['[BTN_UPDATE]DMTB']
     },
     DELETE: {
-      url: `${API_DEFAULT}/api/devices/`,
+      url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
       method: DELETE,
       buttons: ['[BTN_DELETE]DMTB']
     }    
+  },
+  MASTER_DATA : {
+    GET: {
+      url: `${API_DEFAULT}/api/master-data`,
+      method: GET
+    }
   }
 }
 export default ConstantAPI

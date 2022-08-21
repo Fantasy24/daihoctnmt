@@ -190,64 +190,20 @@ export default {
       lstCauHoi: [],
       lstLyDoKhongDinhKem: [],
       formAddEdit: {
-        id: 0,
-        resourceId: 0,
-        resourceCode: '',
-        resourceName: '',        
+        deviceId: 0,
+        deviceCode: '',
+        deviceName: '',
         createdAt: null,
-        resourceType: '',
-        so_to_kunithai: '',
+        deviceType: '',
         quantity: 0,
-        unit: '',
-        origin: '',
+        serial: '',
+        brand: '',
         storageLocation: '',
         image: '',
         description: '',
         createdBy: '',
-        ngay_chung_nhan_xuat_xu: null,
-        dia_diem_lay_mau: '',
-        ngay_lay_mau: null,
-        cong_chuc_hq_lay_mau1: '',
-        cong_chuc_hq_lay_mau2: '',
-        dai_dien_nguoi_khai_hq: '',
-        so_luong_mau: '',
-        dac_diem_quy_cach_dong_goi: '',
-        hinh_thuc_kiem_tra: '',
-        mau_duoc_niem_phong_hq_so: '',
-        nguoi_khai_yeu_cau_lay_lai_mau: null,
-        nguoi_uy_quyen_nhan_lai_mau: '',
-        ngay_gui_yeu_cau: '',
-        ngay_thuc_hien_ptpl: '',
-        so_phieu_tiep_nhan_ptpl: '',
-        so_luong_mau_tiep_nhan_ptpl: '',
-        luu_y_ptpl: '',
-        ly_do_ptpl: '',
-        nguoi_giao_ptpl: '',
-        nguoi_tiep_nhan_ptpl: '',
-        giay_to_khac: '',
-        fileDinhKem: '',
-        lstFileDelete: '',
-        is_change_detail: false,
-        status: null,
-        ma_trang_thai: null,
-        // thông tin tiếp nhận
-        status_pyc: null,
-        luu_yptpl: '',
-        // thông tin phê duyệt
-        loai_phe_duyet: null,
-        so_phan_cong: '',
-        ngay_phan_cong: null,
-        noi_dung: '',
-        user_phan_cong: '',
-        user_phan_tich: '',
-        user_phan_loai: '',
-        ten_user_phan_cong: '',
-        ten_user_phan_tich: '',
-        ten_user_phan_loai: '',
-        loai_dieu_chinh: null,
-        so_dieu_chinh: '',
-        version: null,
-        is_latest: null
+        document: '',
+        status: null
       },
       pickerOptions: {
         onPick: obj => {
@@ -264,13 +220,13 @@ export default {
       },      
       ruleDVT: [this.requiredRule('Đơn vị tính')],
       rules: {
-        resourceCode: [
+        deviceCode: [
           this.requiredRule('Mã thiết bị'),
           this.specialCharRule('Mã thiết bị')
         ],
         createdAt: [this.requiredRule('Ngày tạo')],
-        resourceName: [this.requiredRule('Tên thiết bị')],        
-        resourceType: [this.requiredRule('Loại thiết bị')],
+        deviceName: [this.requiredRule('Tên thiết bị')],        
+        deviceType: [this.requiredRule('Loại thiết bị')],
         origin: [this.requiredRule('Xuất xứ')],
         storageLocation: [this.requiredRule('Khu lưu trữ')],
         quantity: [this.requiredRule('Số lượng'),this.validateRegex('^[0-9\.]*$',"Số lượng")],
@@ -579,13 +535,14 @@ export default {
         if (!valid) {
           return false
         }
-
         this.buttonSaveLoading = true
+        console.log(this.formAddEdit)
         apiFactory
           .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].INSERT,
             this.formAddEdit,
-            this.fileListUpload
+            this.fileListUpload,
+            {}
           )
           .then(rs => {
             showAlert(this, SUCCESS, 'Thêm mới thành công!')
@@ -609,10 +566,15 @@ export default {
         }
 
             this.buttonUpdateLoading = true
+            const pathVariables = {
+              deviceId : this.formAddEdit.deviceId
+            }
         apiFactory
-          .callAPIFormFile(
+          .callAPIWithPath(
             ConstantAPI[MENU_CODE_API].UPDATE,
             this.formAddEdit,
+            {},
+            pathVariables,
             this.fileListUpload
           )
           .then(() => {
@@ -629,14 +591,14 @@ export default {
       })
     },
 
-    onDelete(code) {      
+    onDelete(row) {      
       showConfirmDelete(this.$confirm, () => {
-        const param = {
-          resourceId: code.resourceId
+        const pathVariables = {
+          deviceId : row.deviceId
         }
         this.iconDelLoading = true
         apiFactory
-          .callAPI(ConstantAPI[MENU_CODE_API].DELETE, {}, param)
+          .callAPIWithPath(ConstantAPI[MENU_CODE_API].DELETE, {}, {}, pathVariables,{})
           .then(() => {
             showAlert(this, SUCCESS, 'Xóa thành công!')
             this.iconDelLoading = false
@@ -697,61 +659,41 @@ export default {
       })
     },
     onPreInsert() {
-      this.tabIndex = '0'
-      this.isPrint = false
-      this.isHiddenInput = false
-      this.isHidenGuiHoSo = false
+      // this.tabIndex = '0'
+      // this.isPrint = false
+      // this.isHiddenInput = false
+      // this.isHidenGuiHoSo = false
       this.titleDialog = 'Thêm mới thiết bị'
       this.flagShowDialog = FORM_MODE.CREATE
       this.isShowDlgAddEdit = true
-      this.disableWhenEdit = false
-      this.disableAppCodeModeEdit = false;
+      this.isHiddenInput = false
+      this.isHidenGuiHoSo = false
+      this.disableWhenEdit = true
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
 
-      const arrDK = [undefined, null, '']
-      let len = 0
-      if (arrDK.indexOf(this.$refs.uploadTLKTHS) === -1) {
-        len = this.$refs.uploadTLKTHS.length
-        while (len--) {
-          this.$refs.uploadTLKTHS[len].clearFiles()
-        }
-      }
-
-      if (this.$refs.uploadGTK) {
-        this.$refs.uploadGTK.clearFiles()
-      }
-      this.isNguoiUyQuyen = false
-      this.lstAttachment = []
-      this.lstAttachmentGroup = []
-      this.fileListUpload = []
-      this.fileListDelete = []
-      this.fileListKBBK = []
-      this.formAddEdit.hq_yeu_cau_phan_tich =
-        this.$store.getters.userInfo.org +
-        ' - ' +
-        this.$store.getters.userInfo.orgName
-      this.formAddEdit.id = 0
-      this.formAddEdit.resourceId = 0
-      this.formAddEdit.resourceCode = ''
-      this.formAddEdit.createdAt = getCurrentDateNoTime()
-      this.formAddEdit.resourceName = ''
-      this.formAddEdit.resourceType = ''
-      this.formAddEdit.quantity = 0
-      this.formAddEdit.unit = ''
-      this.formAddEdit.origin = ''
-      this.formAddEdit.storageLocation = ''
-      this.formAddEdit.ten_hang_khai_bao = ''
-      this.formAddEdit.description = ''
-      this.formAddEdit.giay_to_khac = ''
-      this.formAddEdit.fileDinhKem = ''
-      this.formAddEdit.lstFileDelete = ''
-      this.formAddEdit.is_change_detail = false
-      this.formAddEdit.status = '1'
-      this.formAddEdit.ma_trang_thai = 1
+      // const arrDK = [undefined, null, '']
+      // let len = 0
+      // this.isNguoiUyQuyen = false
+      // this.lstAttachment = []
+      // this.lstAttachmentGroup = []
+      // this.fileListUpload = []
+      // this.fileListDelete = []
+      // this.fileListKBBK = []
+      // this.formAddEdit.deviceId = 0
+      // this.formAddEdit.deviceCode = ''
+      // this.formAddEdit.createdAt = getCurrentDateNoTime()
+      // this.formAddEdit.deviceName = ''
+      // this.formAddEdit.deviceType = ''
+      // this.formAddEdit.quantity = 0
+      // this.formAddEdit.unit = ''
+      // this.formAddEdit.brand = ''
+      // this.formAddEdit.storageLocation = ''
+      // this.formAddEdit.description = ''
+      // this.formAddEdit.status = '1'
     },
-    onPrepareEdit(code) {
+    onPrepareEdit(row) {
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
@@ -781,24 +723,12 @@ export default {
       this.disableWhenEdit = true
       this.titleDialog = 'Cập nhật thiết bị'
       this.flagShowDialog = FORM_MODE.EDIT
-      this.iconEditLoading = true
       // this.hideColumnTinhTrang(false)
       const param = {
-        code: code
+        // code: code
       }
-      apiFactory
-        .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
-        .then(rs => {
-          this.preEditDetails(rs)
-          this.showHideBtnSend()
-          this.disableAppCodeModeEdit = true;
-          this.iconEditLoading = false
-          this.isShowDlgAddEdit = true
-        })
-        .catch(() => {
-          this.iconEditLoading = false
-          showAlert(this, WARNING, 'Bản ghi không tồn tại trên hệ thống')
-        })
+      this.preEditDetails(row)
+      this.isShowDlgAddEdit = true
     },
     preEditDetails(rs) {
       const arrDK = [undefined, null, '']
@@ -897,7 +827,6 @@ export default {
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
-
       this.tabIndex = '0'
       this.lstAttachment = []
       this.lstAttachmentGroup = []
@@ -916,11 +845,14 @@ export default {
       }
 
       const param = {
-        code: row.resourceCode
+        code: row.deviceCode
+      }
+      const pathVariables = {
+        deviceId : row.deviceId
       }
       this.iconViewLoading = true
       apiFactory
-        .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
+        .callAPIWithPath(ConstantAPI[MENU_CODE_API].ITEM_DETAIL, {}, param, pathVariables)
         .then(rs => {
           this.viewDetails(rs)
           this.disableAppCodeModeEdit = true;
