@@ -28,23 +28,7 @@ const GET_LIST_CHUNG_TU = {
   method: GET
 }
 
-export const ConstantAPI = {
-  DMDC: {
-    STRADE_TYPE: {
-      url: `${API_CATEGORIES_COMMON}`,
-      method: GET,
-      params: {
-        tableName: ConstantTableEndPoint.STRADE_TYPE
-      }
-    },
-    USER: {
-      url: `${API_CATEGORIES_V1}/user/search`,
-      method: GET,
-      params: {
-        orgCode: ConstantTableEndPoint.USER
-      }
-    }
-  },  
+export const ConstantAPI = {  
   DMNV: {
     STATUS_PTPL: {
       url: `${API_DEFAULT}/dm/search-trangthai-phieu-ptpl-all`,
@@ -241,6 +225,33 @@ export const ConstantAPI = {
       buttons: ['[BTN_DELETE]QLND']
     }    
   },
+  DMDC: {
+    SEARCH: {
+      url: `${API_DEFAULT}/api/tools/search`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMDC']
+    },
+    SELECT_ITEM: {
+      url: `${API_DEFAULT}/api/tools/select-item`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMDC', '[BTN_UPDATE]DMDC']
+    },
+    INSERT: {
+      url: `${API_DEFAULT}/api/tools/tool`,
+      method: POST,
+      buttons: ['[BTN_INSERT]DMDC']
+    },
+    UPDATE: {
+      url: `${API_DEFAULT}/api/tools/tool`,
+      method: POST,
+      buttons: ['[BTN_UPDATE]DMDC']
+    },
+    DELETE: {
+      url: `${API_DEFAULT}/api/tools/tool/`,
+      method: DELETE,
+      buttons: ['[BTN_DELETE]DMDC']
+    }    
+  },
   YCPTPL: {
     SEARCH: {
       url: `${API_DEFAULT}/nv/pycptpl/search`,
@@ -281,6 +292,39 @@ export const ConstantAPI = {
       url: `${API_DEFAULT}/nv/pycptpl/`,
       method: DELETE,
       buttons: ['[BTN_DELETE]YCPTPL']
+    }
+  },
+  DMTB: {
+    SEARCH: {
+      url: `${API_DEFAULT}/api/devices/search`,
+      method: POST,
+      buttons: ['[BTN_SEARCH]DMTB']
+    },
+    ITEM_DETAIL: {
+      url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMTB', '[BTN_UPDATE]DMTB']
+    },
+    INSERT: {
+      url: `${API_DEFAULT}/api/devices/device`,
+      method: POST,
+      buttons: ['[BTN_INSERT]DMTB']
+    },
+    UPDATE: {
+      url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
+      method: PUT,
+      buttons: ['[BTN_UPDATE]DMTB']
+    },
+    DELETE: {
+      url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
+      method: DELETE,
+      buttons: ['[BTN_DELETE]DMTB']
+    }    
+  },
+  MASTER_DATA : {
+    GET: {
+      url: `${API_DEFAULT}/api/master-data`,
+      method: GET
     }
   }
 }

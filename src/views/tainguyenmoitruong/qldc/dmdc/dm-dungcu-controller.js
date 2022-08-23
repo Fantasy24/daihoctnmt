@@ -1,4 +1,4 @@
-import apiFactory from '../../../api/apiFactory'
+import apiFactory from '../../../../api/apiFactory'
 import {
   errAlert,
   ERROR,
@@ -8,11 +8,21 @@ import {
   WARNING
 } from 'ff24-js/src/utils/AlertMessage'
 
-import ConstantAPI from '../../../utils/ConstantAPI'
-import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord'
-import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
-import SelectDonViTinh from '../../../components/CommonComponent/SelectDonViTinh'
-import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
+import ConstantAPI from '../../../../utils/ConstantAPI'
+import TrangThaiRecord from '../../../../components/BaseFormCustoms/TrangThaiRecord'
+// import SelectTrangThaiPhieuYeuCau from '../../../../components/CommonComponent/SelectTrangThaiPhieuYeuCau'
+// import SelectLoaiHinhXnk from '../../../../components/CommonComponent/SelectLoaiHinhXnk'
+// import SelectCanBoHq from '../../../../components/CommonComponent/SelectCanBoHq'
+// import SelectHinhThucKiemTra from '../../../../components/CommonComponent/SelectHinhThucKiemTra'
+// import SelectTrangThaiPhieuPtpl from '../../../../components/CommonComponent/SelectTrangThaiPhieuPtpl'
+import SelectYesNo from '../../../../components/CommonComponent/SelectYesNo'
+import SelectMasterData from '../../../../components/CommonComponent/SelectMasterData'
+import SelectTrangThai from "../../../../components/CommonComponent/SelectTrangThai";
+// import SelectChuyenVienPhanTichPhanLoai from '../../../../components/CommonComponent/SelectChuyenVienPhanTichPhanLoai'
+// import SelectLoaiPheDuyet from '../../../../components/CommonComponent/SelectLoaiPheDuyet'
+// import TrangThaiPhieuYeuCauPtpl from '../../../../components/CommonComponent/TrangThaiPhieuYeuCauPtpl'
+// import DanhSachTemplate from '../../../../components/CommonComponent/DanhSachTemplate'
+// import SelectListMaHq from 'ff24-customs-lib/src/lib-components/BaseFormCustoms/SelectListMaHq.vue'
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
 
@@ -24,17 +34,17 @@ import {
   showConfirmCustom,
   getCurrentDateNoTime,
   LIST_CUSTOMS
-} from '../../../utils/ECustomsUtils'
-import { formatFullDate_VN } from '../../../filters/index'
-import { FORM_MODE } from '../../../utils/Constant'
+} from '../../../../utils/ECustomsUtils'
+import { formatFullDate_VN } from '../../../../filters/index'
+import { FORM_MODE } from '../../../../utils/Constant'
 // import XLSX from 'xlsx'
 import _ from 'lodash'
 
-const MENU_CODE_API = 'DMTB'
+const MENU_CODE_API = 'DMDC'
 
 
 const LOAI_NGUOI_KHAI_UQ = 'NDUY'
-const MA_CHUC_NANG = 1
+const MASTER_DATA_DVT = 'DVT'
 const GUI_PHIEU_YC = 2
 const PHIEU_YC_PRINT_FILE_NAME = 'PhieuYeuCauPtpl.pdf'
 const ACTION_MODE = { DEFAULT: 0, INSERT: 1, UPDATE: 2, SEND: 3 }
@@ -49,7 +59,7 @@ export default {
   components: {
     //TrangThaiRecord,
     DateRangePicker,
-    SelectDonViTinh,
+    SelectMasterData,
     SelectTrangThai
     // SelectTrangThaiPhieuYeuCau,
     // SelectLoaiHinhXnk,
@@ -125,7 +135,7 @@ export default {
       showDlgHistory: false,
       buttonTemplateLoading: false,
       disableAppCodeModeEdit: false,
-      loaiHoSo: MA_CHUC_NANG,
+      masterType: MASTER_DATA_DVT,
       windowHeight: screen.height,
       paramHis: {},
       // Trang thai tiep nhan YCPTPL
@@ -169,11 +179,17 @@ export default {
       tabIndex: '',
       // formSearch: new KeySearchListObj(),
       formSearch: {
-        itemName: '',
-        itemCode: '',
-        itemType: '',
-        status: '',
+        fromToDate: [],
+        soPhieuYeuCau: '',
+        code: '',
+        name: '',
+        resourceType: '',
+        unit: '',
+        quantity: '',
         origin: '',
+        storageLocation: '',
+        status: null,
+        maTrangThai: null,
         page: null,
         size: null
       },
@@ -190,20 +206,64 @@ export default {
       lstCauHoi: [],
       lstLyDoKhongDinhKem: [],
       formAddEdit: {
-        deviceId: 0,
-        deviceCode: '',
-        deviceName: '',
+        id: 0,
+        resourceId: 0,
+        code: '',
+        name: '',        
         createdAt: null,
-        deviceType: '',
+        resourceType: '',
+        so_to_kunithai: '',
         quantity: 0,
-        serial: '',
-        brand: '',
+        unit: '',
+        origin: '',
         storageLocation: '',
         image: '',
         description: '',
         createdBy: '',
-        document: '',
-        status: null
+        ngay_chung_nhan_xuat_xu: null,
+        dia_diem_lay_mau: '',
+        ngay_lay_mau: null,
+        cong_chuc_hq_lay_mau1: '',
+        cong_chuc_hq_lay_mau2: '',
+        dai_dien_nguoi_khai_hq: '',
+        so_luong_mau: '',
+        dac_diem_quy_cach_dong_goi: '',
+        hinh_thuc_kiem_tra: '',
+        mau_duoc_niem_phong_hq_so: '',
+        nguoi_khai_yeu_cau_lay_lai_mau: null,
+        nguoi_uy_quyen_nhan_lai_mau: '',
+        ngay_gui_yeu_cau: '',
+        ngay_thuc_hien_ptpl: '',
+        so_phieu_tiep_nhan_ptpl: '',
+        so_luong_mau_tiep_nhan_ptpl: '',
+        luu_y_ptpl: '',
+        ly_do_ptpl: '',
+        nguoi_giao_ptpl: '',
+        nguoi_tiep_nhan_ptpl: '',
+        giay_to_khac: '',
+        fileDinhKem: '',
+        lstFileDelete: '',
+        is_change_detail: false,
+        status: null,
+        ma_trang_thai: null,
+        // thông tin tiếp nhận
+        status_pyc: null,
+        luu_yptpl: '',
+        // thông tin phê duyệt
+        loai_phe_duyet: null,
+        so_phan_cong: '',
+        ngay_phan_cong: null,
+        noi_dung: '',
+        user_phan_cong: '',
+        user_phan_tich: '',
+        user_phan_loai: '',
+        ten_user_phan_cong: '',
+        ten_user_phan_tich: '',
+        ten_user_phan_loai: '',
+        loai_dieu_chinh: null,
+        so_dieu_chinh: '',
+        version: null,
+        is_latest: null
       },
       pickerOptions: {
         onPick: obj => {
@@ -220,13 +280,13 @@ export default {
       },      
       ruleDVT: [this.requiredRule('Đơn vị tính')],
       rules: {
-        deviceCode: [
-          this.requiredRule('Mã thiết bị'),
-          this.specialCharRule('Mã thiết bị')
+        resourceCode: [
+          this.requiredRule('Mã hóa chất'),
+          this.specialCharRule('Mã hóa chất')
         ],
         createdAt: [this.requiredRule('Ngày tạo')],
-        deviceName: [this.requiredRule('Tên thiết bị')],        
-        deviceType: [this.requiredRule('Loại thiết bị')],
+        resourceName: [this.requiredRule('Tên hóa chất')],        
+        resourceType: [this.requiredRule('Loại hóa chất')],
         origin: [this.requiredRule('Xuất xứ')],
         storageLocation: [this.requiredRule('Khu lưu trữ')],
         quantity: [this.requiredRule('Số lượng'),this.validateRegex('^[0-9\.]*$',"Số lượng")],
@@ -243,24 +303,16 @@ export default {
       joinNameByCodeColumnExcel: [],
       columns: [
         {
-          prop: 'deviceCode',
-          label: 'Mã thiết bị',
+          prop: 'toolCode',
+          label: 'Mã dụng cụ',
           width: '150',
           align: 'center',
           sortable: true,
           show: true
         },
         {
-          prop: 'deviceName',
-          label: 'Tên thiết bị',
-          width: '170',
-          align: 'left',
-          sortable: true,
-          show: true
-        },
-        {
-          prop: 'serial',
-          label: 'Serial',
+          prop: 'toolName',
+          label: 'Tên dụng cụ',
           width: '170',
           align: 'left',
           sortable: true,
@@ -275,7 +327,23 @@ export default {
           show: true
         },
         {
-          prop: 'brand',
+          prop: 'unit',
+          label: 'Đơn vị tính',
+          width: '150',
+          align: 'center',
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.unit,
+              'propertyValue',
+              'propertyName',
+              this.lstDVT
+            )
+          },
+          sortable: true,
+          show: true
+        },
+        {
+          prop: 'origin',
           label: 'Xuất xứ',
           width: '150',
           sortable: true,
@@ -290,34 +358,24 @@ export default {
           show: true
         },
         {
-          prop: 'createdAt',
-          label: 'Ngày tạo',
-          width: '150',
-          align: 'center',
-          formatter: row => {
-            return formatFullDate_VN(new Date(row.createdAt))
-          },
-          sortable: true,
-          show: true
-        },
-        {
 					prop: "status",
 					label: "Trạng thái",
 					width: "100",
 					align: "center",
+					formatter: TrangThaiRecord,
 					show: true,
 					sortable: true,
 				},
         {
           prop: 'description',
-          label: 'Ghi chu',
+          label: 'Mô tả',
           width: '150',
-          align: 'center',
+          align: 'left',
+          sortable: true,
           show: true
-        }    
+        },      
       ],
       MENU_CODE_API,
-      MA_CHUC_NANG,
       FORM_MODE,
       STATUS_ROW_UPDATE,
       TAI_LIEU_KHAC
@@ -345,6 +403,11 @@ export default {
       return checkPermissionShowButton(MENU_CODE_API, idButton)
     },
     resetDateSearch() {
+      const dt = new Date()
+      const y = dt.getFullYear()
+      const m = dt.getMonth()
+      const d = dt.getDate()
+      this.formSearch.fromToDate = [new Date(y, m, d), new Date(y, m, d)]
     },
     onLoadListTaiLieuKemTheo() {
       if (!this.lstTaiLieuKemTheo.length) {
@@ -464,11 +527,15 @@ export default {
         this.formSearch.page = mode === '' ? 0 : this.formSearch.page
         this.formSearch.size = this.$refs.tblMain.size
         this.loadDataTable = true
+        const fromToDate = this.formSearch.fromToDate
+        // Custom properties KeySearchObj API        
+        this.formSearch.fromDate = fromToDate[0]
+        this.formSearch.toDate = fromToDate[1]
         apiFactory
-          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, this.formSearch,{})
+          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, {}, this.formSearch)
           .then(rs => {
             this.loadDataTable = false
-            this.listDataTable = rs.content
+            this.listDataTable = rs.result
             // console.log(rs)
             this.total = rs['totalElements']
             // console.log(this.total)
@@ -535,14 +602,12 @@ export default {
         if (!valid) {
           return false
         }
+
         this.buttonSaveLoading = true
-        console.log(this.formAddEdit)
         apiFactory
           .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].INSERT,
-            this.formAddEdit,
-            this.fileListUpload,
-            {}
+            this.formAddEdit
           )
           .then(rs => {
             showAlert(this, SUCCESS, 'Thêm mới thành công!')
@@ -566,16 +631,10 @@ export default {
         }
 
             this.buttonUpdateLoading = true
-            const pathVariables = {
-              deviceId : this.formAddEdit.deviceId
-            }
         apiFactory
-          .callAPIWithPath(
+          .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].UPDATE,
-            this.formAddEdit,
-            {},
-            pathVariables,
-            this.fileListUpload
+            this.formAddEdit
           )
           .then(() => {
             showAlert(this, SUCCESS, 'Cập nhật thành công!')
@@ -591,14 +650,14 @@ export default {
       })
     },
 
-    onDelete(row) {      
+    onDelete(code) {      
       showConfirmDelete(this.$confirm, () => {
-        const pathVariables = {
-          deviceId : row.deviceId
+        const param = {
+          id: code.toolId
         }
         this.iconDelLoading = true
         apiFactory
-          .callAPIWithPath(ConstantAPI[MENU_CODE_API].DELETE, {}, {}, pathVariables,{})
+          .callAPI(ConstantAPI[MENU_CODE_API].DELETE, {}, param)
           .then(() => {
             showAlert(this, SUCCESS, 'Xóa thành công!')
             this.iconDelLoading = false
@@ -659,41 +718,62 @@ export default {
       })
     },
     onPreInsert() {
-      // this.tabIndex = '0'
-      // this.isPrint = false
-      // this.isHiddenInput = false
-      // this.isHidenGuiHoSo = false
-      this.titleDialog = 'Thêm mới thiết bị'
-      this.flagShowDialog = FORM_MODE.CREATE
-      this.isShowDlgAddEdit = true
+      this.tabIndex = '0'
+      this.isPrint = false
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
-      this.disableWhenEdit = true
+      this.titleDialog = 'Thêm mới Dụng cụ'
+      this.flagShowDialog = FORM_MODE.CREATE
+      this.isShowDlgAddEdit = true
+      this.disableWhenEdit = false
+      this.disableAppCodeModeEdit = false;
+      
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
 
-      // const arrDK = [undefined, null, '']
-      // let len = 0
-      // this.isNguoiUyQuyen = false
-      // this.lstAttachment = []
-      // this.lstAttachmentGroup = []
-      // this.fileListUpload = []
-      // this.fileListDelete = []
-      // this.fileListKBBK = []
-      // this.formAddEdit.deviceId = 0
-      // this.formAddEdit.deviceCode = ''
-      // this.formAddEdit.createdAt = getCurrentDateNoTime()
-      // this.formAddEdit.deviceName = ''
-      // this.formAddEdit.deviceType = ''
-      // this.formAddEdit.quantity = 0
-      // this.formAddEdit.unit = ''
-      // this.formAddEdit.brand = ''
-      // this.formAddEdit.storageLocation = ''
-      // this.formAddEdit.description = ''
-      // this.formAddEdit.status = '1'
+      const arrDK = [undefined, null, '']
+      let len = 0
+      if (arrDK.indexOf(this.$refs.uploadTLKTHS) === -1) {
+        len = this.$refs.uploadTLKTHS.length
+        while (len--) {
+          this.$refs.uploadTLKTHS[len].clearFiles()
+        }
+      }
+
+      if (this.$refs.uploadGTK) {
+        this.$refs.uploadGTK.clearFiles()
+      }
+      this.isNguoiUyQuyen = false
+      this.lstAttachment = []
+      this.lstAttachmentGroup = []
+      this.fileListUpload = []
+      this.fileListDelete = []
+      this.fileListKBBK = []
+      this.formAddEdit.hq_yeu_cau_phan_tich =
+        this.$store.getters.userInfo.org +
+        ' - ' +
+        this.$store.getters.userInfo.orgName
+      this.formAddEdit.id = 0
+      this.formAddEdit.toolId = 0
+      this.formAddEdit.toolCode = ''
+      this.formAddEdit.createdAt = getCurrentDateNoTime()
+      this.formAddEdit.toolName = ''
+      this.formAddEdit.resourceType = ''
+      this.formAddEdit.quantity = 0
+      this.formAddEdit.unit = ''
+      this.formAddEdit.origin = ''
+      this.formAddEdit.storageLocation = ''
+      this.formAddEdit.ten_hang_khai_bao = ''
+      this.formAddEdit.description = ''
+      this.formAddEdit.giay_to_khac = ''
+      this.formAddEdit.fileDinhKem = ''
+      this.formAddEdit.lstFileDelete = ''
+      this.formAddEdit.is_change_detail = false
+      this.formAddEdit.status = '1'
+      this.formAddEdit.ma_trang_thai = 1
     },
-    onPrepareEdit(row) {
+    onPrepareEdit(toolId) {
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
@@ -721,14 +801,26 @@ export default {
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
       this.disableWhenEdit = true
-      this.titleDialog = 'Cập nhật thiết bị'
+      this.titleDialog = 'Cập nhật Hóa chất'
       this.flagShowDialog = FORM_MODE.EDIT
+      this.iconEditLoading = true
       // this.hideColumnTinhTrang(false)
       const param = {
-        // code: code
+        id: toolId
       }
-      this.preEditDetails(row)
-      this.isShowDlgAddEdit = true
+      apiFactory
+        .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
+        .then(rs => {
+          this.preEditDetails(rs)
+          this.showHideBtnSend()
+          this.disableAppCodeModeEdit = true;
+          this.iconEditLoading = false
+          this.isShowDlgAddEdit = true
+        })
+        .catch(() => {
+          this.iconEditLoading = false
+          showAlert(this, WARNING, 'Bản ghi không tồn tại trên hệ thống')
+        })
     },
     preEditDetails(rs) {
       const arrDK = [undefined, null, '']
@@ -827,6 +919,7 @@ export default {
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
+
       this.tabIndex = '0'
       this.lstAttachment = []
       this.lstAttachmentGroup = []
@@ -836,7 +929,7 @@ export default {
       this.isHiddenInput = true
       this.flagShowDialog = FORM_MODE.VIEW
       this.isPrint = true
-      this.titleDialog = 'Chi tiết thiết bị'
+      this.titleDialog = 'Chi tiết Dụng cụ'
       if (this.$refs.uploadTLKTHS !== undefined && this.$refs.uploadTLKTHS !== null) {
         for (const objUpload of this.$refs.uploadTLKTHS) {
           objUpload.clearFiles()
@@ -845,14 +938,11 @@ export default {
       }
 
       const param = {
-        code: row.deviceCode
-      }
-      const pathVariables = {
-        deviceId : row.deviceId
+        id: row.toolId
       }
       this.iconViewLoading = true
       apiFactory
-        .callAPIWithPath(ConstantAPI[MENU_CODE_API].ITEM_DETAIL, {}, param, pathVariables)
+        .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
         .then(rs => {
           this.viewDetails(rs)
           this.disableAppCodeModeEdit = true;
@@ -1160,6 +1250,7 @@ export default {
     },
     getListDataDVT(lstValue) {
       this.lstDVT = lstValue
+      console.log(this.lstDVT)
     },
     getListDataHinhThucKiemTra(lstValue) {
       this.lstHinhThucKiemTra = lstValue
