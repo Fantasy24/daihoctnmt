@@ -394,7 +394,6 @@ export default {
     this.formSearch.maHqTiepNhan = '_'.concat(this.$store.getters.userInfo.org)
     this.windowHeight = screen.height
     this.loading = false
-    this.onLoadListTaiLieuKemTheo()
     this.joinNameByCodeColumnExcel = this.getListJoinNameByCodeColumnExcel()
     // this.formSearch.maHq = this.$refs.selectHQ.listMaHq[0].code
 
