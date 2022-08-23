@@ -334,8 +334,8 @@ export default {
           formatter: row => {
             return getNameByIdOnGrid(
               row.unit,
-              'key',
-              'label',
+              'propertyValue',
+              'propertyName',
               this.lstDVT
             )
           },
