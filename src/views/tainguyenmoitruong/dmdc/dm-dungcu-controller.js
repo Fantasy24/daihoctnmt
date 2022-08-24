@@ -1,4 +1,4 @@
-import apiFactory from '../../../../api/apiFactory'
+import apiFactory from '../../../api/apiFactory'
 import {
   errAlert,
   ERROR,
@@ -8,21 +8,11 @@ import {
   WARNING
 } from 'ff24-js/src/utils/AlertMessage'
 
-import ConstantAPI from '../../../../utils/ConstantAPI'
-import TrangThaiRecord from '../../../../components/BaseFormCustoms/TrangThaiRecord'
-// import SelectTrangThaiPhieuYeuCau from '../../../../components/CommonComponent/SelectTrangThaiPhieuYeuCau'
-// import SelectLoaiHinhXnk from '../../../../components/CommonComponent/SelectLoaiHinhXnk'
-// import SelectCanBoHq from '../../../../components/CommonComponent/SelectCanBoHq'
-// import SelectHinhThucKiemTra from '../../../../components/CommonComponent/SelectHinhThucKiemTra'
-// import SelectTrangThaiPhieuPtpl from '../../../../components/CommonComponent/SelectTrangThaiPhieuPtpl'
-import SelectYesNo from '../../../../components/CommonComponent/SelectYesNo'
-import SelectMasterData from '../../../../components/CommonComponent/SelectMasterData'
-import SelectTrangThai from "../../../../components/CommonComponent/SelectTrangThai";
-// import SelectChuyenVienPhanTichPhanLoai from '../../../../components/CommonComponent/SelectChuyenVienPhanTichPhanLoai'
-// import SelectLoaiPheDuyet from '../../../../components/CommonComponent/SelectLoaiPheDuyet'
-// import TrangThaiPhieuYeuCauPtpl from '../../../../components/CommonComponent/TrangThaiPhieuYeuCauPtpl'
-// import DanhSachTemplate from '../../../../components/CommonComponent/DanhSachTemplate'
-// import SelectListMaHq from 'ff24-customs-lib/src/lib-components/BaseFormCustoms/SelectListMaHq.vue'
+import ConstantAPI from '../../../utils/ConstantAPI'
+import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord'
+import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
+import SelectMasterData from '../../../components/CommonComponent/SelectMasterData'
+import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
 
@@ -34,9 +24,9 @@ import {
   showConfirmCustom,
   getCurrentDateNoTime,
   LIST_CUSTOMS
-} from '../../../../utils/ECustomsUtils'
-import { formatFullDate_VN } from '../../../../filters/index'
-import { FORM_MODE } from '../../../../utils/Constant'
+} from '../../../utils/ECustomsUtils'
+import { formatFullDate_VN } from '../../../filters/index'
+import { FORM_MODE } from '../../../utils/Constant'
 // import XLSX from 'xlsx'
 import _ from 'lodash'
 
@@ -57,20 +47,11 @@ const LIMIT_UPLOAD_FILE = 15
 
 export default {
   components: {
-    //TrangThaiRecord,
+    TrangThaiRecord,
     DateRangePicker,
     SelectMasterData,
     SelectTrangThai
-    // SelectTrangThaiPhieuYeuCau,
-    // SelectLoaiHinhXnk,
-    // SelectHinhThucKiemTra,
-    // SelectTrangThaiPhieuPtpl,
     //SelectYesNo,
-    // SelectChuyenVienPhanTichPhanLoai,
-    // SelectLoaiPheDuyet,
-    // TrangThaiPhieuYeuCauPtpl,
-    //DanhSachTemplate,
-    // SelectCanBoHq
   },
   props: {
     isGetAllHq: {

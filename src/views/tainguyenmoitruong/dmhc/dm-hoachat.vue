@@ -59,6 +59,7 @@
               :is-show-option-all="false"
               :v-model.sync="formSearch.unit"
               label="Đơn vị tính"
+              placeholder="Đơn vị tính"
               prop-form="unit"
               :required="false"
               :is-filter="true"
@@ -322,6 +323,7 @@
                   :is-show-option-all="false"
                   :v-model.sync="formAddEdit.unit"
                   label="Đơn vị tính"
+                  placeholder="Đơn vị tính"
                   prop-form="unit"
                   :required="true"
                   :disabled="isHiddenInput"
@@ -376,6 +378,19 @@
                     show-word-limit
                   />
                 </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <select-trang-thai
+                  label="Trạng thái"
+                  :is-show-option-all="false"
+                  :v-model.sync="formAddEdit.status"
+                  prop-form="status"
+                  :disabled="isHiddenInput"
+                  @change="changeValue"
+                />
               </el-col>
             </el-row>
 

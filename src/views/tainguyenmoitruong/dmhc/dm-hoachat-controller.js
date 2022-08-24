@@ -10,19 +10,9 @@ import {
 
 import ConstantAPI from '../../../utils/ConstantAPI'
 import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord'
-// import SelectTrangThaiPhieuYeuCau from '../../../components/CommonComponent/SelectTrangThaiPhieuYeuCau'
-// import SelectLoaiHinhXnk from '../../../components/CommonComponent/SelectLoaiHinhXnk'
-// import SelectCanBoHq from '../../../components/CommonComponent/SelectCanBoHq'
-// import SelectHinhThucKiemTra from '../../../components/CommonComponent/SelectHinhThucKiemTra'
-// import SelectTrangThaiPhieuPtpl from '../../../components/CommonComponent/SelectTrangThaiPhieuPtpl'
 import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
 import SelectMasterData from '../../../components/CommonComponent/SelectMasterData'
 import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
-// import SelectChuyenVienPhanTichPhanLoai from '../../../components/CommonComponent/SelectChuyenVienPhanTichPhanLoai'
-// import SelectLoaiPheDuyet from '../../../components/CommonComponent/SelectLoaiPheDuyet'
-// import TrangThaiPhieuYeuCauPtpl from '../../../components/CommonComponent/TrangThaiPhieuYeuCauPtpl'
-// import DanhSachTemplate from '../../../components/CommonComponent/DanhSachTemplate'
-// import SelectListMaHq from 'ff24-customs-lib/src/lib-components/BaseFormCustoms/SelectListMaHq.vue'
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
 
@@ -57,20 +47,11 @@ const LIMIT_UPLOAD_FILE = 15
 
 export default {
   components: {
-    //TrangThaiRecord,
+    TrangThaiRecord,
     DateRangePicker,
     SelectMasterData,
     SelectTrangThai
-    // SelectTrangThaiPhieuYeuCau,
-    // SelectLoaiHinhXnk,
-    // SelectHinhThucKiemTra,
-    // SelectTrangThaiPhieuPtpl,
     //SelectYesNo,
-    // SelectChuyenVienPhanTichPhanLoai,
-    // SelectLoaiPheDuyet,
-    // TrangThaiPhieuYeuCauPtpl,
-    //DanhSachTemplate,
-    // SelectCanBoHq
   },
   props: {
     isGetAllHq: {
@@ -220,48 +201,11 @@ export default {
         image: '',
         description: '',
         createdBy: '',
-        ngay_chung_nhan_xuat_xu: null,
-        dia_diem_lay_mau: '',
-        ngay_lay_mau: null,
-        cong_chuc_hq_lay_mau1: '',
-        cong_chuc_hq_lay_mau2: '',
-        dai_dien_nguoi_khai_hq: '',
-        so_luong_mau: '',
-        dac_diem_quy_cach_dong_goi: '',
-        hinh_thuc_kiem_tra: '',
-        mau_duoc_niem_phong_hq_so: '',
-        nguoi_khai_yeu_cau_lay_lai_mau: null,
-        nguoi_uy_quyen_nhan_lai_mau: '',
-        ngay_gui_yeu_cau: '',
-        ngay_thuc_hien_ptpl: '',
-        so_phieu_tiep_nhan_ptpl: '',
-        so_luong_mau_tiep_nhan_ptpl: '',
-        luu_y_ptpl: '',
-        ly_do_ptpl: '',
-        nguoi_giao_ptpl: '',
-        nguoi_tiep_nhan_ptpl: '',
         giay_to_khac: '',
         fileDinhKem: '',
         lstFileDelete: '',
         is_change_detail: false,
         status: null,
-        ma_trang_thai: null,
-        // thông tin tiếp nhận
-        status_pyc: null,
-        luu_yptpl: '',
-        // thông tin phê duyệt
-        loai_phe_duyet: null,
-        so_phan_cong: '',
-        ngay_phan_cong: null,
-        noi_dung: '',
-        user_phan_cong: '',
-        user_phan_tich: '',
-        user_phan_loai: '',
-        ten_user_phan_cong: '',
-        ten_user_phan_tich: '',
-        ten_user_phan_loai: '',
-        loai_dieu_chinh: null,
-        so_dieu_chinh: '',
         version: null,
         is_latest: null
       },
