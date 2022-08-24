@@ -3,6 +3,7 @@ import { API_AUTH, CUSTOM_LEVEL } from '@/utils/Constant'
 import ConstantAPI from '@/utils/ConstantAPI'
 import moment from 'moment'
 import _ from 'lodash'
+import { async } from 'ff24-customs-lib'
 
 export const LIST_CUSTOMS = 'LIST_CUSTOMS'
 export const LIST_POSITIONS = 'LIST_POSITIONS'
@@ -55,8 +56,8 @@ export function getListMasterData() {
     })
 }
 
-export function cacheLocal() {
-  getListMasterData()
+export async function cacheLocal() {
+  await getListMasterData()
 }
 
 export function getListPositions() {
@@ -212,8 +213,10 @@ export function checkIsValidFileSize(size, maxSize) {
 export function getNameByIdOnGrid(id, prop1, prop2, lstDm) {
   try {
     const lstObject = lstDm.filter(o => o['' + prop1 + ''] === id)
+    console.log(lstObject[0]['' + prop2 + ''])
     return lstObject.length > 0 ? lstObject[0]['' + prop2 + ''] : ''
   } catch (error) {
+    
     return ''
   }
 }
