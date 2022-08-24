@@ -26,7 +26,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import i18n from './lang'
 import Pagination from 'ff24-customs-lib/src/components/Pagination'
-import { ElButtonAction, ElInputEtc } from 'ff24-customs-lib'
+import { async, ElButtonAction, ElInputEtc } from 'ff24-customs-lib'
 import SelectListMaHq from 'ff24-customs-lib/src/lib-components/BaseFormCustoms/SelectListMaHq'
 import ElTableEtc from 'ff24-customs-lib/src/components/ElTableETC/ElTableEtc'
 import { getToken } from 'ff24-js/src/utils/authCookie'
@@ -79,15 +79,15 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
-setTimeout(() => {
+//setTimeout(async () => {
   if (getToken()) {
     cacheCategories()
-    cacheLocal()
+    //cacheLocal()
     setInterval(() => {
       cacheCategories()
     }, 120 * 1000)
   }
-}, 5000);
+//}, 500);
 
 
 
