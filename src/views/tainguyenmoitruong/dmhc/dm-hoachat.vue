@@ -10,106 +10,112 @@
         <el-row v-show="false" :gutter="20">
           <select-master-data :get-list="getListDataDVT" />
         </el-row>
+        <el-collapse
+          v-model="activeCollapseName"
+          accordion
+          class="collapse-filter"
+        >
+          <el-collapse-item title="" name="1">
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Ngày tìm kiếm" prop="fromToDate" required>
+                  <date-range-picker
+                    v-model="formSearch.fromToDate"
+                    :picker-options="pickerOptions"
+                    format="dd/MM/yyyy"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Loại hóa chất" prop="resourceType">
+                  <el-input-etc
+                    :v-model.sync="formSearch.resourceType"
+                    placeholder="Loại hóa chất"
+                    :maxlength="255"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Ngày tìm kiếm" prop="fromToDate" required>
-              <date-range-picker
-                v-model="formSearch.fromToDate"
-                :picker-options="pickerOptions"
-                format="dd/MM/yyyy"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Loại hóa chất" prop="resourceType">
-              <el-input-etc
-                :v-model.sync="formSearch.resourceType"
-                placeholder="Loại hóa chất"
-                :maxlength="255"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Mã hóa chất" prop="code">
+                  <el-input-etc
+                    :v-model.sync="formSearch.code"
+                    placeholder="Mã hóa chất"
+                    :maxlength="50"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Tên hóa chất" prop="name">
+                  <el-input-etc
+                    :v-model.sync="formSearch.name"
+                    placeholder="Tên hóa chất"
+                    :maxlength="255"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Mã hóa chất" prop="code">
-              <el-input-etc
-                :v-model.sync="formSearch.code"
-                placeholder="Mã hóa chất"
-                :maxlength="50"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Tên hóa chất" prop="name">
-              <el-input-etc
-                :v-model.sync="formSearch.name"
-                placeholder="Tên hóa chất"
-                :maxlength="255"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <select-master-data
+                  :is-show-option-all="false"
+                  :v-model.sync="formSearch.unit"
+                  label="Đơn vị tính"
+                  placeholder="Đơn vị tính"
+                  prop-form="unit"
+                  :required="false"
+                  :is-filter="true"
+                  :filter-data="masterType"
+                />
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Số lượng" prop="quantity">
+                  <el-input-etc
+                    :v-model.sync="formSearch.quantity"
+                    placeholder="Số lượng"
+                    :maxlength="50"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <select-master-data
-              :is-show-option-all="false"
-              :v-model.sync="formSearch.unit"
-              label="Đơn vị tính"
-              placeholder="Đơn vị tính"
-              prop-form="unit"
-              :required="false"
-              :is-filter="true"
-              :filter-data="masterType"
-            />
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Số lượng" prop="quantity">
-              <el-input-etc
-                :v-model.sync="formSearch.quantity"
-                placeholder="Số lượng"
-                :maxlength="50"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Xuất xứ" prop="origin">
+                  <el-input-etc
+                    :v-model.sync="formSearch.origin"
+                    placeholder="Xuất xứ"
+                    :maxlength="150"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Khu lưu trữ" prop="storageLocation">
+                  <el-input-etc
+                    :v-model.sync="formSearch.storageLocation"
+                    placeholder="Khu lưu trữ"
+                    :maxlength="255"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Xuất xứ" prop="origin">
-              <el-input-etc
-                :v-model.sync="formSearch.origin"
-                placeholder="Xuất xứ"
-                :maxlength="150"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Khu lưu trữ" prop="storageLocation">
-              <el-input-etc
-                :v-model.sync="formSearch.storageLocation"
-                placeholder="Khu lưu trữ"
-                :maxlength="255"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <select-trang-thai
-              label="Trạng thái"
-              :is-show-option-all="false"
-              :v-model.sync="formSearch.status"
-              prop-form="status"
-              @change="changeValue"
-            />
-          </el-col>
-        </el-row>
-
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <select-trang-thai
+                  label="Trạng thái"
+                  :is-show-option-all="false"
+                  :v-model.sync="formSearch.status"
+                  prop-form="status"
+                  @change="changeValue"
+                />
+              </el-col>
+            </el-row>
+          </el-collapse-item>
+        </el-collapse>
         <el-form-item style="float: right">
           <el-button
             v-if="checkPermissionShowButton('[BTN_SEARCH]DMHC')"

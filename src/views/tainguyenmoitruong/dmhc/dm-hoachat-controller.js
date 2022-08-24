@@ -29,6 +29,7 @@ import { formatFullDate_VN } from '../../../filters/index'
 import { FORM_MODE } from '../../../utils/Constant'
 // import XLSX from 'xlsx'
 import _ from 'lodash'
+import { ref } from 'vue'
 
 const MENU_CODE_API = 'DMHC'
 
@@ -90,6 +91,7 @@ export default {
   data() {
     return {
       ConstantAPI,
+      activeCollapseName: ['1'],
       quocTichLblWidth: '150px',
       dvtLblWidth: '150px',
       titleDialog: '',
