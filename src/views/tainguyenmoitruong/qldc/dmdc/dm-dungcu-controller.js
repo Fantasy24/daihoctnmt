@@ -181,8 +181,8 @@ export default {
       formSearch: {
         fromToDate: [],
         soPhieuYeuCau: '',
-        code: '',
-        name: '',
+        toolCode: '',
+        toolName: '',
         resourceType: '',
         unit: '',
         quantity: '',
@@ -191,7 +191,9 @@ export default {
         status: null,
         maTrangThai: null,
         page: null,
-        size: null
+        size: null,
+        code: null,
+        name: null
       },
       ngay_thong_bao_ket_qua_pt: null,
       ngay_dk_to_khai: null,
@@ -208,8 +210,8 @@ export default {
       formAddEdit: {
         id: 0,
         resourceId: 0,
-        code: '',
-        name: '',        
+        toolCode: '',
+        toolName: '',        
         createdAt: null,
         resourceType: '',
         so_to_kunithai: '',
@@ -220,6 +222,8 @@ export default {
         image: '',
         description: '',
         createdBy: '',
+        code: null,
+        name: null,
         ngay_chung_nhan_xuat_xu: null,
         dia_diem_lay_mau: '',
         ngay_lay_mau: null,
@@ -601,7 +605,7 @@ export default {
         if (!valid) {
           return false
         }
-
+        
         this.buttonSaveLoading = true
         apiFactory
           .callAPIFormFile(
@@ -826,6 +830,8 @@ export default {
       if (arrDK.indexOf(rs) === -1) {
         this.formAddEdit = rs
         this.formAddEdit.quantity = '' + this.formAddEdit.quantity;
+        this.formAddEdit.code = rs.toolCode
+        this.formAddEdit.name = rs.toolName
         
         // File
         // this.getLstAttachment(rs)

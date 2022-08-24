@@ -40,6 +40,7 @@
                   label="Đơn vị tính"
                   prop-form="unit"
                   :disabled="isHiddenInput"
+                  placeholder="Đơn vị tính"
                   :rules="ruleDVT"
                   :is-filter="true"
                   :filter-data="masterType"
@@ -225,7 +226,7 @@
           <el-tabs v-model="tabIndex" type="border-card">
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Mã dụng cụ" prop="toolCode">
+                <el-form-item label="Mã dụng cụ" prop="toolName">
                   <el-input-etc
                     id="toolCode"
                     :v-model.sync="formAddEdit.toolCode"
@@ -261,6 +262,7 @@
                   prop-form="unit"
                   :required="true"
                   :disabled="isHiddenInput"
+                  placeholder="Đơn vị tính"
                   :rules="ruleDVT"
                   :is-filter="true"
                   :filter-data="masterType"
