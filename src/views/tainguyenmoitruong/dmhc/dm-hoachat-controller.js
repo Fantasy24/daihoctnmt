@@ -265,6 +265,14 @@ export default {
           show: true
         },
         {
+          prop: 'resourceType',
+          label: 'Loại hóa chất',
+          width: '170',
+          align: 'left',
+          sortable: true,
+          show: true
+        },
+        {
           prop: 'quantity',
           label: 'Số lượng',
           width: '120',
@@ -336,7 +344,7 @@ export default {
   computed: {    
   },
   mounted() {
-    this.resetDateSearch()
+    //this.resetDateSearch()
     this.formSearch.maHqTiepNhan = '_'.concat(this.$store.getters.userInfo.org)
     this.windowHeight = screen.height
     this.loading = false
@@ -649,7 +657,7 @@ export default {
       this.total = 0
       this.formSearch.orgCode = this.$store.getters.org
       this.formSearch.maHqTiepNhan = '_' + this.$store.getters.userInfo.org
-      this.resetDateSearch()
+      //this.resetDateSearch()
 
       // Reset Component
       this.formSearch.maLoaiNguoiKhai = ''

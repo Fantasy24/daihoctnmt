@@ -17,12 +17,21 @@
         >
           <el-collapse-item title="" name="1">
             <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Ngày tìm kiếm" prop="fromToDate" required>
                   <date-range-picker
                     v-model="formSearch.fromToDate"
                     :picker-options="pickerOptions"
                     format="dd/MM/yyyy"
+                  />
+                </el-form-item>
+              </el-col> -->
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Mã hóa chất" prop="code">
+                  <el-input-etc
+                    :v-model.sync="formSearch.code"
+                    placeholder="Mã hóa chất"
+                    :maxlength="50"
                   />
                 </el-form-item>
               </el-col>
@@ -39,15 +48,6 @@
 
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Mã hóa chất" prop="code">
-                  <el-input-etc
-                    :v-model.sync="formSearch.code"
-                    placeholder="Mã hóa chất"
-                    :maxlength="50"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Tên hóa chất" prop="name">
                   <el-input-etc
                     :v-model.sync="formSearch.name"
@@ -56,9 +56,6 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <select-master-data
                   :is-show-option-all="false"
@@ -71,6 +68,10 @@
                   :filter-data="masterType"
                 />
               </el-col>
+            </el-row>
+
+            <!-- <el-row :gutter="20">
+              
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Số lượng" prop="quantity">
                   <el-input-etc
@@ -80,7 +81,7 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
+            </el-row> -->
 
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
