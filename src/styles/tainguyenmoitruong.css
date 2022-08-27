@@ -258,3 +258,6 @@ li.el-menu-item .is-active {
     text-align: center !important;
     margin-right: 10px !important;
 }
+.collapse-filter{
+    margin-bottom: 10px;
+}

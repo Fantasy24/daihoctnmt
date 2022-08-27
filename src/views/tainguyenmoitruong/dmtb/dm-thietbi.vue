@@ -42,7 +42,7 @@
               />
             </el-form-item>
           </el-col>
-           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <select-trang-thai
               label="Trạng thái"
               :is-show-option-all="false"
@@ -215,8 +215,8 @@
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Ngày tạo" prop="createdAt">
                   <el-date-picker
-                    id="ngayLapAddEdit"
-                    :model="formAddEdit.createdAt"
+                    id="createdAt"
+                    v-model="formAddEdit.createdAt"
                     clearable
                     format="dd/MM/yyyy"
                     placeholder="DD/MM/YYYY"
@@ -243,6 +243,23 @@
                   />
                 </el-form-item>
               </el-col>
+
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Số serial" prop="serial">
+                  <el-input-etc
+                    id="serial"
+                    :v-model.sync="formAddEdit.serial"
+                    placeholder="Số serial"
+                    :maxlength="255"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Loại thiết bị" prop="deviceType">
                   <el-input-etc
@@ -256,9 +273,6 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Số lượng" prop="quantity">
                   <el-input-etc
@@ -272,6 +286,9 @@
                   />
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Khu lưu trữ" prop="storageLocation">
                   <el-input-etc
@@ -285,9 +302,7 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
 
-            <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Xuất xứ" prop="brand">
                   <el-input-etc
@@ -301,7 +316,7 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Mô tả" prop="description">
                   <el-input-etc
                     id="description"
@@ -313,9 +328,37 @@
                     show-word-limit
                   />
                 </el-form-item>
+              </el-col> -->
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <el-form-item label="Mô tả" prop="description">
+                  <el-input-etc
+                    id="description"
+                    :v-model.sync="formAddEdit.description"
+                    placeholder="Mô tả"
+                    :maxlength="1000"
+                    type="textarea"
+                    :rows="2"
+                    :disabled="isHiddenInput"
+                    :required="true"
+                    show-word-limit
+                  />
+                </el-form-item>
               </el-col>
             </el-row>
-
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <select-trang-thai
+                  label="Trạng thái"
+                  :is-show-option-all="false"
+                  :v-model.sync="formAddEdit.status"
+                  prop-form="status"
+                  :disabled="isHiddenInput"
+                  @change="changeValue"
+                />
+              </el-col>
+            </el-row>
           </el-tabs>
         </el-form>
         <span slot="footer" class="dialog-footer">

@@ -35,16 +35,16 @@
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <select-master-data
-                  :is-show-option-all="false"
-                  :v-model.sync="formSearch.unit"
-                  label="Đơn vị tính"
-                  prop-form="unit"
-                  :disabled="isHiddenInput"
-                  placeholder="Đơn vị tính"
-                  :rules="ruleDVT"
-                  :is-filter="true"
-                  :filter-data="masterType"
-                />
+              :is-show-option-all="false"
+              :v-model.sync="formSearch.unit"
+              label="Đơn vị tính"
+              prop-form="unit"
+              :disabled="isHiddenInput"
+              placeholder="Đơn vị tính"
+              :rules="ruleDVT"
+              :is-filter="true"
+              :filter-data="masterType"
+            />
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="Số lượng" prop="quantity">
@@ -327,6 +327,19 @@
                     show-word-limit
                   />
                 </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <select-trang-thai
+                  label="Trạng thái"
+                  :is-show-option-all="false"
+                  :v-model.sync="formAddEdit.status"
+                  prop-form="status"
+                  :disabled="isHiddenInput"
+                  @change="changeValue"
+                />
               </el-col>
             </el-row>
           </el-tabs>

@@ -47,20 +47,11 @@ const LIMIT_UPLOAD_FILE = 15
 
 export default {
   components: {
-    //TrangThaiRecord,
+    TrangThaiRecord,
     DateRangePicker,
     SelectDonViTinh,
     SelectTrangThai
-    // SelectTrangThaiPhieuYeuCau,
-    // SelectLoaiHinhXnk,
-    // SelectHinhThucKiemTra,
-    // SelectTrangThaiPhieuPtpl,
     //SelectYesNo,
-    // SelectChuyenVienPhanTichPhanLoai,
-    // SelectLoaiPheDuyet,
-    // TrangThaiPhieuYeuCauPtpl,
-    //DanhSachTemplate,
-    // SelectCanBoHq
   },
   props: {
     isGetAllHq: {
@@ -304,7 +295,8 @@ export default {
 					prop: "status",
 					label: "Trạng thái",
 					width: "100",
-					align: "center",
+          align: "center",
+          formatter: TrangThaiRecord,
 					show: true,
 					sortable: true,
 				},
@@ -667,7 +659,7 @@ export default {
       this.isShowDlgAddEdit = true
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
-      this.disableWhenEdit = true
+      this.disableWhenEdit = true      
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
@@ -680,17 +672,19 @@ export default {
       // this.fileListUpload = []
       // this.fileListDelete = []
       // this.fileListKBBK = []
-      // this.formAddEdit.deviceId = 0
-      // this.formAddEdit.deviceCode = ''
-      // this.formAddEdit.createdAt = getCurrentDateNoTime()
-      // this.formAddEdit.deviceName = ''
-      // this.formAddEdit.deviceType = ''
-      // this.formAddEdit.quantity = 0
-      // this.formAddEdit.unit = ''
-      // this.formAddEdit.brand = ''
-      // this.formAddEdit.storageLocation = ''
-      // this.formAddEdit.description = ''
-      // this.formAddEdit.status = '1'
+      this.disableAppCodeModeEdit = false;
+      this.formAddEdit.deviceId = 0
+      this.formAddEdit.deviceCode = ''
+      this.formAddEdit.createdAt = getCurrentDateNoTime()
+      this.formAddEdit.deviceName = ''
+      this.formAddEdit.deviceType = ''
+      this.formAddEdit.quantity = 0
+      this.formAddEdit.unit = ''
+      this.formAddEdit.brand = ''
+      this.formAddEdit.storageLocation = ''
+      this.formAddEdit.description = ''
+      this.formAddEdit.status = '1'
+
     },
     onPrepareEdit(row) {
       if (this.$refs.formAddEdit) {
@@ -734,6 +728,7 @@ export default {
       if (arrDK.indexOf(rs) === -1) {
         this.formAddEdit = rs
         this.formAddEdit.quantity = '' + this.formAddEdit.quantity;
+        this.disableAppCodeModeEdit = true;
         
         // File
         // this.getLstAttachment(rs)
