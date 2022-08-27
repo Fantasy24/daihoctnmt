@@ -197,6 +197,7 @@ export default {
         resourceType: '',
         so_to_kunithai: '',
         quantity: 0,
+        quantityWarning: 0,
         unit: '',
         origin: '',
         storageLocation: '',
@@ -265,16 +266,17 @@ export default {
       },      
       ruleDVT: [this.requiredRule('Đơn vị tính')],
       rules: {
-        resourceCode: [
-          this.requiredRule('Mã hóa chất'),
-          this.specialCharRule('Mã hóa chất')
+        toolCode: [
+          this.requiredRule('Mã dụng cụ'),
+          this.specialCharRule('Mã dụng cụ')
         ],
         createdAt: [this.requiredRule('Ngày tạo')],
-        resourceName: [this.requiredRule('Tên hóa chất')],        
-        resourceType: [this.requiredRule('Loại hóa chất')],
+        toolName: [this.requiredRule('Tên dụng cụ')],        
+        toolType: [this.requiredRule('Loại dụng cụ')],
         origin: [this.requiredRule('Xuất xứ')],
         storageLocation: [this.requiredRule('Khu lưu trữ')],
-        quantity: [this.requiredRule('Số lượng'),this.validateRegex('^[0-9\.]*$',"Số lượng")],
+        quantity: [this.requiredRule('Số lượng'), this.validateRegex('^[0-9\.]*$', "Số lượng")],
+        quantityWarning: [this.requiredRule('Số lượng cảnh báo'),this.validateRegex('^[0-9\.]*$',"Số lượng cảnh báo")],
       },
       disableWhenEdit: false,
       isHiddenInput: false,
@@ -306,6 +308,14 @@ export default {
         {
           prop: 'quantity',
           label: 'Số lượng',
+          width: '120',
+          align: 'center',
+          sortable: true,
+          show: true
+        },
+        {
+          prop: 'quantityWarning',
+          label: 'Số lượng cảnh báo',
           width: '120',
           align: 'center',
           sortable: true,

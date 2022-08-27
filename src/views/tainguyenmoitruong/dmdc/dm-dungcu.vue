@@ -255,6 +255,35 @@
 
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Số lượng" prop="quantity">
+                  <el-input-etc
+                    id="quantity"
+                    :v-model.sync="formAddEdit.quantity"
+                    placeholder="Số lượng"
+                    :maxlength="15"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Số lượng cảnh báo" prop="quantityWarning">
+                  <el-input-etc
+                    id="quantityWarning"
+                    :v-model.sync="formAddEdit.quantityWarning"
+                    placeholder="Số lượng cảnh báo"
+                    :maxlength="15"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <select-master-data
                   :is-show-option-all="false"
                   :v-model.sync="formAddEdit.unit"
@@ -269,41 +298,12 @@
                 />
               </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Số lượng" prop="quantity">
-                  <el-input-etc
-                    id="quantity"
-                    :v-model.sync="formAddEdit.quantity"
-                    placeholder="Số lượng"
-                    :maxlength="15"
-                    :required="true"
-                    :disabled="isHiddenInput"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Xuất xứ" prop="origin">
                   <el-input-etc
                     id="origin"
                     :v-model.sync="formAddEdit.origin"
                     placeholder="Xuất xứ"
                     :maxlength="150"
-                    :required="true"
-                    :disabled="isHiddenInput"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Khu lưu trữ" prop="storageLocation">
-                  <el-input-etc
-                    id="storageLocation"
-                    :v-model.sync="formAddEdit.storageLocation"
-                    placeholder="Khu lưu trữ"
-                    :maxlength="255"
                     :required="true"
                     :disabled="isHiddenInput"
                     show-word-limit
@@ -331,6 +331,19 @@
             </el-row>
 
             <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Khu lưu trữ" prop="storageLocation">
+                  <el-input-etc
+                    id="storageLocation"
+                    :v-model.sync="formAddEdit.storageLocation"
+                    placeholder="Khu lưu trữ"
+                    :maxlength="255"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <select-trang-thai
                   label="Trạng thái"

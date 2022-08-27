@@ -130,16 +130,7 @@ export default {
         { key: 5, value: 'Tiếp nhận yêu cầu PTPL' },
         { key: 8, value: 'Từ chối phê duyệt hồ sơ' },
         { key: 9, value: 'Đã phê duyệt hồ sơ' }
-      ],
-      statusExport: [
-        { key: 1, value: 'Mới' },
-        { key: 2, value: 'Chờ tiếp nhận' },
-        { key: 3, value: 'Yêu cầu bổ sung hồ sơ' },
-        { key: 4, value: 'Từ chối tiếp nhận HS' },
-        { key: 5, value: 'Chờ phê duyệt' },
-        { key: 8, value: 'Từ chối phê duyệt HS' },
-        { key: 9, value: 'Đã phê duyệt HS' }
-      ],
+      ],     
       taiLieuKhac: {
         id: 0,
         ma: 'TL04',
@@ -151,9 +142,7 @@ export default {
       lenTLKTHS: 0,
       currentTLKTHS: {},
       currentIndex: -1,
-      lstDVT: [],
-      lstNguoiKhaiLayLaiMau: [],
-      lstLoaiPheDuyet: [],
+      lstDVT: [],      
       excelData: [],
       statusSelect: [
         { key: 1, value: this.$t('baseLabel.labelActive') },
@@ -163,7 +152,6 @@ export default {
       // formSearch: new KeySearchListObj(),
       formSearch: {
         fromToDate: [],
-        soPhieuYeuCau: '',
         code: '',
         name: '',
         resourceType: '',
@@ -176,9 +164,6 @@ export default {
         page: null,
         size: null
       },
-      ngay_thong_bao_ket_qua_pt: null,
-      ngay_dk_to_khai: null,
-      ngay_tiep_nhan_ptpl: null,
       fileListUpload: [],
       fileListDelete: [],
       lstAttachment: [],
@@ -195,8 +180,8 @@ export default {
         resourceName: '',        
         createdAt: null,
         resourceType: '',
-        so_to_kunithai: '',
         quantity: 0,
+        quantityWarning: 0,
         unit: '',
         origin: '',
         storageLocation: '',
@@ -235,7 +220,8 @@ export default {
         resourceType: [this.requiredRule('Loại hóa chất')],
         origin: [this.requiredRule('Xuất xứ')],
         storageLocation: [this.requiredRule('Khu lưu trữ')],
-        quantity: [this.requiredRule('Số lượng'),this.validateRegex('^[0-9\.]*$',"Số lượng")],
+        quantity: [this.requiredRule('Số lượng'), this.validateRegex('^[0-9\.]*$', "Số lượng")],
+        quantityWarning: [this.requiredRule('Số lượng cảnh báo'),this.validateRegex('^[0-9\.]*$',"Số lượng cảnh báo")]
       },
       disableWhenEdit: false,
       isHiddenInput: false,
@@ -275,6 +261,14 @@ export default {
         {
           prop: 'quantity',
           label: 'Số lượng',
+          width: '120',
+          align: 'center',
+          sortable: true,
+          show: true
+        },
+        {
+          prop: 'quantityWarning',
+          label: 'Số lượng cảnh báo',
           width: '120',
           align: 'center',
           sortable: true,

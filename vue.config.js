@@ -128,27 +128,6 @@ module.exports = defineConfig({
         symbolId: 'icon-[name]'
       })
       .end()
-    // config.module
-    //   .rule('css')
-    //   .test(/\.css$/i)
-      // .use('style-loader')
-      // .loader('style-loader')
-      // .end()
-      // .use('css-loader')
-      // .loader('css-loader')
-      // .end()
-      // .use('postcss-loader')
-      // .loader('postcss-loader')
-      // .end()
-    // config.when(process.env.NODE_ENV === 'production', config => {
-    //   config.module
-    //     .rule('css')
-    //     .test(/\.css$/i)
-    //     .use('postcss-loader')
-    //     .loader('postcss-loader')
-    //     .end()
-    // }
-    // )
 
     config.when(process.env.NODE_ENV !== 'development', config => {
       config.module
@@ -157,6 +136,7 @@ module.exports = defineConfig({
         .use('postcss-loader')
         .loader('postcss-loader')
         .end()
+
       config
         .plugin('ScriptExtHtmlWebpackPlugin')
         .after('html')
