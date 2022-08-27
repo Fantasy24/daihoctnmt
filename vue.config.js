@@ -1,5 +1,5 @@
 'use strict'
-// const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service')
 
 // module.exports = defineConfig({
 //   // options...
@@ -31,7 +31,8 @@ const myPreloadPlug = new PreloadWebpackPlugin({
 })
 // const myVueLoader = new VueLoaderPlugin()
 
-module.exports = {
+// module.exports = {
+module.exports = defineConfig({
   publicPath: process.env.VUE_APP_CONTEXT_ROOT,
   outputDir: 'dist',
   assetsDir: 'static',
@@ -63,7 +64,6 @@ module.exports = {
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
-    devtool: 'source-map',
     name: name,
     resolve: {
       alias: {
@@ -128,8 +128,35 @@ module.exports = {
         symbolId: 'icon-[name]'
       })
       .end()
+    // config.module
+    //   .rule('css')
+    //   .test(/\.css$/i)
+      // .use('style-loader')
+      // .loader('style-loader')
+      // .end()
+      // .use('css-loader')
+      // .loader('css-loader')
+      // .end()
+      // .use('postcss-loader')
+      // .loader('postcss-loader')
+      // .end()
+    // config.when(process.env.NODE_ENV === 'production', config => {
+    //   config.module
+    //     .rule('css')
+    //     .test(/\.css$/i)
+    //     .use('postcss-loader')
+    //     .loader('postcss-loader')
+    //     .end()
+    // }
+    // )
 
     config.when(process.env.NODE_ENV !== 'development', config => {
+      config.module
+        .rule('css')
+        .test(/\.css$/i)
+        .use('postcss-loader')
+        .loader('postcss-loader')
+        .end()
       config
         .plugin('ScriptExtHtmlWebpackPlugin')
         .after('html')
@@ -167,4 +194,5 @@ module.exports = {
       config.optimization.runtimeChunk('single')
     })
   }
-}
+})
+
