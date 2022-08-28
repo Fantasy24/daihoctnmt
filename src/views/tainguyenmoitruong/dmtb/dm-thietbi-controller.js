@@ -194,7 +194,9 @@ export default {
         description: '',
         createdBy: '',
         document: '',
-        status: null
+        status: null,
+        nextMaintainDate: null,
+        quantityWarning : null
       },
       pickerOptions: {
         onPick: obj => {

@@ -358,6 +358,21 @@
                   @change="changeValue"
                 />
               </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Ngày bảo dưỡng" prop="nextMaintainDate">
+                    <el-date-picker
+                      id="nextMaintainDate"
+                      v-model="formAddEdit.nextMaintainDate"
+                      clearable
+                      format="dd/MM/yyyy"
+                      placeholder="DD/MM/YYYY"
+                      type="date"
+                      :required="true"
+                      :disabled="isHiddenInput"
+                      unlink-panels
+                    />
+                  </el-form-item>
+              </el-col>
             </el-row>
           </el-tabs>
         </el-form>
