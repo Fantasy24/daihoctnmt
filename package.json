@@ -30,7 +30,7 @@
     "eslint-plugin-vue": "^8.0.3",
     "ff24-customs-lib": "^1.0.24",
     "ff24-js": "^1.0.26",
-    "ff24-layout": "^1.0.51",
+    "ff24-layout": "^1.0.52",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

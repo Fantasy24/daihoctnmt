@@ -311,7 +311,7 @@ export const ConstantAPI = {
       buttons: ['[BTN_INSERT]DMTB']
     },
     UPDATE: {
-      url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
+      url: `${API_DEFAULT}/api/devices/device`,
       method: PUT,
       buttons: ['[BTN_UPDATE]DMTB']
     },

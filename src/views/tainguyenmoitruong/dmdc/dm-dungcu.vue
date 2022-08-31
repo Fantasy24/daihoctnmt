@@ -58,7 +58,7 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="Xuất xứ" prop="origin">
               <el-input-etc
                 :v-model.sync="formSearch.origin"
@@ -66,6 +66,17 @@
                 :maxlength="150"
               />
             </el-form-item>
+          </el-col> -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <select-master-data
+              :is-show-option-all="false"
+              :v-model.sync="formSearch.origin"
+              label="Xuất xứ"
+              placeholder="Xuất xứ"
+              prop-form="origin"
+              :is-filter="true"
+              :filter-data="masterTypeOrigin"
+            />
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="Khu lưu trữ" prop="storageLocation">
@@ -297,7 +308,7 @@
                   :filter-data="masterType"
                 />
               </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Xuất xứ" prop="origin">
                   <el-input-etc
                     id="origin"
@@ -309,6 +320,20 @@
                     show-word-limit
                   />
                 </el-form-item>
+              </el-col> -->
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <select-master-data
+                  :is-show-option-all="false"
+                  :v-model.sync="formAddEdit.origin"
+                  label="Xuất xứ"
+                  placeholder="Xuất xứ"
+                  prop-form="origin"
+                  :required="true"
+                  :disabled="isHiddenInput"
+                  :rules="ruleOrigin"
+                  :is-filter="true"
+                  :filter-data="masterTypeOrigin"
+                />
               </el-col>
             </el-row>
 

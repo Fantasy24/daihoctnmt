@@ -8,7 +8,7 @@
         @keyup.enter.native="onSearchHandling('[BTN_SEARCH]DMTB')"
       >
         <el-row v-show="false" :gutter="20">
-          <select-don-vi-tinh :get-list="getListDataDVT" />
+          <select-master-data :get-list="getListDataDVT" />
         </el-row>
 
         <el-row :gutter="20">
@@ -54,7 +54,7 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="Xuất xứ" prop="brand">
               <el-input-etc
                 :v-model.sync="formSearch.brand"
@@ -62,6 +62,17 @@
                 :maxlength="150"
               />
             </el-form-item>
+          </el-col> -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <select-master-data
+              :is-show-option-all="false"
+              :v-model.sync="formSearch.brand"
+              label="Xuất xứ"
+              placeholder="Xuất xứ"
+              prop-form="brand"
+              :is-filter="true"
+              :filter-data="masterTypeOrigin"
+            />
           </el-col>
         </el-row>
 
@@ -302,8 +313,21 @@
                   />
                 </el-form-item>
               </el-col>
-
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <select-master-data
+                  :is-show-option-all="false"
+                  :v-model.sync="formAddEdit.brand"
+                  label="Xuất xứ"
+                  placeholder="Xuất xứ"
+                  prop-form="brand"
+                  :required="true"
+                  :disabled="isHiddenInput"
+                  :rules="ruleOrigin"
+                  :is-filter="true"
+                  :filter-data="masterTypeOrigin"
+                />
+              </el-col>
+              <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Xuất xứ" prop="brand">
                   <el-input-etc
                     id="brand"
@@ -315,7 +339,7 @@
                     show-word-limit
                   />
                 </el-form-item>
-              </el-col>
+              </el-col> -->
               <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Mô tả" prop="description">
                   <el-input-etc
@@ -360,18 +384,18 @@
               </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Ngày bảo dưỡng" prop="nextMaintainDate">
-                    <el-date-picker
-                      id="nextMaintainDate"
-                      v-model="formAddEdit.nextMaintainDate"
-                      clearable
-                      format="dd/MM/yyyy"
-                      placeholder="DD/MM/YYYY"
-                      type="date"
-                      :required="true"
-                      :disabled="isHiddenInput"
-                      unlink-panels
-                    />
-                  </el-form-item>
+                  <el-date-picker
+                    id="nextMaintainDate"
+                    v-model="formAddEdit.nextMaintainDate"
+                    clearable
+                    format="dd/MM/yyyy"
+                    placeholder="DD/MM/YYYY"
+                    type="date"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    unlink-panels
+                  />
+                </el-form-item>
               </el-col>
             </el-row>
           </el-tabs>

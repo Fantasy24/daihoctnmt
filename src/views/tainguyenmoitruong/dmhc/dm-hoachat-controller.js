@@ -36,6 +36,7 @@ const MENU_CODE_API = 'DMHC'
 
 const LOAI_NGUOI_KHAI_UQ = 'NDUY'
 const MASTER_DATA_DVT = 'DVT'
+const MASTER_DATA_ORIGIN = 'ORIGIN'
 const GUI_PHIEU_YC = 2
 const PHIEU_YC_PRINT_FILE_NAME = 'PhieuYeuCauPtpl.pdf'
 const ACTION_MODE = { DEFAULT: 0, INSERT: 1, UPDATE: 2, SEND: 3 }
@@ -119,6 +120,7 @@ export default {
       buttonTemplateLoading: false,
       disableAppCodeModeEdit: false,
       masterType: MASTER_DATA_DVT,
+      masterTypeOrigin: MASTER_DATA_ORIGIN,
       windowHeight: screen.height,
       paramHis: {},
       // Trang thai tiep nhan YCPTPL
@@ -142,7 +144,8 @@ export default {
       lenTLKTHS: 0,
       currentTLKTHS: {},
       currentIndex: -1,
-      lstDVT: [],      
+      lstDVT: [],
+      lstXuatXu: [],
       excelData: [],
       statusSelect: [
         { key: 1, value: this.$t('baseLabel.labelActive') },
@@ -210,6 +213,7 @@ export default {
         }
       },      
       ruleDVT: [this.requiredRule('Đơn vị tính')],
+      ruleOrigin: [this.requiredRule('Xuất xứ')],
       rules: {
         resourceCode: [
           this.requiredRule('Mã hóa chất'),
@@ -294,6 +298,14 @@ export default {
           prop: 'origin',
           label: 'Xuất xứ',
           width: '150',
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.origin,
+              'propertyValue',
+              'propertyName',
+              this.lstXuatXu
+            )
+          },
           sortable: true,
           show: true
         },
@@ -778,6 +790,7 @@ export default {
       if (arrDK.indexOf(rs) === -1) {
         this.formAddEdit = rs
         this.formAddEdit.quantity = '' + this.formAddEdit.quantity;
+        this.formAddEdit.quantityWarning = '' + this.formAddEdit.quantityWarning;
         
         // File
         // this.getLstAttachment(rs)
@@ -904,7 +917,8 @@ export default {
       if (arrDK.indexOf(rs) === -1) {
         // console.log(rs)
         this.formAddEdit = rs
-        this.formAddEdit.quantity = ''+ this.formAddEdit.quantity
+        this.formAddEdit.quantity = '' + this.formAddEdit.quantity
+        this.formAddEdit.quantityWarning = '' + this.formAddEdit.quantityWarning
         // File
         //this.getLstAttachment(rs)
       }
@@ -1200,7 +1214,8 @@ export default {
         })
     },
     getListDataDVT(lstValue) {
-      this.lstDVT = lstValue
+      this.lstDVT = lstValue.filter(obj => obj.type === MASTER_DATA_DVT);
+      this.lstXuatXu = lstValue.filter(obj => obj.type === MASTER_DATA_ORIGIN);
     },
     getListDataHinhThucKiemTra(lstValue) {
       this.lstHinhThucKiemTra = lstValue
