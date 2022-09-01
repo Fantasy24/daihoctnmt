@@ -724,6 +724,7 @@ export default {
       this.formAddEdit.resourceName = ''
       this.formAddEdit.resourceType = ''
       this.formAddEdit.quantity = 0
+      this.formAddEdit.quantityWarning = 0
       this.formAddEdit.unit = ''
       this.formAddEdit.origin = ''
       this.formAddEdit.storageLocation = ''
