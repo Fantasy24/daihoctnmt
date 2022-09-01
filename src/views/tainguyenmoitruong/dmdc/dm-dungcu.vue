@@ -18,6 +18,11 @@
                 :v-model.sync="formSearch.code"
                 placeholder="Mã dụng cụ"
                 :maxlength="50"
+                @input="
+                  (v) => {
+                    formSearch.code = v.toUpperCase();
+                  }
+                "
               />
             </el-form-item>
           </el-col>
@@ -237,7 +242,7 @@
           <el-tabs v-model="tabIndex" type="border-card">
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Mã dụng cụ" prop="toolName">
+                <el-form-item label="Mã dụng cụ" prop="toolCode">
                   <el-input-etc
                     id="toolCode"
                     :v-model.sync="formAddEdit.toolCode"
@@ -245,6 +250,11 @@
                     :maxlength="50"
                     :disabled="disableAppCodeModeEdit"
                     show-word-limit
+                    @input="
+                      (v) => {
+                        formAddEdit.toolCode = v.toUpperCase();
+                      }
+                    "
                   />
                 </el-form-item>
               </el-col>

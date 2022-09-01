@@ -32,6 +32,11 @@
                     :v-model.sync="formSearch.code"
                     placeholder="Mã hóa chất"
                     :maxlength="50"
+                    @input="
+                      (v) => {
+                        formSearch.code = v.toUpperCase();
+                      }
+                    "
                   />
                 </el-form-item>
               </el-col>
@@ -272,6 +277,11 @@
                     :maxlength="50"
                     :disabled="disableAppCodeModeEdit"
                     show-word-limit
+                    @input="
+                      (v) => {
+                        formAddEdit.resourceCode = v.toUpperCase();
+                      }
+                    "
                   />
                 </el-form-item>
               </el-col>

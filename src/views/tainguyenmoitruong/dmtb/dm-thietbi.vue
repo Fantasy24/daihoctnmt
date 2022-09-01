@@ -13,20 +13,25 @@
 
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="Loại thiết bị" prop="deviceType">
-              <el-input-etc
-                :v-model.sync="formSearch.itemType"
-                placeholder="Loại thiết bị"
-                :maxlength="255"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="Mã thiết bị" prop="code">
               <el-input-etc
                 :v-model.sync="formSearch.itemCode"
                 placeholder="Mã thiết bị"
                 :maxlength="50"
+                @input="
+                  (v) => {
+                    formSearch.itemCode = v.toUpperCase();
+                  }
+                "
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <el-form-item label="Loại thiết bị" prop="deviceType">
+              <el-input-etc
+                :v-model.sync="formSearch.itemType"
+                placeholder="Loại thiết bị"
+                :maxlength="255"
               />
             </el-form-item>
           </el-col>
@@ -219,6 +224,11 @@
                     :maxlength="50"
                     :disabled="disableAppCodeModeEdit"
                     show-word-limit
+                    @input="
+                      (v) => {
+                        formAddEdit.deviceCode = v.toUpperCase();
+                      }
+                    "
                   />
                 </el-form-item>
               </el-col>
