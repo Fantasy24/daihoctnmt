@@ -24,6 +24,8 @@
     "autoprefixer": "^9.8.6",
     "babel-eslint": "^10.1.0",
     "babel-plugin-dynamic-import-node": "^2.3.3",
+    "babel-plugin-jsx-event-modifiers": "^2.0.5",
+    "babel-plugin-jsx-v-model": "^2.0.3",
     "core-js": "^3.24.0",
     "element-ui": "^2.15.9",
     "eslint": "^7.32.0",

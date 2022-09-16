@@ -558,7 +558,7 @@
                   id="username"
                   :v-model.sync="formAddEdit.username"
                   :disabled="flagShowDialog === 2 || isHiddenInput"
-                  :maxlength="25"
+                  :maxlength="50"
                   placeholder="Tên đăng nhập"
                   show-word-limit
                 />

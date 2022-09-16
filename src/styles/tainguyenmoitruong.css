@@ -270,3 +270,39 @@ li.el-menu-item .is-active {
 .content-notify{
     color: #303133;
 }
+.lab-booking{
+    min-height: 56px;
+    width: 10%;
+    margin: 1px;    
+    background-color: #B3E5FC;
+}
+.lab-booking .lab-register{
+    text-align: center;
+    color: #235490;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+.lab-list{
+    clear: both;
+    min-height: 20px;
+    background-image: url("@/assets/icon/icon-flask-1.png");
+    background-position: right;
+    background-size: 17px 17px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.bg-lab{
+    background-image: url("@/assets/icon/flask.png");
+}
+.time-picker{
+    width: 50% !important;
+}
+/*#235490  #B3E5FC*/
+.el-radio__input.is-checked .el-radio__inner {
+    border-color: #67c23a;
+    background: #67c23a;
+}
+.el-radio__input.is-checked+.el-radio__label {
+    color: #606266;
+}

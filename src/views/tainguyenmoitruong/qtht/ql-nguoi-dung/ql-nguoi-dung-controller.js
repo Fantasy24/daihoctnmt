@@ -195,7 +195,7 @@ export default {
 			isShowAddEditDlg: false,
 			maxDateOfBirth: {
 				disabledDate(date) {
-					return date > new Date();
+					return date < new Date();
 				},
 			},
 			listPermission: [],

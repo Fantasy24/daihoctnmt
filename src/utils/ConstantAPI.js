@@ -202,32 +202,42 @@ export const ConstantAPI = {
     SEARCH: {
       url: `${API_DEFAULT}/api/dmhc/search`,
       method: GET,
-      buttons: ['[BTN_SEARCH]QLND']
+      buttons: ['[BTN_SEARCH]DMHC']
+    },
+    SEARCH_ALL: {
+      url: `${API_DEFAULT}/api/dmhc/search-all`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMHC']
     },
     SELECT_ITEM: {
       url: `${API_DEFAULT}/api/dmhc/select-item`,
       method: GET,
-      buttons: ['[BTN_SEARCH]QLND', '[BTN_UPDATE]QLND']
+      buttons: ['[BTN_SEARCH]DMHC', '[BTN_UPDATE]DMHC']
     },
     INSERT: {
       url: `${API_DEFAULT}/api/dmhc/`,
       method: POST,
-      buttons: ['[BTN_INSERT]QLND']
+      buttons: ['[BTN_INSERT]DMHC']
     },
     UPDATE: {
       url: `${API_DEFAULT}/api/dmhc/`,
       method: PUT,
-      buttons: ['[BTN_UPDATE]QLND']
+      buttons: ['[BTN_UPDATE]DMHC']
     },
     DELETE: {
       url: `${API_DEFAULT}/api/dmhc/`,
       method: DELETE,
-      buttons: ['[BTN_DELETE]QLND']
+      buttons: ['[BTN_DELETE]DMHC']
     }    
   },
   DMDC: {
     SEARCH: {
       url: `${API_DEFAULT}/api/tools/search`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMDC']
+    },
+    SEARCH_ALL: {
+      url: `${API_DEFAULT}/api/tools/search-all`,
       method: GET,
       buttons: ['[BTN_SEARCH]DMDC']
     },
@@ -300,6 +310,11 @@ export const ConstantAPI = {
       method: POST,
       buttons: ['[BTN_SEARCH]DMTB']
     },
+    SEARCH_ALL: {
+      url: `${API_DEFAULT}/api/devices/search-all`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMTB']
+    },
     ITEM_DETAIL: {
       url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
       method: GET,
@@ -319,6 +334,38 @@ export const ConstantAPI = {
       url: `${API_DEFAULT}/api/devices/device/{deviceId}`,
       method: DELETE,
       buttons: ['[BTN_DELETE]DMTB']
+    }    
+  },
+  BOOKING: {
+    LOAD_LAB: {
+      url: `${API_DEFAULT}/api/labs/lab/list`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]BOOKING']
+    },
+    SEARCH: {
+      url: `${API_DEFAULT}/api/labs/lab/search`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]BOOKING']
+    },
+    SELECT_ITEM: {
+      url: `${API_DEFAULT}/api/labs/select-item`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]BOOKING', '[BTN_UPDATE]BOOKING']
+    },
+    INSERT: {
+      url: `${API_DEFAULT}/api/labs/lab`,
+      method: POST,
+      buttons: ['[BTN_INSERT]BOOKING']
+    },
+    UPDATE: {
+      url: `${API_DEFAULT}/api/labs/lab`,
+      method: PUT,
+      buttons: ['[BTN_UPDATE]BOOKING']
+    },
+    DELETE: {
+      url: `${API_DEFAULT}/api/labs/lab`,
+      method: DELETE,
+      buttons: ['[BTN_DELETE]BOOKING']
     }    
   },
   MASTER_DATA : {
