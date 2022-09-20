@@ -18,6 +18,11 @@
                 :v-model.sync="formSearch.code"
                 placeholder="Mã dụng cụ"
                 :maxlength="50"
+                @input="
+                  (v) => {
+                    formSearch.code = v.toUpperCase();
+                  }
+                "
               />
             </el-form-item>
           </el-col>
@@ -58,7 +63,7 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="Xuất xứ" prop="origin">
               <el-input-etc
                 :v-model.sync="formSearch.origin"
@@ -66,6 +71,17 @@
                 :maxlength="150"
               />
             </el-form-item>
+          </el-col> -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <select-master-data
+              :is-show-option-all="false"
+              :v-model.sync="formSearch.origin"
+              label="Xuất xứ"
+              placeholder="Xuất xứ"
+              prop-form="origin"
+              :is-filter="true"
+              :filter-data="masterTypeOrigin"
+            />
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="Khu lưu trữ" prop="storageLocation">
@@ -226,7 +242,7 @@
           <el-tabs v-model="tabIndex" type="border-card">
             <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Mã dụng cụ" prop="toolName">
+                <el-form-item label="Mã dụng cụ" prop="toolCode">
                   <el-input-etc
                     id="toolCode"
                     :v-model.sync="formAddEdit.toolCode"
@@ -234,6 +250,11 @@
                     :maxlength="50"
                     :disabled="disableAppCodeModeEdit"
                     show-word-limit
+                    @input="
+                      (v) => {
+                        formAddEdit.toolCode = v.toUpperCase();
+                      }
+                    "
                   />
                 </el-form-item>
               </el-col>
@@ -245,6 +266,35 @@
                     :v-model.sync="formAddEdit.toolName"
                     placeholder="Tên dụng cụ"
                     :maxlength="255"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Số lượng" prop="quantity">
+                  <el-input-etc
+                    id="quantity"
+                    :v-model.sync="formAddEdit.quantity"
+                    placeholder="Số lượng"
+                    :maxlength="15"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Số lượng cảnh báo" prop="quantityWarning">
+                  <el-input-etc
+                    id="quantityWarning"
+                    :v-model.sync="formAddEdit.quantityWarning"
+                    placeholder="Số lượng cảnh báo"
+                    :maxlength="15"
                     :required="true"
                     :disabled="isHiddenInput"
                     show-word-limit
@@ -268,23 +318,7 @@
                   :filter-data="masterType"
                 />
               </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Số lượng" prop="quantity">
-                  <el-input-etc
-                    id="quantity"
-                    :v-model.sync="formAddEdit.quantity"
-                    placeholder="Số lượng"
-                    :maxlength="15"
-                    :required="true"
-                    :disabled="isHiddenInput"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row :gutter="20">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <el-form-item label="Xuất xứ" prop="origin">
                   <el-input-etc
                     id="origin"
@@ -296,19 +330,20 @@
                     show-word-limit
                   />
                 </el-form-item>
-              </el-col>
+              </el-col> -->
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item label="Khu lưu trữ" prop="storageLocation">
-                  <el-input-etc
-                    id="storageLocation"
-                    :v-model.sync="formAddEdit.storageLocation"
-                    placeholder="Khu lưu trữ"
-                    :maxlength="255"
-                    :required="true"
-                    :disabled="isHiddenInput"
-                    show-word-limit
-                  />
-                </el-form-item>
+                <select-master-data
+                  :is-show-option-all="false"
+                  :v-model.sync="formAddEdit.origin"
+                  label="Xuất xứ"
+                  placeholder="Xuất xứ"
+                  prop-form="origin"
+                  :required="true"
+                  :disabled="isHiddenInput"
+                  :rules="ruleOrigin"
+                  :is-filter="true"
+                  :filter-data="masterTypeOrigin"
+                />
               </el-col>
             </el-row>
 
@@ -331,6 +366,19 @@
             </el-row>
 
             <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Khu lưu trữ" prop="storageLocation">
+                  <el-input-etc
+                    id="storageLocation"
+                    :v-model.sync="formAddEdit.storageLocation"
+                    placeholder="Khu lưu trữ"
+                    :maxlength="255"
+                    :required="true"
+                    :disabled="isHiddenInput"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <select-trang-thai
                   label="Trạng thái"

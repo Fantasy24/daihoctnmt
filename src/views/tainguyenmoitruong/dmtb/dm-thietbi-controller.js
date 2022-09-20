@@ -15,6 +15,7 @@ import SelectDonViTinh from '../../../components/CommonComponent/SelectDonViTinh
 import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
+import SelectMasterData from '../../../components/CommonComponent/SelectMasterData'
 
 import {
   validateFileExtension,
@@ -31,8 +32,8 @@ import { FORM_MODE } from '../../../utils/Constant'
 import _ from 'lodash'
 
 const MENU_CODE_API = 'DMTB'
-
-
+const MASTER_DATA_DVT = 'DVT'
+const MASTER_DATA_ORIGIN = 'ORIGIN'
 const LOAI_NGUOI_KHAI_UQ = 'NDUY'
 const MA_CHUC_NANG = 1
 const GUI_PHIEU_YC = 2
@@ -50,7 +51,8 @@ export default {
     TrangThaiRecord,
     DateRangePicker,
     SelectDonViTinh,
-    SelectTrangThai
+    SelectTrangThai,
+    SelectMasterData
     //SelectYesNo,
   },
   props: {
@@ -148,8 +150,10 @@ export default {
       radioValue: null,
       lenTLKTHS: 0,
       currentTLKTHS: {},
-      currentIndex: -1,
+      currentIndex: -1,      
+      masterTypeOrigin: MASTER_DATA_ORIGIN,
       lstDVT: [],
+      lstXuatXu: [],
       lstNguoiKhaiLayLaiMau: [],
       lstLoaiPheDuyet: [],
       excelData: [],
@@ -163,6 +167,7 @@ export default {
         itemName: '',
         itemCode: '',
         itemType: '',
+        brand: '',
         status: '',
         origin: '',
         page: null,
@@ -194,7 +199,9 @@ export default {
         description: '',
         createdBy: '',
         document: '',
-        status: null
+        status: null,
+        nextMaintainDate: null,
+        quantityWarning : null
       },
       pickerOptions: {
         onPick: obj => {
@@ -210,6 +217,7 @@ export default {
         }
       },      
       ruleDVT: [this.requiredRule('Đơn vị tính')],
+      ruleOrigin: [this.requiredRule('Xuất xứ')],
       rules: {
         deviceCode: [
           this.requiredRule('Mã thiết bị'),
@@ -220,7 +228,8 @@ export default {
         deviceType: [this.requiredRule('Loại thiết bị')],
         origin: [this.requiredRule('Xuất xứ')],
         storageLocation: [this.requiredRule('Khu lưu trữ')],
-        quantity: [this.requiredRule('Số lượng'),this.validateRegex('^[0-9\.]*$',"Số lượng")],
+        quantity: [this.requiredRule('Số lượng'), this.validateRegex('^[0-9\.]*$', "Số lượng")],
+        nextMaintainDate: [this.requiredRule('Ngày bảo dưỡng')],
       },
       disableWhenEdit: false,
       isHiddenInput: false,
@@ -269,6 +278,14 @@ export default {
           prop: 'brand',
           label: 'Xuất xứ',
           width: '150',
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.brand,
+              'propertyValue',
+              'propertyName',
+              this.lstXuatXu
+            )
+          },
           sortable: true,
           show: true
         },
@@ -556,17 +573,13 @@ export default {
           return false
         }
 
-            this.buttonUpdateLoading = true
-            const pathVariables = {
-              deviceId : this.formAddEdit.deviceId
-            }
+          this.buttonUpdateLoading = true
         apiFactory
-          .callAPIWithPath(
+          .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].UPDATE,
             this.formAddEdit,
-            {},
-            pathVariables,
-            this.fileListUpload
+            this.fileListUpload,
+            {}
           )
           .then(() => {
             showAlert(this, SUCCESS, 'Cập nhật thành công!')
@@ -684,6 +697,7 @@ export default {
       this.formAddEdit.storageLocation = ''
       this.formAddEdit.description = ''
       this.formAddEdit.status = '1'
+      this.formAddEdit.serial=''
 
     },
     onPrepareEdit(row) {
@@ -1153,7 +1167,8 @@ export default {
         })
     },
     getListDataDVT(lstValue) {
-      this.lstDVT = lstValue
+      this.lstDVT = lstValue.filter(obj => obj.type === MASTER_DATA_DVT);
+      this.lstXuatXu = lstValue.filter(obj => obj.type === MASTER_DATA_ORIGIN);
     },
     getListDataHinhThucKiemTra(lstValue) {
       this.lstHinhThucKiemTra = lstValue

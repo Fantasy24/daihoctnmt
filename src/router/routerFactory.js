@@ -93,8 +93,12 @@ export const constantRoutes = [
         meta: { title: 'profile', icon: 'user', noCache: true }
       }
     ]
-  }
+  }  
   // ...HELP_DESK_ROUTER(MasterLayout)
+  // {
+  //   path: '*',
+  //   redirect: '/'
+  // }
 ]
 
 /**
@@ -107,7 +111,7 @@ export const asyncRoutes = [
 ]
 
 const createRouter = () => new VueRouter({
-// mode: 'history', // require service support
+  // mode: 'history', // require service support
   allowHashBang: true,
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes

@@ -35,6 +35,7 @@ const MENU_CODE_API = 'DMDC'
 
 const LOAI_NGUOI_KHAI_UQ = 'NDUY'
 const MASTER_DATA_DVT = 'DVT'
+const MASTER_DATA_ORIGIN = 'ORIGIN'
 const GUI_PHIEU_YC = 2
 const PHIEU_YC_PRINT_FILE_NAME = 'PhieuYeuCauPtpl.pdf'
 const ACTION_MODE = { DEFAULT: 0, INSERT: 1, UPDATE: 2, SEND: 3 }
@@ -117,6 +118,7 @@ export default {
       buttonTemplateLoading: false,
       disableAppCodeModeEdit: false,
       masterType: MASTER_DATA_DVT,
+      masterTypeOrigin: MASTER_DATA_ORIGIN,
       windowHeight: screen.height,
       paramHis: {},
       // Trang thai tiep nhan YCPTPL
@@ -150,6 +152,7 @@ export default {
       currentTLKTHS: {},
       currentIndex: -1,
       lstDVT: [],
+      lstXuatXu: [],
       lstNguoiKhaiLayLaiMau: [],
       lstLoaiPheDuyet: [],
       excelData: [],
@@ -197,6 +200,7 @@ export default {
         resourceType: '',
         so_to_kunithai: '',
         quantity: 0,
+        quantityWarning: 0,
         unit: '',
         origin: '',
         storageLocation: '',
@@ -264,17 +268,19 @@ export default {
         }
       },      
       ruleDVT: [this.requiredRule('Đơn vị tính')],
+      ruleOrigin: [this.requiredRule('Xuất xứ')],
       rules: {
-        resourceCode: [
-          this.requiredRule('Mã hóa chất'),
-          this.specialCharRule('Mã hóa chất')
+        toolCode: [
+          this.requiredRule('Mã dụng cụ'),
+          this.specialCharRule('Mã dụng cụ')
         ],
         createdAt: [this.requiredRule('Ngày tạo')],
-        resourceName: [this.requiredRule('Tên hóa chất')],        
-        resourceType: [this.requiredRule('Loại hóa chất')],
+        toolName: [this.requiredRule('Tên dụng cụ')],        
+        toolType: [this.requiredRule('Loại dụng cụ')],
         origin: [this.requiredRule('Xuất xứ')],
         storageLocation: [this.requiredRule('Khu lưu trữ')],
-        quantity: [this.requiredRule('Số lượng'),this.validateRegex('^[0-9\.]*$',"Số lượng")],
+        quantity: [this.requiredRule('Số lượng'), this.validateRegex('^[0-9\.]*$', "Số lượng")],
+        quantityWarning: [this.requiredRule('Số lượng cảnh báo'),this.validateRegex('^[0-9\.]*$',"Số lượng cảnh báo")],
       },
       disableWhenEdit: false,
       isHiddenInput: false,
@@ -312,6 +318,14 @@ export default {
           show: true
         },
         {
+          prop: 'quantityWarning',
+          label: 'Số lượng cảnh báo',
+          width: '120',
+          align: 'center',
+          sortable: true,
+          show: true
+        },
+        {
           prop: 'unit',
           label: 'Đơn vị tính',
           width: '150',
@@ -331,6 +345,14 @@ export default {
           prop: 'origin',
           label: 'Xuất xứ',
           width: '150',
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.origin,
+              'propertyValue',
+              'propertyName',
+              this.lstXuatXu
+            )
+          },
           sortable: true,
           show: true
         },
@@ -745,6 +767,7 @@ export default {
       this.formAddEdit.toolName = ''
       this.formAddEdit.resourceType = ''
       this.formAddEdit.quantity = 0
+      this.formAddEdit.quantityWarning = 0
       this.formAddEdit.unit = ''
       this.formAddEdit.origin = ''
       this.formAddEdit.storageLocation = ''
@@ -811,6 +834,7 @@ export default {
       if (arrDK.indexOf(rs) === -1) {
         this.formAddEdit = rs
         this.formAddEdit.quantity = '' + this.formAddEdit.quantity;
+        this.formAddEdit.quantityWarning = '' + this.formAddEdit.quantityWarning;
         this.formAddEdit.code = rs.toolCode
         this.formAddEdit.name = rs.toolName
         
@@ -939,7 +963,8 @@ export default {
       if (arrDK.indexOf(rs) === -1) {
         // console.log(rs)
         this.formAddEdit = rs
-        this.formAddEdit.quantity = ''+ this.formAddEdit.quantity
+        this.formAddEdit.quantity = '' + this.formAddEdit.quantity
+        this.formAddEdit.quantityWarning = '' + this.formAddEdit.quantityWarning;
         // File
         //this.getLstAttachment(rs)
       }
@@ -1235,8 +1260,8 @@ export default {
         })
     },
     getListDataDVT(lstValue) {
-      this.lstDVT = lstValue
-      console.log(this.lstDVT)
+      this.lstDVT = lstValue.filter(obj => obj.type === MASTER_DATA_DVT);
+      this.lstXuatXu = lstValue.filter(obj => obj.type === MASTER_DATA_ORIGIN);
     },
     getListDataHinhThucKiemTra(lstValue) {
       this.lstHinhThucKiemTra = lstValue
