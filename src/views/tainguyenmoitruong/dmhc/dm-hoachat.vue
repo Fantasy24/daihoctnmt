@@ -120,7 +120,7 @@
               </el-col>
             </el-row>
 
-            <el-row :gutter="20">
+          <!--  <el-row :gutter="20">
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <select-trang-thai
                   label="Trạng thái"
@@ -130,7 +130,7 @@
                   @change="changeValue"
                 />
               </el-col>
-            </el-row>
+            </el-row> -->
           </el-collapse-item>
         </el-collapse>
         <el-form-item style="float: right">
@@ -436,7 +436,7 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+           <!--  <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                 <select-trang-thai
                   label="Trạng thái"
                   :is-show-option-all="false"
@@ -445,7 +445,7 @@
                   :disabled="isHiddenInput"
                   @change="changeValue"
                 />
-              </el-col>
+              </el-col> --> 
             </el-row>
 
             <!-- <el-row :gutter="20">

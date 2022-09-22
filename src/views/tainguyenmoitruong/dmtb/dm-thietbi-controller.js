@@ -10,9 +10,11 @@ import {
 
 import ConstantAPI from '../../../utils/ConstantAPI'
 import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord'
+import TrangThaiThietBiRecord from '../../../components/BaseFormCustoms/TrangThaiThietBiRecord'
 import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
 import SelectDonViTinh from '../../../components/CommonComponent/SelectDonViTinh'
 import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
+import SelectTrangThaiThietBi from "../../../components/CommonComponent/SelectTrangThaiThietBi";
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
 import SelectMasterData from '../../../components/CommonComponent/SelectMasterData'
@@ -49,9 +51,11 @@ const LIMIT_UPLOAD_FILE = 15
 export default {
   components: {
     TrangThaiRecord,
+    TrangThaiThietBiRecord,
     DateRangePicker,
     SelectDonViTinh,
     SelectTrangThai,
+    SelectTrangThaiThietBi,
     SelectMasterData
     //SelectYesNo,
   },
@@ -313,7 +317,7 @@ export default {
 					label: "Trạng thái",
 					width: "100",
           align: "center",
-          formatter: TrangThaiRecord,
+          formatter: TrangThaiThietBiRecord,
 					show: true,
 					sortable: true,
 				},
@@ -473,10 +477,10 @@ export default {
         this.formSearch.size = this.$refs.tblMain.size
         this.loadDataTable = true
         apiFactory
-          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, this.formSearch,{})
+          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, {}, this.formSearch)
           .then(rs => {
             this.loadDataTable = false
-            this.listDataTable = rs.content
+            this.listDataTable = rs.result
             // console.log(rs)
             this.total = rs['totalElements']
             // console.log(this.total)

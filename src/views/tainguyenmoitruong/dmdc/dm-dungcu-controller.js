@@ -10,9 +10,11 @@ import {
 
 import ConstantAPI from '../../../utils/ConstantAPI'
 import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord'
+import TrangThaiDungCuRecord from '../../../components/BaseFormCustoms/TrangThaiDungCuRecord'
 import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
 import SelectMasterData from '../../../components/CommonComponent/SelectMasterData'
 import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
+import SelectTrangThaiDungCu from "../../../components/CommonComponent/SelectTrangThaiDungCu";
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
 
@@ -49,9 +51,11 @@ const LIMIT_UPLOAD_FILE = 15
 export default {
   components: {
     TrangThaiRecord,
+    TrangThaiDungCuRecord,
     DateRangePicker,
     SelectMasterData,
-    SelectTrangThai
+    SelectTrangThai,
+    SelectTrangThaiDungCu
     //SelectYesNo,
   },
   props: {
@@ -369,7 +373,7 @@ export default {
 					label: "Trạng thái",
 					width: "100",
 					align: "center",
-					formatter: TrangThaiRecord,
+					formatter: TrangThaiDungCuRecord,
 					show: true,
 					sortable: true,
 				},
