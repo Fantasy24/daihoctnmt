@@ -96,7 +96,7 @@
 
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <select-trang-thai
+            <select-trang-thai-dung-cu
               label="Trạng thái"
               :is-show-option-all="false"
               :v-model.sync="formSearch.status"
@@ -380,7 +380,7 @@
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <select-trang-thai
+                <select-trang-thai-dung-cu
                   label="Trạng thái"
                   :is-show-option-all="false"
                   :v-model.sync="formAddEdit.status"

@@ -213,7 +213,6 @@ export function checkIsValidFileSize(size, maxSize) {
 export function getNameByIdOnGrid(id, prop1, prop2, lstDm) {
   try {
     const lstObject = lstDm.filter(o => o['' + prop1 + ''] === id)
-    // console.log(lstObject[0]['' + prop2 + ''])
     return lstObject.length > 0 ? lstObject[0]['' + prop2 + ''] : ''
   } catch (error) {
     

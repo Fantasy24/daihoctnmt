@@ -307,7 +307,7 @@ export const ConstantAPI = {
   DMTB: {
     SEARCH: {
       url: `${API_DEFAULT}/api/devices/search`,
-      method: POST,
+      method: GET,
       buttons: ['[BTN_SEARCH]DMTB']
     },
     SEARCH_ALL: {

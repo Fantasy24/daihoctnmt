@@ -327,16 +327,16 @@ export default {
           },
           sortable: true,
           show: true
-        },
-        {
-					prop: "status",
-					label: "Trạng thái",
-					width: "100",
-					align: "center",
-					formatter: TrangThaiRecord,
-					show: true,
-					sortable: true,
-				}      
+        }
+     //   {
+		//			prop: "status",
+			//		label: "Trạng thái",
+		//			width: "100",
+		//			align: "center",
+		//			formatter: TrangThaiRecord,
+		//			show: true,
+		//			sortable: true,
+		//		}      
       ],
       MENU_CODE_API,
       FORM_MODE,
@@ -494,7 +494,7 @@ export default {
         this.formSearch.fromDate = fromToDate[0]
         this.formSearch.toDate = fromToDate[1]
         apiFactory
-          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, {}, this.formSearch)
+          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, this.formSearch, {})
           .then(rs => {
             this.loadDataTable = false
             this.listDataTable = rs.result
