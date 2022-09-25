@@ -210,23 +210,36 @@
 
               <el-row :gutter="20">
                 <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                  <el-form-item label="Ngày" prop="bookingDate">
+                  <el-form-item label="Ngày bắt đầu" prop="bookingDate">
                     <el-date-picker
                       id="bookingDate"
                       v-model="formAddEditPTN.bookingDate"
                       :picker-options="minDateBooking"
                       :disabled="isHiddenInput"
                       clearable
-                      format="dd/MM/yyyy"
-                      placeholder="DD/MM/YYYY"
-                      type="date"
+                      format="dd/MM/yyyy HH:mm:ss"
+                      placeholder="DD/MM/YYYY HH:MM:SS"
+                      type="datetime"
                       unlink-panels
                     />
                   </el-form-item>
                 </el-col>
 
                 <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                  <el-form-item label="Giờ" prop="startTime">
+                  <el-form-item label="Ngày kết thúc" prop="bookingDateTo">
+                    <el-date-picker
+                      id="bookingDateTo"
+                      v-model="formAddEditPTN.bookingDateTo"
+                      :picker-options="minDateBooking"
+                      :disabled="isHiddenInput"
+                      clearable
+                      format="dd/MM/yyyy HH:mm:ss"
+                      placeholder="DD/MM/YYYY HH:MM:SS"
+                      type="datetime"
+                      unlink-panels
+                    />
+                  </el-form-item>
+                  <!-- <el-form-item label="Giờ" prop="startTime">
                     <el-time-select
                       class="time-picker"
                       placeholder="Giờ bắt đầu"
@@ -250,21 +263,26 @@
                       }"
                     >
                     </el-time-select>
-                  </el-form-item>
+                  </el-form-item> -->
                 </el-col>
               </el-row>
               <el-row :gutter="20">
                 <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                  <el-form-item label="Mục đích PTN" prop="purpose">
+                  <el-form-item
+                    label="Mục đích PTN"
+                    prop="purpose"
+                    @change="changeRadioPurpose"
+                  >
                     <el-radio-group v-model="formAddEditPTN.purpose">
                       <el-radio label="GIANG_DAY">Giảng dạy</el-radio>
                       <el-radio label="NGHIEN_CUU_KH"
                         >Nghiên cứu khoa học</el-radio
                       >
-                      <el-radio label="DO_AN">Đồ án</el-radio>
                       <el-radio label="KHOA_LUAN_TN"
                         >Khóa luận tốt nghiệp</el-radio
                       >
+                      <el-radio label="THUC_TAP">Thực tập</el-radio>
+                      <el-radio label="THUC_HANH">Thực hành</el-radio>
                     </el-radio-group>
                   </el-form-item>
                 </el-col>
@@ -290,7 +308,7 @@
                       :v-model.sync="formAddEditPTN.lessonName"
                       placeholder="Đề tài"
                       :maxlength="250"
-                      :require="true"
+                      :require="isLessonNameRequired"
                       show-word-limit
                     />
                   </el-form-item>

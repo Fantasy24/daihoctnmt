@@ -211,7 +211,7 @@ export default {
         pic: '',
         session: '',
         bookingDate: null,        
-        bookingHours: '',
+        bookingDateTo: '',
         startTime: '',
         endTime: '',
         bookingUser: '',
@@ -269,7 +269,7 @@ export default {
           
 					return date < new Date(y, m, d);
 				},
-			},
+      },
       pickerOptions: {
         onPick: obj => {
           this.pickerMinDate = new Date(obj.minDate).getTime()
@@ -282,7 +282,7 @@ export default {
             return time.getTime() > maxTime || time.getTime() < minTime
           }
         }
-      },      
+      },   
       ruleDVT: [this.requiredRule('Đơn vị tính')],
       ruleLabDepartment: [this.requiredRule('Khoa')],
       rules: {
@@ -293,7 +293,8 @@ export default {
         quantity: [this.requiredRule('Số lượng'), this.validateRegex('^[0-9\.]*$', "Số lượng")],
         quantityWarning: [this.requiredRule('Số lượng cảnh báo'),this.validateRegex('^[0-9\.]*$',"Số lượng cảnh báo")]
       },
-      rulesPTN: {
+      isLessonNameRequired: false,
+      rulesFormPTN: {
         bookingUser: [this.requiredRule('Mã cán bộ')],        
         phone: [this.requiredRule('Số điện thoại'),this.validateRegex('^[0-9\+]*$',"Số điện thoại")],
         department: [this.requiredRule('Khoa')],
@@ -543,6 +544,26 @@ export default {
   computed: {    
     dataFilter() {     
         return this.listDataTable
+    },
+    rulesPTN() {
+      return {
+        lessonName: [
+          {
+            required: this.isLessonNameRequired,
+            message: 'Đề tài bắt buộc nhập',
+            trigger: 'change'
+          }
+        ],
+        bookingUser: this.rulesFormPTN.bookingUser,
+        phone: this.rulesFormPTN.phone,
+        department: this.rulesFormPTN.department,
+        email: this.rulesFormPTN.email,
+        bookingDate: this.rulesFormPTN.bookingDate,
+        startTime: this.rulesFormPTN.startTime,
+        pic: this.rulesFormPTN.pic,
+        purpose: this.rulesFormPTN.purpose,
+        quantity: this.rulesFormPTN.quantity
+      }
     }
   },
   mounted() {
@@ -765,6 +786,15 @@ export default {
     },
     onDeleteHC(row) {
       this.listDataTableHC = this.listDataTableHC.filter(obj => obj !== row);
+    },
+    changeRadioPurpose(code) {
+      if (code === 'NGHIEN_CUU_KH' || code === 'KHOA_LUAN_TN' ) this.isLessonNameRequired = true
+      else this.isLessonNameRequired = false
+      setTimeout(() => {
+        this.$refs['formAddEditPTN'].validate(valid => {
+          return
+        })
+      }, 100)
     },
     initQuestion(len) {
       while (len--) {
