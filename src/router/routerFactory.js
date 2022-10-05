@@ -74,9 +74,9 @@ export const constantRoutes = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', affix: true }
+        component: () => import('@/views/tainguyenmoitruong/booking/lab-booking'),
+        name: 'Trang chủ',
+        meta: { title: 'Đăng ký sử dụng PTN', icon: 'dashboard', affix: true }
       }
     ]
   },
