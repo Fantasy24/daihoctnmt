@@ -370,6 +370,7 @@ export default {
         // }
         const selectedKey = [...this.$refs.permissionTree.getHalfCheckedKeys(), ...this.$refs.permissionTree.getCheckedKeys()]
         this.objParamPermissionUpdate.lstMenuCode = [...new Set(selectedKey)]
+        this.objParamPermissionUpdate.appCode = APP_CODE
         this.loading = true
         apiFactory.callAPI(ConstantAPI[MENU_CODE_API].UPDATE_GROUP_PERMISSION, this.objParamPermissionUpdate).then(() => {
           showAlert(this, SUCCESS, 'Cập nhật [Quyền hạn nhóm người dùng] thành công!')

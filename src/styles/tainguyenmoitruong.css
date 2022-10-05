@@ -273,8 +273,16 @@ li.el-menu-item .is-active {
 .lab-booking{
     min-height: 56px;
     width: 10%;
-    margin: 1px;    
+    margin: 1px;
+}
+.bg-normal{
     background-color: #B3E5FC;
+}
+.bg-busy{
+    background-color: rgb(255, 205, 210);
+}
+.bg-registration{
+    background-color: rgb(255, 216, 178);
 }
 .lab-booking .lab-register{
     text-align: center;
@@ -282,6 +290,7 @@ li.el-menu-item .is-active {
     font-weight: bold;
     font-size: 14px;
     cursor: pointer;
+    line-height: 16px;
 }
 .lab-list{
     clear: both;
@@ -290,6 +299,12 @@ li.el-menu-item .is-active {
     background-position: right;
     background-size: 17px 17px;
     background-repeat: no-repeat;
+    cursor: pointer;
+}
+.lab-count{
+    font-size: 11px;
+    display: inline-block;
+    font-weight: normal;
     cursor: pointer;
 }
 .bg-lab{
@@ -305,4 +320,7 @@ li.el-menu-item .is-active {
 }
 .el-radio__input.is-checked+.el-radio__label {
     color: #606266;
+}
+#tab-4{
+    padding-right: 20px;
 }

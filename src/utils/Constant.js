@@ -27,7 +27,8 @@ export const FORM_MODE = {
   EDIT: 2,
   VIEW: 3,
   APPROVE: 4,
-  REJECT: 5
+  REJECT: 5,
+  CONFIRM: 6
 }
 
 export const PAGINATION_PARAM = PAGING

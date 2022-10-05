@@ -17,6 +17,14 @@
         <el-row :gutter="20">
           <el-form-item style="float: right">
             <el-button
+              id="btnAddCo"
+              icon="el-icon-notebook-2"
+              style="margin-right: 2px"
+              type="primary"
+              @click="showBookingHistory()"
+              >Lịch sử đặt phòng
+            </el-button>
+            <el-button
               v-if="checkPermissionShowButton('[BTN_INSERT]BOOKING')"
               id="btnAddCo"
               icon="el-icon-plus"
@@ -37,6 +45,7 @@
                 background-color: rgb(255, 205, 210);
                 margin-right: 1px;
                 float: left;
+                text-align: center;
                 width: 10%;
               "
             >
@@ -48,7 +57,8 @@
                   color: rgb(198, 55, 55);
                   text-transform: uppercase;
                 "
-                >Đang bận</span
+                >Đang bận
+                {{ "".concat("(", caculateBookingLab.busy, ")") }}</span
               >
             </div>
             <div
@@ -58,6 +68,7 @@
                 background-color: rgb(179, 229, 252);
                 margin-right: 1px;
                 float: left;
+                text-align: center;
                 width: 10%;
               "
             >
@@ -69,7 +80,8 @@
                   color: rgb(35, 84, 144);
                   text-transform: uppercase;
                 "
-                >Đang trống</span
+                >Đang trống
+                {{ "".concat("(", caculateBookingLab.empty, ")") }}</span
               >
             </div>
             <div
@@ -79,7 +91,8 @@
                 background-color: rgb(255, 216, 178);
                 margin-right: 1px;
                 float: left;
-                width: 12%;
+                text-align: center;
+                width: 13%;
               "
             >
               <span
@@ -90,7 +103,8 @@
                   color: rgb(128, 91, 54);
                   text-transform: uppercase;
                 "
-                >Đang đặt phòng</span
+                >Đang đặt phòng
+                {{ "".concat("(", caculateBookingLab.registration, ")") }}</span
               >
             </div>
           </el-col>
@@ -106,10 +120,21 @@
               effect="light"
               placement="top-start"
             >
-              <el-tag type="" effect="dark" class="lab-booking">
+              <el-tag
+                type=""
+                effect="dark"
+                class="lab-booking"
+                v-bind:class="getClassBooking(lab)"
+              >
                 <div class="lab-list" @click="showBookingList(lab)"></div>
                 <div class="lab-register" @click="labRegistration(lab)">
                   {{ lab.labName }}
+                  <br />
+                  <span class="lab-count">{{
+                    lab.bookingQuantity !== null && lab.bookingQuantity > 0
+                      ? "(".concat(lab.bookingQuantity, " đặt phòng)")
+                      : ""
+                  }}</span>
                 </div>
               </el-tag>
             </el-tooltip>
@@ -165,13 +190,14 @@
                 </el-col>
 
                 <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                  <el-form-item label="Số điện thoại" prop="phone">
+                  <el-form-item label="Số điện thoại" prop="phoneNumber">
                     <el-input-etc
-                      id="phone"
-                      :v-model.sync="formAddEditPTN.phone"
+                      id="phoneNumber"
+                      :v-model.sync="formAddEditPTN.phoneNumber"
                       placeholder="Số điện thoại"
                       :maxlength="50"
                       :require="true"
+                      :disabled="isHiddenInput"
                       show-word-limit
                     />
                   </el-form-item>
@@ -216,6 +242,7 @@
                       v-model="formAddEditPTN.bookingDate"
                       :picker-options="minDateBooking"
                       :disabled="isHiddenInput"
+                      :required="true"
                       clearable
                       format="dd/MM/yyyy HH:mm:ss"
                       placeholder="DD/MM/YYYY HH:MM:SS"
@@ -232,6 +259,7 @@
                       v-model="formAddEditPTN.bookingDateTo"
                       :picker-options="minDateBooking"
                       :disabled="isHiddenInput"
+                      :required="true"
                       clearable
                       format="dd/MM/yyyy HH:mm:ss"
                       placeholder="DD/MM/YYYY HH:MM:SS"
@@ -268,12 +296,12 @@
               </el-row>
               <el-row :gutter="20">
                 <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                  <el-form-item
-                    label="Mục đích PTN"
-                    prop="purpose"
-                    @change="changeRadioPurpose"
-                  >
-                    <el-radio-group v-model="formAddEditPTN.purpose">
+                  <el-form-item label="Mục đích PTN" prop="purpose">
+                    <el-radio-group
+                      v-model="formAddEditPTN.purpose"
+                      :disabled="isHiddenInput"
+                      @change="changeRadioPurpose"
+                    >
                       <el-radio label="GIANG_DAY">Giảng dạy</el-radio>
                       <el-radio label="NGHIEN_CUU_KH"
                         >Nghiên cứu khoa học</el-radio
@@ -297,6 +325,7 @@
                       placeholder="Giảng viên"
                       :maxlength="100"
                       :require="true"
+                      :disabled="isHiddenInput"
                       show-word-limit
                     />
                   </el-form-item>
@@ -309,6 +338,7 @@
                       placeholder="Đề tài"
                       :maxlength="250"
                       :require="isLessonNameRequired"
+                      :disabled="isHiddenInput"
                       show-word-limit
                     />
                   </el-form-item>
@@ -323,19 +353,21 @@
                       placeholder="Lớp học"
                       :maxlength="50"
                       :require="true"
+                      :disabled="isHiddenInput"
                       show-word-limit
                     />
                   </el-form-item>
                 </el-col>
 
                 <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                  <el-form-item label="Nhóm" prop="group">
+                  <el-form-item label="Nhóm" prop="groupStudents">
                     <el-input-etc
-                      id="group"
-                      :v-model.sync="formAddEditPTN.group"
+                      id="groupStudents"
+                      :v-model.sync="formAddEditPTN.groupStudents"
                       placeholder="Nhóm"
                       :maxlength="50"
                       :require="false"
+                      :disabled="isHiddenInput"
                       show-word-limit
                     />
                   </el-form-item>
@@ -351,6 +383,7 @@
                       placeholder="Chỉ tiêu phân tích"
                       :maxlength="50"
                       :require="false"
+                      :disabled="isHiddenInput"
                       show-word-limit
                     />
                   </el-form-item>
@@ -387,7 +420,7 @@
                     :highlight-current-row="false"
                     :page.sync="pageFix"
                     :size.sync="sizeFix"
-                    :pagination-method="onSearch"
+                    :pagination-method="onSearchTB"
                   >
                     <div slot="columns">
                       <el-table-column
@@ -406,7 +439,9 @@
                             <el-button
                               id="btnDelCo"
                               v-if="
-                                checkPermissionShowButton('[BTN_DELETE]BOOKING')
+                                checkPermissionShowButton(
+                                  '[BTN_DELETE]BOOKING'
+                                ) && !isHiddenInput
                               "
                               :loading="iconDelLoading"
                               circle
@@ -429,7 +464,7 @@
                 :model="formTB"
                 :rules="rulesTB"
                 label-width="170px"
-                :disabled="isHidenGuiHoSo"
+                :disabled="isHiddenInput"
               >
                 <el-row :gutter="20">
                   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -504,7 +539,7 @@
                     :highlight-current-row="false"
                     :page.sync="pageFix"
                     :size.sync="sizeFix"
-                    :pagination-method="onSearch"
+                    :pagination-method="onSearchDC"
                   >
                     <div slot="columns">
                       <el-table-column
@@ -523,7 +558,9 @@
                             <el-button
                               id="btnDelCo"
                               v-if="
-                                checkPermissionShowButton('[BTN_DELETE]BOOKING')
+                                checkPermissionShowButton(
+                                  '[BTN_DELETE]BOOKING'
+                                ) && !isHiddenInput
                               "
                               :loading="iconDelLoading"
                               circle
@@ -546,7 +583,7 @@
                 :model="formDC"
                 :rules="rulesTB"
                 label-width="170px"
-                :disabled="isHidenGuiHoSo"
+                :disabled="isHiddenInput"
               >
                 <el-row :gutter="20">
                   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -620,7 +657,7 @@
                     :highlight-current-row="false"
                     :page.sync="pageFix"
                     :size.sync="sizeFix"
-                    :pagination-method="onSearch"
+                    :pagination-method="onSearchHC"
                   >
                     <div slot="columns">
                       <el-table-column
@@ -639,7 +676,9 @@
                             <el-button
                               id="btnDelCo"
                               v-if="
-                                checkPermissionShowButton('[BTN_DELETE]BOOKING')
+                                checkPermissionShowButton(
+                                  '[BTN_DELETE]BOOKING'
+                                ) && !isHiddenInput
                               "
                               :loading="iconDelLoading"
                               circle
@@ -662,7 +701,7 @@
                 :model="formHC"
                 :rules="rulesTB"
                 label-width="170px"
-                :disabled="isHidenGuiHoSo"
+                :disabled="isHiddenInput"
               >
                 <el-row :gutter="20">
                   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -729,7 +768,7 @@
             :loading="buttonSaveLoading"
             icon="el-icon-check"
             type="primary"
-            @click="onInsert('formAddEditPTN')"
+            @click="onInsertPTN('formAddEditPTN')"
           >
             Đặt phòng
           </el-button>
@@ -749,6 +788,237 @@
           <el-button id="btnCancelCo" @click="isShowDlgPTN = false">{{
             $t("baseLabel.btnCancel")
           }}</el-button>
+        </span>
+      </el-dialog>
+    </div>
+
+    <div>
+      <el-dialog
+        :close-on-click-modal="false"
+        :title="titleDialogConfirmQuantity"
+        :visible.sync="isShowDlgConfirmQuantity"
+        width="70%"
+        @close="resetFormPTN('formAddEditPTN')"
+      >
+        <el-tabs v-model="tabIndex" type="border-card">
+          <el-tab-pane label="Xác nhận số lượng sử dụng thiết bị">
+            <el-card>
+              <div>
+                <el-table-etc-custom
+                  ref="tblMainTBConfirm"
+                  :list-data-table.sync="listDataTableTB"
+                  :loading.sync="loadDataTableTB"
+                  :total.sync="totalTB"
+                  :columns="columnsTB"
+                  :is-export="true"
+                  :is-show-pdf="false"
+                  :is-show-print="false"
+                  :api-fetch="ConstantAPI[MENU_CODE_API].SEARCH"
+                  :params-fetch="formSearchLab"
+                  :row-class-name="tableRowClassName"
+                  :highlight-current-row="false"
+                  :page.sync="pageFix"
+                  :size.sync="sizeFix"
+                  :pagination-method="onSearchTB"
+                >
+                  <div slot="columns">
+                    <el-table-column
+                      label="Số lượng thực tế sử dụng"
+                      width="200"
+                      fixed="right"
+                    >
+                      <!-- <editable-cell
+                        :show-input="row.editMode"
+                        slot-scope="{ row, index }"
+                        v-model="row.actualQuantityUsed"
+                        close-event="blur"
+                      >
+                        <span slot="content">{{ row.actualQuantityUsed }}</span>
+                      </editable-cell> -->
+                      <editable-cell
+                        :show-input="row.editMode"
+                        slot-scope="{ row }"
+                        v-model="row.actualQuantityUsed"
+                      >
+                        <span slot="content">{{ row.actualQuantityUsed }}</span>
+                      </editable-cell>
+                    </el-table-column>
+                  </div>
+                </el-table-etc-custom>
+              </div>
+            </el-card>
+          </el-tab-pane>
+
+          <el-tab-pane label="Xác nhận số lượng sử dụng dụng cụ">
+            <el-card>
+              <div>
+                <el-table-etc-custom
+                  ref="tblMainDCConfirm"
+                  :list-data-table.sync="listDataTableDC"
+                  :loading.sync="loadDataTableDC"
+                  :total.sync="totalDC"
+                  :columns="columnsDC"
+                  :is-export="true"
+                  :is-show-pdf="false"
+                  :is-show-print="false"
+                  :api-fetch="ConstantAPI[MENU_CODE_API].SEARCH"
+                  :params-fetch="formSearchLab"
+                  :row-class-name="tableRowClassName"
+                  :highlight-current-row="false"
+                  :page.sync="pageFix"
+                  :size.sync="sizeFix"
+                  :pagination-method="onSearchDC"
+                >
+                  <div slot="columns">
+                    <el-table-column
+                      label="Số lượng thực tế sử dụng"
+                      width="200"
+                      fixed="right"
+                    >
+                      <editable-cell
+                        :show-input="row.editMode"
+                        slot-scope="{ row }"
+                        v-model="row.actualQuantityUsed"
+                      >
+                        <span slot="content">{{ row.actualQuantityUsed }}</span>
+                      </editable-cell>
+                    </el-table-column>
+                  </div>
+                </el-table-etc-custom>
+              </div>
+            </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="Xác nhận số lượng sử dụng hóa chất">
+            <el-card>
+              <div>
+                <el-table-etc-custom
+                  ref="tblMainHCConfirm"
+                  :list-data-table.sync="listDataTableHC"
+                  :loading.sync="loadDataTableHC"
+                  :total.sync="totalHC"
+                  :columns="columnsHC"
+                  :is-export="true"
+                  :is-show-pdf="false"
+                  :is-show-print="false"
+                  :api-fetch="ConstantAPI[MENU_CODE_API].SEARCH"
+                  :params-fetch="formSearchLab"
+                  :row-class-name="tableRowClassName"
+                  :highlight-current-row="false"
+                  :page.sync="pageFix"
+                  :size.sync="sizeFix"
+                  :pagination-method="onSearchHC"
+                >
+                  <div slot="columns">
+                    <el-table-column
+                      label="Số lượng thực tế sử dụng"
+                      width="200"
+                      fixed="right"
+                    >
+                      <editable-cell
+                        :show-input="row.editMode"
+                        slot-scope="{ row }"
+                        v-model="row.actualQuantityUsed"
+                      >
+                        <span slot="content">{{ row.actualQuantityUsed }}</span>
+                      </editable-cell>
+                    </el-table-column>
+                  </div>
+                </el-table-etc-custom>
+              </div>
+            </el-card>
+            <!-- <div class="EmptyBox20" />
+            <el-form
+              id="formHC"
+              ref="formHC"
+              :model="formHC"
+              :rules="rulesTB"
+              label-width="170px"
+              :disabled="isHiddenInput"
+            >
+              <el-row :gutter="20">
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                  <select-hoa-chat
+                    :v-model.sync="formHC.resourceId"
+                    label="Hóa chất"
+                    :is-show-option-all="false"
+                    :get-list="getListHC"
+                    prop-form="resourceId"
+                  />
+                </el-col>
+
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                  <select-master-data
+                    :is-show-option-all="false"
+                    :v-model.sync="formHC.unit"
+                    label="Đơn vị tính"
+                    placeholder="Đơn vị tính"
+                    prop-form="unit"
+                    :required="false"
+                    :is-filter="true"
+                    :filter-data="masterType"
+                  />
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                  <el-form-item label="Số lượng" prop="quantity">
+                    <el-input-etc
+                      id="quantity"
+                      :v-model.sync="formHC.quantity"
+                      placeholder="Số lượng"
+                      :maxlength="15"
+                      :required="true"
+                      :disabled="isHiddenInput"
+                      show-word-limit
+                    />
+                  </el-form-item>
+                </el-col>
+
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                  <el-button
+                    v-if="checkPermissionShowButton('[BTN_INSERT]BOOKING')"
+                    id="btnAddCo"
+                    icon="el-icon-plus"
+                    style="float: left"
+                    type="primary"
+                    @click="onInsertHC"
+                    >Thêm hóa chất
+                  </el-button>
+                </el-col>
+              </el-row>
+            </el-form> -->
+          </el-tab-pane>
+        </el-tabs>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            v-if="checkPermissionShowButton('[BTN_CONFIRM]BOOKING')"
+            id="btnSaveCo"
+            :loading="buttonSaveLoading"
+            icon="el-icon-check"
+            type="primary"
+            @click="onConfirmQuantityBooking('formAddEditPTN')"
+          >
+            Xác nhận số lượng
+          </el-button>
+          <el-button
+            v-if="
+              flagShowDialog === FORM_MODE.EDIT &&
+              checkPermissionShowButton('[BTN_UPDATE]BOOKING')
+            "
+            id="btnUpdateCo"
+            :loading="buttonUpdateLoading"
+            icon="el-icon-check"
+            type="primary"
+            @click="onUpdate('formAddEdit')"
+          >
+            {{ $t("baseLabel.btnSave") }}
+          </el-button>
+          <el-button
+            id="btnCancelCo"
+            @click="isShowDlgConfirmQuantity = false"
+            >{{ $t("baseLabel.btnCancel") }}</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -948,7 +1218,7 @@
     <div>
       <el-dialog
         :close-on-click-modal="false"
-        title="Danh sách đặt phòng"
+        :title="titleDialogLabList"
         :visible.sync="isShowDlgListLab"
         width="80%"
         @close="resetForm('formAddEditListLab')"
@@ -970,7 +1240,7 @@
               :highlight-current-row="false"
               :page.sync="formSearchLab.page"
               :size.sync="formSearchLab.size"
-              :pagination-method="onSearch"
+              :pagination-method="onSearchListLab"
               :join-name-excel="joinNameByCodeColumnExcel"
             >
               <div slot="columns">
@@ -983,6 +1253,47 @@
                   <template slot-scope="scope">
                     <el-tooltip
                       :open-delay="350"
+                      content="Phê duyệt"
+                      effect="light"
+                      placement="top-start"
+                    >
+                      <el-button
+                        id="btnApprove"
+                        v-if="
+                          showHideBtnApproveInGrid(scope.row) &&
+                          checkPermissionShowButton('[BTN_APPROVE]BOOKING')
+                        "
+                        :loading="iconApproveLabLoading"
+                        circle
+                        icon="el-icon-check"
+                        size="mini"
+                        type="primary"
+                        @click="onApproveLabBooking(scope.row)"
+                      />
+                    </el-tooltip>
+                    <el-tooltip
+                      :open-delay="350"
+                      content="Xác nhận số lượng"
+                      effect="light"
+                      placement="top-start"
+                    >
+                      <el-button
+                        id="btnConfirm"
+                        v-if="
+                          showHideBtnConfirmInGrid(scope.row) &&
+                          checkPermissionShowButton('[BTN_CONFIRM]BOOKING')
+                        "
+                        :loading="iconApproveLabLoading"
+                        circle
+                        icon="el-icon-finished"
+                        size="mini"
+                        type="primary"
+                        @click="onShowConfirmQuantity(scope.row)"
+                      />
+                    </el-tooltip>
+
+                    <!-- <el-tooltip
+                      :open-delay="350"
                       content="Sửa thông tin"
                       effect="light"
                       placement="top-start"
@@ -990,30 +1301,49 @@
                       <el-button
                         id="btnEditCo"
                         v-if="checkPermissionShowButton('[BTN_UPDATE]BOOKING')"
-                        :loading="iconEditLoading"
+                        :loading="iconEditLabLoading"
                         circle
                         icon="el-icon-edit"
                         size="mini"
                         type="primary"
-                        @click="onPrepareEdit(scope.row)"
+                        @click="onPreEditLab(scope.row)"
                       />
-                    </el-tooltip>
+                    </el-tooltip> -->
 
                     <el-tooltip
                       :open-delay="350"
-                      content="Xóa Thông Tin"
+                      content="Từ chối"
                       effect="light"
                       placement="top-start"
                     >
                       <el-button
-                        id="btnDelCo"
-                        v-if="checkPermissionShowButton('[BTN_DELETE]BOOKING')"
+                        id="btnRefuse"
+                        v-if="
+                          showHideBtnRefuseInGrid(scope.row) &&
+                          checkPermissionShowButton('[BTN_REFUSE]BOOKING')
+                        "
                         :loading="iconDelLoading"
                         circle
-                        icon="el-icon-delete"
+                        icon="el-icon-close"
                         size="mini"
                         type="danger"
-                        @click="onDelete(scope.row)"
+                        @click="onRefuseLabBooking(scope.row)"
+                      />
+                    </el-tooltip>
+                    <el-tooltip
+                      :open-delay="350"
+                      content="Xem chi tiết thông tin"
+                      effect="light"
+                      placement="top-start"
+                    >
+                      <el-button
+                        id="btnViewCo"
+                        :loading="iconViewLoading"
+                        circle
+                        icon="el-icon-view"
+                        size="mini"
+                        type="success"
+                        @click="onView(scope.row)"
                       />
                     </el-tooltip>
                   </template>
@@ -1022,6 +1352,77 @@
             </el-table-etc-custom>
           </div>
         </el-card>
+        <span slot="footer" class="dialog-footer">
+          <el-button id="btnCancelCo" @click="isShowDlgListLab = false">{{
+            $t("baseLabel.btnCancel")
+          }}</el-button>
+        </span>
+      </el-dialog>
+    </div>
+
+    <div>
+      <el-dialog
+        :close-on-click-modal="false"
+        :title="titleDialogLabHistory"
+        :visible.sync="isShowDlgLabHistory"
+        width="87%"
+        @close="closeHistory()"
+      >
+        <el-card>
+          <div>
+            <el-table-etc-custom
+              ref="tblMainLabHistory"
+              :list-data-table.sync="listDataTableLabHis"
+              :loading.sync="loadDataTableLab"
+              :total.sync="total"
+              :columns="columnsLabHis"
+              :is-export="true"
+              :is-show-pdf="false"
+              :is-show-print="false"
+              :api-fetch="ConstantAPI[MENU_CODE_API].SEARCH"
+              :params-fetch="formSearchLab"
+              :row-class-name="tableRowClassName"
+              :highlight-current-row="false"
+              :page.sync="formSearchLab.page"
+              :size.sync="formSearchLab.size"
+              :pagination-method="onSearchListLab"
+              :join-name-excel="joinNameByCodeColumnExcel"
+            >
+              <div slot="columns">
+                <el-table-column
+                  :label="$t('baseLabel.labelTableAction')"
+                  align="center"
+                  width="100"
+                  fixed="right"
+                >
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      :open-delay="350"
+                      content="Xem chi tiết thông tin"
+                      effect="light"
+                      placement="top-start"
+                    >
+                      <el-button
+                        id="btnViewCo"
+                        :loading="iconViewLoading"
+                        circle
+                        icon="el-icon-view"
+                        size="mini"
+                        type="success"
+                        @click="onViewHistory(scope.row)"
+                      />
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+              </div>
+            </el-table-etc-custom>
+          </div>
+        </el-card>
+        <span slot="footer" class="dialog-footer">
+          <el-button id="btnCancelCo" @click="isShowDlgLabHistory = false">{{
+            $t("baseLabel.btnCancel")
+          }}</el-button>
+        </span>
       </el-dialog>
     </div>
   </div>

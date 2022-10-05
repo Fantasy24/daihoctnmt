@@ -159,7 +159,7 @@
                     >
                       Sửa
                     </el-dropdown-item>
-                    <el-dropdown-item
+                    <!-- <el-dropdown-item
                       v-if="
                         checkPermissionShowButton('[BTN_CHANGE_PASSWORD]QLND')
                       "
@@ -167,7 +167,7 @@
                       @click.native="onPrepareResetPass(scope.row)"
                     >
                       Đặt lại mật khẩu
-                    </el-dropdown-item>
+                    </el-dropdown-item> -->
                     <el-dropdown-item
                       icon="el-icon-delete"
                       v-if="checkPermissionShowButton('[BTN_DELETE]QLND')"
@@ -843,6 +843,14 @@
                 >
               </span>
               <span v-if="data.rowKey.startsWith('[BTN_USER_PERMISSION]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="warning"
+                  >PERMISSION</el-tag
+                >
+              </span>
+              <span v-if="data.rowKey.startsWith('[BTN_GROUP_PERMISSION]')">
                 <el-tag
                   class="method-label-color"
                   style="font-weight: bold; border: 2px solid"

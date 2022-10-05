@@ -342,13 +342,23 @@ export const ConstantAPI = {
       method: GET,
       buttons: ['[BTN_SEARCH]BOOKING']
     },
+    CACULATE_BOOKING_LAB: {
+      url: `${API_DEFAULT}/api/labs/lab/caculate-booking`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]BOOKING']
+    },    
     SEARCH: {
       url: `${API_DEFAULT}/api/labs/lab/search`,
       method: GET,
       buttons: ['[BTN_SEARCH]BOOKING']
     },
-    SELECT_ITEM: {
-      url: `${API_DEFAULT}/api/labs/select-item`,
+    SEARCH_HISTORY: {
+      url: `${API_DEFAULT}/api/labs/lab/history`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]BOOKING']
+    },
+    SELECT_ITEM_LAB: {
+      url: `${API_DEFAULT}/api/labs/lab/select-item`,
       method: GET,
       buttons: ['[BTN_SEARCH]BOOKING', '[BTN_UPDATE]BOOKING']
     },
@@ -366,7 +376,33 @@ export const ConstantAPI = {
       url: `${API_DEFAULT}/api/labs/lab`,
       method: DELETE,
       buttons: ['[BTN_DELETE]BOOKING']
-    }    
+    },
+    SELECT_ITEM_BOOKING: {
+      url: `${API_DEFAULT}/api/labs/lab-booking/select-by-id`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]BOOKING', '[BTN_UPDATE]BOOKING']
+    },
+    
+    INSERT_PTN: {
+      url: `${API_DEFAULT}/api/labs/lab-booking`,
+      method: POST,
+      buttons: ['[BTN_INSERT_PTN]BOOKING']
+    },
+    APPROVE_PTN: {
+      url: `${API_DEFAULT}/api/labs/lab-booking/approve`,
+      method: PUT,
+      buttons: ['[BTN_APPROVE]BOOKING']
+    },
+    UNAPPROVE_PTN: {
+      url: `${API_DEFAULT}/api/labs/lab-booking/refuse`,
+      method: PUT,
+      buttons: ['[BTN_APPROVE]BOOKING']
+    },
+    CONFIRM_QUANTITY_PTN: {
+      url: `${API_DEFAULT}/api/labs/lab-booking/confirm`,
+      method: PUT,
+      buttons: ['[BTN_CONFIRM]BOOKING']
+    }
   },
   MASTER_DATA : {
     GET: {

@@ -108,6 +108,13 @@ export function formatFullDateTime_VN(value) {
     : null
 }
 
+export function formatFullDateHour_VN(value) {
+  if (!value) return ''
+  return value !== null
+    ? moment(String(value)).format('DD/MM/YYYY HH:mm')
+    : null
+}
+
 export function checkDate(value) {
   return (
     (typeof value === 'string' &&

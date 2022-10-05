@@ -670,6 +670,14 @@
                     >PERMISSION</el-tag
                   >
                 </span>
+                <span v-if="data.rowKey.startsWith('[BTN_GROUP_PERMISSION]')">
+                  <el-tag
+                    class="method-label-color"
+                    style="font-weight: bold; border: 2px solid"
+                    type="warning"
+                    >PERMISSION</el-tag
+                  >
+                </span>
                 <span v-if="data.rowKey.startsWith('[BTN_POST]')">
                   <el-tag
                     class="method-label-color"

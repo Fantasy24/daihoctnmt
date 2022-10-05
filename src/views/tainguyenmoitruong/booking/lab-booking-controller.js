@@ -10,6 +10,7 @@ import {
 
 import ConstantAPI from '../../../utils/ConstantAPI'
 import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord'
+import TrangThaiBooking from '../../../components/BaseFormCustoms/TrangThaiBooking'
 import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
 import SelectMasterData from '../../../components/CommonComponent/SelectMasterData'
 import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
@@ -18,6 +19,8 @@ import SelectDungCu from '../../../components/CommonComponent/SelectDungCu'
 import SelectHoaChat from '../../../components/CommonComponent/SelectHoaChat'
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
+import EditableCell from '../../../components/CommonComponent/EditableCell'
+import { getToken } from "ff24-js/src/utils/authCookie";
 
 import {
   validateFileExtension,
@@ -26,13 +29,15 @@ import {
   getNameByIdOnGrid,
   showConfirmCustom,
   getCurrentDateNoTime,
+  getDateStringHoursMinutes,
   LIST_CUSTOMS
 } from '../../../utils/ECustomsUtils'
-import { formatFullDate_VN } from '../../../filters/index'
+import { formatFullDate_VN,formatFullDateHour_VN,formatFullDateTime_VN } from '../../../filters/index'
 import { FORM_MODE } from '../../../utils/Constant'
 // import XLSX from 'xlsx'
 import _ from 'lodash'
 import { ref } from 'vue'
+import { faL } from '@fortawesome/free-solid-svg-icons'
 
 const MENU_CODE_API = 'BOOKING'
 
@@ -43,22 +48,32 @@ const MASTER_DATA_LAB_DEPARTMENT = 'LAB_DEPARTMENT'
 const GUI_PHIEU_YC = 2
 const PHIEU_YC_PRINT_FILE_NAME = 'PhieuYeuCauPtpl.pdf'
 const ACTION_MODE = { DEFAULT: 0, INSERT: 1, UPDATE: 2, SEND: 3 }
+const STATUS_MODE = { DEFAULT: '1', NEW: '1', APPROVE: '2', CONFIRM: '3', UNAPPROVE: '4' }
 const TAI_LIEU_KHAC = 99
 const PHE_DUYET_THU_CONG = 3
 const STATUS_BTN_SEND = [1, 3]
-const STATUS_ROW_UPDATE = [1, 3]
+const STATUS_ROW_APPROVE = ['1']
+const STATUS_ROW_CONFIRM = ['2']
+const STATUS_ROW_REFUSE = ['1']
+const STATUS_ROW_UPDATE = ['1']
 const STATUS_ROW_DELETE = [1]
 const LIMIT_UPLOAD_FILE = 15
+
+const CACULATE_INTERVAL = 30 * 10000;
+
+let caculateInterval;
 
 export default {
   components: {
     TrangThaiRecord,
+    TrangThaiBooking,
     DateRangePicker,
     SelectMasterData,
     SelectTrangThai,
     SelectThietBi,
     SelectDungCu,
-    SelectHoaChat
+    SelectHoaChat,
+    EditableCell
     //SelectYesNo,
   },
   props: {
@@ -105,6 +120,8 @@ export default {
       dvtLblWidth: '150px',
       titleDialog: '',
       titleDialogLab: '',
+      titleDialogLabList: '',
+      titleDialogConfirmQuantity: '',
       titleDialogPrint: '',
       loading: false,
       isPrint: false,
@@ -114,7 +131,11 @@ export default {
       isShowDlgAddEdit: false,
       isShowDlgPTN: false,
       isShowDlgListLab: false,
+      isShowDlgLabHistory: false,
+      isShowDlgConfirmQuantity: false,
       isTemplate: false,
+      iconApproveLabLoading: false,
+      iconEditLabLoading: false,
       iconEditLoading: false,
       iconViewLoading: false,
       buttonUpdateLoading: false,
@@ -134,14 +155,12 @@ export default {
       windowHeight: screen.height,
       paramHis: {},
       // Trang thai tiep nhan YCPTPL
-      statusReceiveSelect: [
-        { key: 1, value: 'Mới' },
-        { key: 2, value: 'Chờ tiếp nhận' },
-        { key: 3, value: 'Yêu cầu bổ sung hồ sơ' },
-        { key: 4, value: 'Từ chối tiếp nhận yêu cầu' },
-        { key: 5, value: 'Tiếp nhận yêu cầu PTPL' },
-        { key: 8, value: 'Từ chối phê duyệt hồ sơ' },
-        { key: 9, value: 'Đã phê duyệt hồ sơ' }
+      lstPurpose: [
+        { key: 'GIANG_DAY', value: 'Giảng dạy' },
+        { key: 'NGHIEN_CUU_KH', value: 'Nghiên cứu khoa học' },
+        { key: 'KHOA_LUAN_TN', value: 'Khóa luận tốt nghiệp' },
+        { key: 'THUC_TAP', value: 'Thực tập' },
+        { key: 'THUC_HANH', value: 'Thực hành' }
       ],
       lstTaiLieuKemTheo: [],
       radioValue: null,
@@ -179,17 +198,42 @@ export default {
         page: null,
         size: null
       },
+      formSearchLabList: {
+        fromToDate: [],
+        id: 0,
+        code: '',
+        name: '',
+        status: null,
+        page: null,
+        size: null
+      },
+      formSearchLabHistory: {
+        fromToDate: [],
+        id: 0,
+        code: '',
+        name: '',
+        status: null,
+        page: null,
+        size: null
+      },
+      caculateBookingLab: {
+        busy: 0,
+        empty: 0,
+        registration: 0,
+        lstBusyId: []
+      },
       fileListUpload: [],
       fileListDelete: [],
       lstAttachment: [],
       lstAttachmentGroup: [],
       fileListKBBK: [],
-      isNguoiKhaiYcLayMau: false,
       isDownload: true,
       lstCauHoi: [],
       lstTB: [],
       lstDC: [],
       lstHC: [],
+      currentLab: null,
+      currentLabBooking: null,
       formAddEdit: {
         id: 0,
         labName: '', 
@@ -206,7 +250,7 @@ export default {
         purpose: '',
         targets: '',
         className: '',
-        group: '',
+        groupStudents: '',
         lessonName: '',
         pic: '',
         session: '',
@@ -218,7 +262,7 @@ export default {
         createdAt: null,
         approvedBy: '',
         approvedAt: null,
-        phone: ''
+        phoneNumber: ''
       },
       formTB: {
         id: 0,
@@ -296,14 +340,15 @@ export default {
       isLessonNameRequired: false,
       rulesFormPTN: {
         bookingUser: [this.requiredRule('Mã cán bộ')],        
-        phone: [this.requiredRule('Số điện thoại'),this.validateRegex('^[0-9\+]*$',"Số điện thoại")],
+        phoneNumber: [this.requiredRule('Số điện thoại'),this.validateRegex('^[0-9\+]*$',"Số điện thoại")],
         department: [this.requiredRule('Khoa')],
         email: [this.requiredRule('email'),{
           type: "email",
           message: "Email không đúng định dạng",
           trigger: "blur",
         }],
-        bookingDate: [this.requiredRule('Ngày')],
+        bookingDate: [this.requiredRule('Ngày bắt đầu')],
+        bookingDateTo: [this.requiredRule('Ngày kết thúc')],
         startTime: [this.requiredRule('Giờ')],
         pic: [this.requiredRule('Giảng viên')],
         lessonName: [this.requiredRule('Đề tài')],
@@ -334,6 +379,7 @@ export default {
       lstLab:[],
       listDataTable: [],
       listDataTableLab: [],
+      listDataTableLabHis: [],
       listDataTableClone: [],
       listDataTableTB: [],
       listDataTableDC: [],
@@ -394,8 +440,19 @@ export default {
       ],      
       columnsLab: [
         {
-          prop: 'labName',
-          label: 'Tên phòng',
+          prop: 'bookingUser',
+          label: 'Người đăng ký',
+          width: '120',
+          align: 'left',
+          sortable: true,
+          //filters: [{ text: "test", value: "246" }],
+          // columnKey: "labName",
+          // renderHeader: this.renderHeader,
+          show: true
+        },
+        {
+          prop: 'email',
+          label: 'Email',
           width: '150',
           align: 'center',
           sortable: true,
@@ -405,31 +462,7 @@ export default {
           show: true
         },
         {
-          prop: 'ngay',
-          label: 'Ngày đăng ký',
-          width: '100',
-          align: 'left',
-          sortable: true,
-          show: true
-        },
-        {
-          prop: 'hours',
-          label: 'Giờ',
-          width: '170',
-          align: 'left',
-          sortable: true,
-          formatter: row => {
-            return getNameByIdOnGrid(
-              row.department,
-              'propertyValue',
-              'propertyName',
-              this.lstKhoaThiNghiem
-            )
-          },          
-          show: true
-        },
-        {
-          prop: 'GV',
+          prop: 'pic',
           label: 'Giảng viên',
           width: '150',
           align: 'left',
@@ -437,19 +470,138 @@ export default {
           show: true
         },
         {
+          prop: 'bookingDate',
+          label: 'Thời gian bắt đầu',
+          width: '150',
+          align: 'center',
+          sortable: true,
+          formatter: row => {
+            return formatFullDateHour_VN(new Date(row.bookingDate))
+          },
+          show: true
+        },
+        {
+          prop: 'bookingDateTo',
+          label: 'Thời gian kết thúc',
+          width: '150',
+          align: 'center',
+          sortable: true,
+          formatter: row => {
+            return formatFullDateHour_VN(new Date(row.bookingDateTo))
+          },
+          show: true
+        },
+        
+        {
           prop: 'purpose',
           label: 'Mục đích',
+          width: '150',
+          align: 'left',
+          sortable: true, 
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.purpose,
+              'key',
+              'value',
+              this.lstPurpose
+            )
+          },
+          show: true
+        },
+        {
+					prop: "status",
+					label: "Trạng thái",
+					width: "120",
+					align: "center",
+					formatter: TrangThaiBooking,
+					show: true,
+					sortable: true,
+				}      
+      ],
+      columnsLabHis: [
+        {
+          prop: 'labName',
+          label: 'Tên phòng',
+          width: '120',
+          align: 'left',
+          sortable: true,
+          show: true
+        },
+        {
+          prop: 'bookingUser',
+          label: 'Người đăng ký',
+          width: '120',
+          align: 'left',
+          sortable: true,
+          //filters: [{ text: "test", value: "246" }],
+          // columnKey: "labName",
+          // renderHeader: this.renderHeader,
+          show: true
+        },
+        {
+          prop: 'email',
+          label: 'Email',
+          width: '150',
+          align: 'center',
+          sortable: true,
+          //filters: [{ text: "test", value: "246" }],
+          // columnKey: "labName",
+          // renderHeader: this.renderHeader,
+          show: true
+        },
+        {
+          prop: 'pic',
+          label: 'Giảng viên',
           width: '150',
           align: 'left',
           sortable: true,
           show: true
         },
         {
+          prop: 'bookingDate',
+          label: 'Thời gian bắt đầu',
+          width: '150',
+          align: 'center',
+          sortable: true,
+          formatter: row => {
+            return formatFullDateHour_VN(new Date(row.bookingDate))
+          },
+          show: true
+        },
+        {
+          prop: 'bookingDateTo',
+          label: 'Thời gian kết thúc',
+          width: '150',
+          align: 'center',
+          sortable: true,
+          formatter: row => {
+            return formatFullDateHour_VN(new Date(row.bookingDateTo))
+          },
+          show: true
+        },
+        
+        {
+          prop: 'purpose',
+          label: 'Mục đích',
+          width: '150',
+          align: 'left',
+          sortable: true, 
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.purpose,
+              'key',
+              'value',
+              this.lstPurpose
+            )
+          },
+          show: true
+        },
+        {
 					prop: "status",
 					label: "Trạng thái",
-					width: "100",
+					width: "120",
 					align: "center",
-					formatter: TrangThaiRecord,
+					formatter: TrangThaiBooking,
 					show: true,
 					sortable: true,
 				}      
@@ -469,6 +621,14 @@ export default {
           width: '100',
           align: 'center',
           sortable: true,
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.unit,
+              'propertyValue',
+              'propertyName',
+              this.lstDVT
+            )
+          },
           show: true
         },
         {
@@ -478,7 +638,15 @@ export default {
           align: 'left',
           sortable: true,          
           show: true
-        } 
+        },
+        {
+          prop: 'actualQuantityUsed',
+          label: 'Số lượng thực tế sử dụng',
+          width: '150',
+          align: 'left',
+          sortable: true,          
+          show: true
+        }        
       ],
       columnsDC: [
         {
@@ -495,6 +663,14 @@ export default {
           width: '100',
           align: 'center',
           sortable: true,
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.unit,
+              'propertyValue',
+              'propertyName',
+              this.lstDVT
+            )
+          },
           show: true
         },
         {
@@ -504,7 +680,15 @@ export default {
           align: 'left',
           sortable: true,          
           show: true
-        } 
+        },
+        {
+          prop: 'actualQuantityUsed',
+          label: 'Số lượng thực tế sử dụng',
+          width: '150',
+          align: 'left',
+          sortable: true,          
+          show: true
+        }
       ],
       columnsHC: [
         {
@@ -521,6 +705,14 @@ export default {
           width: '100',
           align: 'center',
           sortable: true,
+          formatter: row => {
+            return getNameByIdOnGrid(
+              row.unit,
+              'propertyValue',
+              'propertyName',
+              this.lstDVT
+            )
+          },
           show: true
         },
         {
@@ -530,7 +722,15 @@ export default {
           align: 'left',
           sortable: true,          
           show: true
-        } 
+        },
+        {
+          prop: 'actualQuantityUsed',
+          label: 'Số lượng thực tế sử dụng',
+          width: '150',
+          align: 'left',
+          sortable: true,          
+          show: true
+        }
       ],
       MENU_CODE_API,
       FORM_MODE,
@@ -555,10 +755,11 @@ export default {
           }
         ],
         bookingUser: this.rulesFormPTN.bookingUser,
-        phone: this.rulesFormPTN.phone,
+        phoneNumber: this.rulesFormPTN.phoneNumber,
         department: this.rulesFormPTN.department,
         email: this.rulesFormPTN.email,
         bookingDate: this.rulesFormPTN.bookingDate,
+        bookingDateTo: this.rulesFormPTN.bookingDateTo,
         startTime: this.rulesFormPTN.startTime,
         pic: this.rulesFormPTN.pic,
         purpose: this.rulesFormPTN.purpose,
@@ -568,6 +769,15 @@ export default {
   },
   mounted() {
     this.onLoadLab()
+    this.onCaculateBookingLab();
+      caculateInterval = setInterval(() => {
+        if (!getToken()) {
+          clearInterval(caculateInterval);
+          return;
+        }
+        this.onCaculateBookingLab();
+      }, CACULATE_INTERVAL);
+    
     this.formSearch.maHqTiepNhan = '_'.concat(this.$store.getters.userInfo.org)
     this.windowHeight = screen.height
     this.loading = false
@@ -640,55 +850,117 @@ export default {
       }
       
     },    
+    getClassBooking(lab) {
+      const arrDK = [undefined, null, '']
+      if (arrDK.indexOf(this.caculateBookingLab.lstBusyId)  === -1 && this.caculateBookingLab.lstBusyId.indexOf(lab.id) > -1){
+        return 'bg-busy'
+      }
+      else if (arrDK.indexOf(lab.bookingQuantity) === -1 && lab.bookingQuantity > 0) {
+        return 'bg-registration'
+      }
+      else {
+        return 'bg-normal'
+      }      
+    },
 
 
-
-    showBookingList() {
+    showBookingList(lab) {
       const name = this.findName;
       const arrDK = [undefined, null, ''];
+      this.currentLab = lab
+      this.titleDialogLabList = 'Danh sách đặt phòng'.concat(' - ', lab.labName);
       this.isShowDlgListLab = true;
-      showAlert(
-        this,
-        WARNING,
-        'Chức năng đặt phòng đang được phát triển!'
-      );
-      return false
-      //this.$refs.tblMain.listDataTable = this.listDataTable.filter(row => arrDK.indexOf(name)>-1 || row.labName.toLowerCase().indexOf(name.toLowerCase()) > -1);
-      //alert(this.findName);
-
-
-
+      this.formSearchLabList.id = lab.id;
+      this.formSearchLabList.page = 0
+      this.formSearchLabList.size = 5000  //this.$refs.tblMainLab.size 
+      // showAlert(
+      //   this,
+      //   WARNING,
+      //   'Chức năng đặt phòng đang được phát triển!'
+      // );
+      // return false
+      
       /*
 <div>
           <el-input onBlur={this.showBookingList} />
         </div>
       */
       // if (!this.lstTaiLieuKemTheo.length) {
-      //   this.loading = true <input type="text" on-blur={this.showBookingList} />
-      //   apiFactory
-      //     .callAPI(ConstantAPI['DMNV'].TAILIEU_HS)
-      //     .then(rs => {
-      //       this.loading = false
-      //       this.$store.dispatch(
-      //         'common/listCommonData/setDanhSachTaiLieuKemTheo',
-      //         rs || []
-      //       )
-
-      //       this.lstTaiLieuKemTheo = this.$store.state['common'].listCommonData.danhSachTaiLieuKemTheo || []
-      //       this.lenTLKTHS = this.lstTaiLieuKemTheo.length
-      //     })
-      //     .catch(err => {
-      //       this.loading = false
-      //       errAlert(this, err)
-      //       // console.log(err)
-      //     })
+      // //   this.loading = true <input type="text" on-blur={this.showBookingList} />
+      this.loadDataTableLab = true
+      apiFactory
+        .callAPI(
+          ConstantAPI[MENU_CODE_API].SELECT_ITEM_LAB,
+          {},
+          this.formSearchLabList
+        )
+        .then(rs => {
+          // const content = this.createContentNotifyBookings();
+          // showAlert(this, SUCCESS, content, 6000, true);
+          this.loadDataTableLab = false
+          this.listDataTableLab = rs.result          
+          // console.log(rs)
+        })
+        .catch(err => {
+          errAlert(this, err)
+          this.loadDataTableLab = false
+        })
       // }
+    },
+    showBookingHistory() {
+      const arrDK = [undefined, null, ''];
+      this.titleDialogLabHistory = 'Lịch sử đặt phòng';
+      this.isShowDlgLabHistory = true;
+      this.formSearchLabHistory.page = 0
+      this.formSearchLabHistory.size = 5000  //this.$refs.tblMainLab.size 
+      // showAlert(
+      //   this,
+      //   WARNING,
+      //   'Chức năng đặt phòng đang được phát triển!'
+      // );
+      // return false
+      
+      this.loadDataTableLab = true
+      apiFactory
+        .callAPI(
+          ConstantAPI[MENU_CODE_API].SEARCH_HISTORY,
+          {},
+          this.formSearchLabHistory
+        )
+        .then(rs => {
+          // const content = this.createContentNotifyBookings();
+          // showAlert(this, SUCCESS, content, 6000, true);
+          this.loadDataTableLab = false
+          this.listDataTableLabHis = rs.result   
+          let arrLab = []
+          for (const lab of this.listDataTableLabHis) {
+            arrLab = this.lstLab.filter(obj => obj.id === lab.labId)
+            if (arrLab.length > 0) {
+              lab.labName = arrLab[0].labName
+            }
+            
+          }
+          
+          arrLab[0]
+          // console.log(rs)
+        })
+        .catch(err => {
+          errAlert(this, err)
+          this.loadDataTableLab = false
+        })
+      // }
+    },
+    closeHistory() {
+      this.isShowDlgLabHistory = false;
+      this.listDataTableLabHis = []
     },
     labRegistration(item) {
       this.isShowDlgPTN = true;
       this.flagShowDialog = FORM_MODE.CREATE
       this.titleDialogLab = 'Đăng ký phòng thí nghiệm'.concat(' - ', item.labName);
-
+      this.isHiddenInput =false
+      this.formAddEditPTN.labId = item.id;
+      this.formAddEditPTN.labName = item.labName
       this.formAddEditPTN.bookingUser = this.$store.getters.userInfo.uid;
       this.formAddEditPTN.email = this.$store.getters.userInfo.ema;
       this.formAddEditPTN.department = 'KHOA_MOI_TRUONG';
@@ -722,8 +994,9 @@ export default {
         const lstFilter = this.lstTB.filter(obj => obj.deviceId === this.formTB.deviceId);
         if (arrDK.indexOf(lstFilter) === -1 && lstFilter.length >0) {
           const objRow = lstFilter[0];
-          objRow["unit"] = 'Thiết bị';
+          objRow["unit"] = 'TB';
           objRow.quantity = this.formTB.quantity;
+          objRow.labBookingId = this.formAddEditPTN.labId
           this.listDataTableTB.push(objRow);
         } 
       })      
@@ -751,6 +1024,7 @@ export default {
           const objRow = lstFilter[0];
           objRow["unit"] = this.formDC.unit;
           objRow.quantity = this.formDC.quantity;
+          objRow.labBookingId = this.formAddEditPTN.labId
           console.log(objRow);
           this.listDataTableDC.push(objRow);
         } 
@@ -779,6 +1053,7 @@ export default {
           const objRow = lstFilter[0];
           objRow["unit"] = this.formHC.unit;
           objRow.quantity = this.formHC.quantity;
+          objRow.labBookingId = this.formAddEditPTN.labId
           console.log(objRow);
           this.listDataTableHC.push(objRow);
         } 
@@ -788,13 +1063,15 @@ export default {
       this.listDataTableHC = this.listDataTableHC.filter(obj => obj !== row);
     },
     changeRadioPurpose(code) {
+      console.log(code +'--'+this.isLessonNameRequired)
       if (code === 'NGHIEN_CUU_KH' || code === 'KHOA_LUAN_TN' ) this.isLessonNameRequired = true
       else this.isLessonNameRequired = false
+      
       setTimeout(() => {
         this.$refs['formAddEditPTN'].validate(valid => {
           return
         })
-      }, 100)
+      }, 200)
     },
     initQuestion(len) {
       while (len--) {
@@ -897,6 +1174,21 @@ export default {
           errAlert(this, err)
         })
     },
+    onCaculateBookingLab() {
+      //this.formLoading = true
+      apiFactory
+        .callAPI(ConstantAPI[MENU_CODE_API].CACULATE_BOOKING_LAB, {}, {})
+        .then(rs => {
+          // this.formLoading = false
+          this.caculateBookingLab = rs
+          // console.log(rs)
+          // console.log(this.total)
+        })
+        .catch(err => {
+          // this.formLoading = false
+          errAlert(this, err)
+        })
+    },
     onSearch(mode) {
       
       //this.$refs.tblMain.resetPage()
@@ -925,6 +1217,18 @@ export default {
         })
       
 
+    },
+    onSearchListLab() {
+      const s =""
+    },
+    onSearchTB() {
+      const s =""
+    },
+    onSearchDC() {
+      const s =""
+    },
+    onSearchHC() {
+      const s =""
     },
     validateFileSize(files) {
       let totalSize = 0
@@ -979,12 +1283,7 @@ export default {
         if (!valid) {
           return false
         }
-        showAlert(
-          this,
-          WARNING,
-          'Chức năng đặt phòng đang được phát triển!'
-        );
-        return false
+        
         this.buttonSaveLoading = true
         apiFactory
           .callAPI(
@@ -1051,26 +1350,244 @@ export default {
           })
       })
     },
-    onSendHoSo(code) {
+    onInsertPTN(formName) {
+      
+      this.$refs[formName].validate(valid => {
+        if (!valid) {
+          return false
+        }
+
+        this.formAddEditPTN.status = STATUS_MODE.NEW
+        const formPTNModel = this.formAddEditPTN
+        formPTNModel.deviceBookings = this.listDataTableTB
+        formPTNModel.toolBookings = this.listDataTableDC
+        formPTNModel.resourceBookings = this.listDataTableHC
+
+        this.buttonSaveLoading = true
+        apiFactory
+          .callAPI(
+            ConstantAPI[MENU_CODE_API].INSERT_PTN,
+            formPTNModel
+          )
+          .then(rs => {
+            const content = this.createContentNotifyBookings();
+            showAlert(this, SUCCESS, content, 6000, true);
+            this.buttonSaveLoading = false
+            this.onLoadLab()
+            this.onCaculateBookingLab()
+            this.$emit("refreshCount");
+            this.isShowDlgPTN = false
+            // console.log(rs)
+          })
+          .catch(err => {
+            errAlert(this, err)
+            this.buttonSaveLoading = false
+            this.isShowDlgAddEdit = false
+          })
+      })
+    },
+    createContentNotifyBookings() {
+      const strContent = `Đặt phòng thành công! <p>Thông tin phòng: <b>`+this.formAddEditPTN.labName+`</b></p><p>Thời gian: <b>`+getDateStringHoursMinutes(this.formAddEditPTN.bookingDate)+ ' - ' +getDateStringHoursMinutes(this.formAddEditPTN.bookingDateTo) + `</b></p>`
+      return strContent;
+    },
+    createContentNotifyBookingsApprove(row, status) {
+      let strContent = 'Phê duyệt đặt phòng thành công!'
+      if (status === STATUS_MODE.UNAPPROVE) {
+        strContent = 'Từ chối đặt phòng thành công!'
+      }
+      strContent += ` <p>Thông tin phòng: <b>`+this.currentLab.labName+`</b></p><p>Thời gian: <b>`+getDateStringHoursMinutes(new Date(row.bookingDate))+ ' - ' +getDateStringHoursMinutes(new Date(row.bookingDateTo)) + `</b></p>`
+      return strContent;
+    },
+    onPreEditLab(row) {
+      if (this.$refs.formAddEditPTN) {
+        this.$refs.formAddEditPTN.resetFields()
+      }
+      const arrDK = [undefined, null, '']
+     
+      this.listDataTableTB = []
+      this.listDataTableDC = []
+      this.listDataTableHC =[]
+      this.tabIndex = '0'
+      this.isHiddenInput = false
+      this.flagShowDialog = FORM_MODE.EDIT
+      this.isShowDlgPTN = true;
+      this.titleDialogLab = 'Đăng ký phòng thí nghiệm'.concat(' - ', this.currentLab.labName);
+      this.formAddEditPTN = row
+      this.formAddEditPTN.department = this.currentLab.department
+      row.deviceBookings.forEach(obj => obj['unit'] = 'TB')
+      this.listDataTableTB = row.deviceBookings
+      this.listDataTableDC = row.toolBookings
+      this.listDataTableHC =row.resourceBookings
+    },
+    onApproveLabBooking(row) {
       showConfirmCustom(
         this.$confirm,
-        'Bạn có chắc chắn muốn gửi phiếu yêu cầu?',
+        'Bạn có chắc chắn muốn Phê duyệt phiếu đặt phòng này?',
         () => {
-          const status_old = this.formAddEdit.ma_trang_thai
-          this.formAddEdit.ma_trang_thai = GUI_PHIEU_YC
-          this.buttonAction = ACTION_MODE.SEND
-          if (this.formAddEdit.id_phieu_yeu_cau > 0) {
-            this.onUpdate('formAddEdit')
-          } else {
-            this.onInsert('formAddEdit')
-          }
-          setTimeout(() => {
-            this.buttonAction = ACTION_MODE.DEFAULT
-            this.formAddEdit.ma_trang_thai = status_old
-          }, 200)
+          this.iconApproveLabLoading = true
+          row.labName = this.currentLab.labName
+        apiFactory
+          .callAPI(
+            ConstantAPI[MENU_CODE_API].APPROVE_PTN,
+            row
+          )
+          .then(rs => {
+            const content = this.createContentNotifyBookingsApprove(rs, STATUS_MODE.APPROVE);
+            showAlert(this, SUCCESS, content, 6000, true);
+            this.iconApproveLabLoading = false
+            row.status = STATUS_MODE.APPROVE
+            // this.onLoadLab()
+            this.$emit("refreshCount");
+            this.onCaculateBookingLab()
+            //this.isShowDlgPTN = false
+            // console.log(rs)
+          })
+          .catch(err => {
+            errAlert(this, err)
+            this.iconApproveLabLoading = false
+            //this.isShowDlgAddEdit = false
+          })
         },
         'Xác nhận'
       )
+    },
+    onShowConfirmQuantity(row) {
+      this.currentLabBooking =row
+      row.deviceBookings.forEach(obj => obj['unit'] = 'TB')
+      this.listDataTableTB = row.deviceBookings
+      this.listDataTableDC = row.toolBookings
+      this.listDataTableHC = row.resourceBookings
+      this.listDataTableTB = this.listDataTableTB.map(row => {
+        row.actualQuantityUsed = row.quantity
+        return {
+          ...row,
+          editMode: true
+        };
+      });
+      this.listDataTableDC = this.listDataTableDC.map(row => {
+        row.actualQuantityUsed = row.quantity
+        return {
+          ...row,
+          editMode: true
+        };
+      });
+      this.listDataTableHC = this.listDataTableHC.map(row => {
+        row.actualQuantityUsed = row.quantity
+        return {
+          ...row,
+          editMode: true
+        };
+      });
+      this.titleDialogConfirmQuantity = 'Xác nhận số lượng sử dụng trong phòng thí nghiệm'.concat(' - ', this.currentLab.labName);
+      this.isShowDlgConfirmQuantity = true;            
+    },
+    setEditMode(row, index) {
+      row.editMode = true;
+    },
+    saveRow(row, index) {
+      row.editMode = false;
+    },
+    onConfirmQuantityBooking(form) {      
+      const regex = new RegExp('(([0-9.])|([0-9].[0-9]))$')
+     
+      for (const obj of this.listDataTableTB) {
+        if (!regex.test(obj.actualQuantityUsed.toString())) {
+          showAlert(this, WARNING, 'Số lượng thiết bị thực tế sử dụng không hợp lệ')
+          return false
+        }
+      }
+      for (const obj of this.listDataTableDC) {
+        if (!regex.test(obj.actualQuantityUsed.toString())) {
+          showAlert(this, WARNING, 'Số lượng dụng cụ thực tế sử dụng không hợp lệ')
+          return false
+        }
+      }
+      for (const obj of this.listDataTableHC) {
+        if (!regex.test(obj.actualQuantityUsed.toString())) {
+          showAlert(this, WARNING, 'Số lượng hóa chất thực tế sử dụng không hợp lệ')
+          return false
+        }
+      }
+
+      const formConfirmModel = this.currentLabBooking
+      formConfirmModel.labName = this.currentLab.labName
+      formConfirmModel.deviceBookings = this.listDataTableTB
+      formConfirmModel.toolBookings = this.listDataTableDC
+      formConfirmModel.resourceBookings = this.listDataTableHC
+      
+      showConfirmCustom(
+        this.$confirm,
+        'Bạn có chắc chắn xác nhận thông tin các số lượng thực tế sử dụng này?',
+        () => {
+          this.buttonSaveLoading = true
+        apiFactory
+          .callAPI(
+            ConstantAPI[MENU_CODE_API].CONFIRM_QUANTITY_PTN,
+            formConfirmModel
+          )
+          .then(rs => {
+            const content = "Xác nhận thông tin thành công";
+            showAlert(this, SUCCESS, content, 4000, true);
+            this.buttonSaveLoading = false
+            this.currentLabBooking.status = STATUS_MODE.CONFIRM
+            this.isShowDlgConfirmQuantity = false;
+            this.$emit("refreshCount");
+            this.onCaculateBookingLab()
+            //this.isShowDlgPTN = false
+          })
+          .catch(err => {
+            errAlert(this, err)
+            this.buttonSaveLoading = false
+            this.isShowDlgConfirmQuantity = false;
+            //this.isShowDlgAddEdit = false
+          })
+        },
+        'Xác nhận'
+      )
+    },
+    onRefuseLabBooking(row) {
+      showConfirmCustom(
+        this.$confirm,
+        'Bạn có chắc chắn muốn Từ chối phê duyệt phiếu đặt phòng này?',
+        () => {
+          this.iconDelLoading = true
+          row.labName = this.currentLab.labName
+        apiFactory
+          .callAPI(
+            ConstantAPI[MENU_CODE_API].UNAPPROVE_PTN,
+            row
+          )
+          .then(rs => {
+            const content = this.createContentNotifyBookingsApprove(rs,STATUS_MODE.UNAPPROVE);
+            showAlert(this, SUCCESS, content, 6000, true);
+            this.iconDelLoading = false
+            row.status = STATUS_MODE.UNAPPROVE
+            //this.onLoadLab()
+            this.$emit("refreshCount");
+            this.onCaculateBookingLab()
+            //this.isShowDlgPTN = false
+            // console.log(rs)
+          })
+          .catch(err => {
+            errAlert(this, err)
+            this.iconDelLoading = false
+            //this.isShowDlgAddEdit = false
+          })
+        },
+        'Xác nhận'
+      )
+    },
+    showHideBtnApproveInGrid(rowData) {
+      if (STATUS_ROW_APPROVE.indexOf(rowData.status) > -1) return true
+      return false
+    },
+    showHideBtnConfirmInGrid(rowData) {
+      if (STATUS_ROW_CONFIRM.indexOf(rowData.status) > -1) return true
+      return false
+    },
+    showHideBtnRefuseInGrid(rowData) {
+      if (STATUS_ROW_REFUSE.indexOf(rowData.status) > -1) return true
+      return false
     },
     resetForm(formName) {
       this.resetFrm(formName)
@@ -1263,36 +1780,81 @@ export default {
       }
     },
     onView(row) {
-      if (this.$refs.formAddEdit) {
-        this.$refs.formAddEdit.resetFields()
+      if (this.$refs.formAddEditPTN) {
+        this.$refs.formAddEditPTN.resetFields()
       }
-
+      this.listDataTableTB = []
+      this.listDataTableDC = []
+      this.listDataTableHC =[]
       this.tabIndex = '0'
-      this.lstAttachment = []
-      this.lstAttachmentGroup = []
-      this.fileListUpload = []
-      this.fileListDelete = []
-      this.fileListKBBK = []
       this.isHiddenInput = true
       this.flagShowDialog = FORM_MODE.VIEW
-      this.isPrint = true
-      this.titleDialog = 'Chi tiết Hóa chất'
-      if (this.$refs.uploadTLKTHS !== undefined && this.$refs.uploadTLKTHS !== null) {
-        for (const objUpload of this.$refs.uploadTLKTHS) {
-          objUpload.clearFiles()
-        }
-        this.$refs.uploadGTK.clearFiles()
-      }
+      this.isShowDlgPTN = true;
+      this.titleDialogLab = 'Đăng ký phòng thí nghiệm'.concat(' - ', this.currentLab.labName);
+      this.formAddEditPTN = row
+      this.formAddEditPTN.department = this.currentLab.department
+      row.deviceBookings.forEach(obj => obj['unit'] = 'TB')
+      this.listDataTableTB = row.deviceBookings
+      this.listDataTableDC = row.toolBookings
+      this.listDataTableHC =row.resourceBookings
+      // this.formAddEditPTN.status = STATUS_MODE.NEW
+      //   const formPTNModel = this.formAddEditPTN
+      //   formPTNModel.deviceBookings = this.listDataTableTB
+      //   formPTNModel.toolBookings = this.listDataTableDC
+      // formPTNModel.resourceBookings = this.listDataTableHC
 
+     
+      // const param = {
+      //   code: row.resourceCode
+      // }
+      // this.iconViewLoading = true
+      // apiFactory
+      //   .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
+      //   .then(rs => {
+      //     this.viewDetails(rs)
+      //     this.disableAppCodeModeEdit = true;
+      //   })
+    },
+    onViewHistory(row) {
+      
+      // this.formAddEditPTN.status = STATUS_MODE.NEW
+      //   const formPTNModel = this.formAddEditPTN
+      //   formPTNModel.deviceBookings = this.listDataTableTB
+      //   formPTNModel.toolBookings = this.listDataTableDC
+      // formPTNModel.resourceBookings = this.listDataTableHC
+
+     
       const param = {
-        code: row.resourceCode
+        id: row.bookingId
       }
       this.iconViewLoading = true
       apiFactory
-        .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
+        .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM_BOOKING, {}, param)
         .then(rs => {
-          this.viewDetails(rs)
-          this.disableAppCodeModeEdit = true;
+          this.iconViewLoading = false
+          if (this.$refs.formAddEditPTN) {
+            this.$refs.formAddEditPTN.resetFields()
+          }
+          this.listDataTableTB = []
+          this.listDataTableDC = []
+          this.listDataTableHC =[]
+          this.tabIndex = '0'
+          this.isHiddenInput = true
+          this.flagShowDialog = FORM_MODE.VIEW
+          this.isShowDlgPTN = true;
+          const arrLab = this.lstLab.filter(obj => obj.id ===rs.labId)
+          this.titleDialogLab = 'Đăng ký phòng thí nghiệm'.concat(' - ', arrLab[0].labName);
+          this.formAddEditPTN = rs
+          this.formAddEditPTN.department = arrLab[0].department
+          rs.deviceBookings.forEach(obj => obj['unit'] = 'TB')
+          this.listDataTableTB = rs.deviceBookings
+          this.listDataTableDC = rs.toolBookings
+          this.listDataTableHC =rs.resourceBookings
+        })
+        .catch(err => {
+          errAlert(this, err)
+          this.iconViewLoading = false
+          //this.isShowDlgAddEdit = false
         })
     },
     viewDetails(rs) {
