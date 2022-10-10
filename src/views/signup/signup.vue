@@ -1,14 +1,14 @@
 <template>
-  <LoginTemplate :after-login-cb="loadCacheLocal" />
+  <SignUpTemplate />
 </template>
 
 <script>
 import { cacheLocal } from "@/utils/ECustomsUtils";
-import LoginTemplate from "ff24-customs-lib/src/lib-components/login/login";
+import SignUpTemplate from "ff24-customs-lib/src/lib-components/login-ent/signup";
 
 export default {
-  name: "Login",
-  components: { LoginTemplate },
+  name: "SignUp",
+  components: { SignUpTemplate },
   props: {
     loadCacheLocal: {
       type: Function,
@@ -18,7 +18,7 @@ export default {
   mounted() {
     // console.log(this.$store);
     // console.log(this.$store.state);
-    // console.log(this.$store.state.app.sidebar);
+    console.log("SignUp test");
   },
 };
 </script>

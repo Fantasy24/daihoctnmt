@@ -611,3 +611,34 @@ export function formatCellStyleExcelTraCuu(lenCol) {
   }
   return formatCellExcel
 }
+/*Get Parameter Từ URL*/
+export function getUrlParameter(sParam) {
+  const sPageURL = decodeURIComponent(window.location.hash.split('?')[1])
+  let sURLVariables = sPageURL.split('&')
+  let sParameterName = ''
+  for (let i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+      if (sParameterName[0] === sParam) {
+          return sParameterName[1] === undefined ? true : sParameterName[1];
+      }
+  }
+};
+//routeValueTuVung = getUrlParameterLink(decodeURIComponent(this.href), "tuvung");
+export function getUrlParameterLink(strLink, sParam) {
+  let sPageURL = ''
+  if (strLink != "" && strLink != null && strLink != undefined && strLink.indexOf("{0}") == (-1)) {
+      let idx = strLink.indexOf("?");
+      let strParam = strLink.substring(idx + 1, strLink.length)
+      sPageURL = decodeURIComponent(strParam.replace(/#/g, ''));
+  } else {
+      sPageURL = decodeURIComponent(window.location.search.substring(1));
+  }
+  let sURLVariables = sPageURL.split('&');
+  let sParameterName =''
+  for (let i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+      if (sParameterName[0] === sParam) {
+          return sParameterName[1] === undefined ? true : sParameterName[1];
+      }
+  }
+};

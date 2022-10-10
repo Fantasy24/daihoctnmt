@@ -15,12 +15,12 @@ export function getMessages() {
     vi: {
       ...vi,
       ...viLocale,
-      ...elementViLocale
+      ...elementViLocale      
     },
     en: {
       ...en,
       ...enLocale,
-      ...elementEnLocale
+      ...elementEnLocale     
     }
   }
 }
