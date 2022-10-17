@@ -177,7 +177,7 @@ export const allowedFilesGUQ = [
   '.png'
 ]
 export const allowedExcel = ['.xlsx', '.xls']
-
+export const allowedImages = ['.jpeg', '.jpg','.png','.git','.bmp']
 // File Size 5MB
 export const maxFileSize = 5
 
@@ -198,6 +198,18 @@ export function validateFileExtension(file, isExcel) {
     return false
   }
   return true
+}
+
+export function isImage(file) {
+  return file['type'].split('/')[0] == 'image'; //returns true or false
+}
+
+export function getFileExtension(file) {
+  // var ValidImageTypes = ["image/gif", "image/jpeg", "image/png","image/svg+xml"];
+  // var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png", ".svg"];
+  const fileName = file.name || file.fileName
+  const filextend = fileName !==null? fileName.substring(fileName.lastIndexOf(".") + 1) :'';
+  return filextend
 }
 
 export function checkIsValidFileSize(size, maxSize) {

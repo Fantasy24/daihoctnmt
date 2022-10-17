@@ -21,6 +21,9 @@ import SelectMasterData from '../../../components/CommonComponent/SelectMasterDa
 
 import {
   validateFileExtension,
+  isImage,
+  getFileExtension,
+  allowedImages,
   maxFileSize,
   checkIsValidFileSize,
   getNameByIdOnGrid,
@@ -177,9 +180,12 @@ export default {
         page: null,
         size: null
       },
-      ngay_thong_bao_ket_qua_pt: null,
-      ngay_dk_to_khai: null,
-      ngay_tiep_nhan_ptpl: null,
+      dialogImageUrl: '',
+      dialogImgPreview: false,
+      dialogFileExt:'',
+      disabled: false,
+      pdfLink: require('../../../assets/icon/DuThaoThongBao.pdf'),
+      fileList: [],
       fileListUpload: [],
       fileListDelete: [],
       lstAttachment: [],
@@ -329,11 +335,12 @@ export default {
           show: true
         }    
       ],
+      getFileExtension,
       MENU_CODE_API,
       MA_CHUC_NANG,
       FORM_MODE,
       STATUS_ROW_UPDATE,
-      TAI_LIEU_KHAC
+      LIMIT_UPLOAD_FILE
     }
   },
   created() {
@@ -348,7 +355,8 @@ export default {
     this.loading = false
     this.joinNameByCodeColumnExcel = this.getListJoinNameByCodeColumnExcel()
     // this.formSearch.maHq = this.$refs.selectHQ.listMaHq[0].code
-
+    this.fileList = [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+    this.fileListUpload = [...this.fileList]
     console.log(this.$store)
     console.log(this.$store.getters.token)
   },
@@ -463,6 +471,58 @@ export default {
         }
       ]
     },
+    checkIsImage(file) {
+      let fileExt = getFileExtension(file)
+      fileExt = '.'.concat(fileExt)
+      if (allowedImages.indexOf(fileExt) > -1) {
+        return true
+      }
+      return false
+
+    },
+    getUrlFileImgThumb(file) {
+      getFileExtension
+    },    
+    handleRemove(file) {
+      console.log(file);
+    },
+    handlePictureCardPreview(file) {
+      
+      const ext = getFileExtension(file)
+      this.dialogFileExt = ext
+      if (ext === 'pdf') {
+        this.dialogImageUrl = file.url
+          //require('@/assets/icon/pdf.png')
+      }
+      else if (ext === 'doc' || ext === 'docx') {
+        this.dialogImageUrl = require('@/assets/icon/word.png')
+      }
+      else if (ext === 'xls' || ext === 'xlsx') {
+        this.dialogImageUrl = require('@/assets/icon/excel.png')
+      }
+      else if (ext === 'ppt' || ext === 'pptx') {
+        this.dialogImageUrl = require('@/assets/icon/ppt.png')
+      }
+      else if (ext === 'zip' || ext === 'rar') {
+        this.dialogImageUrl = require('@/assets/icon/zip.png')
+      }
+      else if(this.checkIsImage(file)){
+        this.dialogImageUrl = file.url;
+      }
+      else {
+        this.dialogImageUrl = require('@/assets/icon/zip.png')
+      }
+      
+      this.dialogImgPreview = true;
+    },
+    handleDownload(file) {
+      const fileLink = document.createElement('a')
+      fileLink.href = file.url
+      const fileName = file.name || file.fileName
+        fileLink.setAttribute('download', fileName)
+        document.body.appendChild(fileLink)
+        fileLink.click()
+    },
     onSearchHandling(idButton) {
       if (checkPermissionShowButton(MENU_CODE_API, idButton)) {
         this.onSearch('')
@@ -549,10 +609,11 @@ export default {
         }
         this.buttonSaveLoading = true
         console.log(this.formAddEdit)
+        const formModel = this.getDeviceModelByForm()
         apiFactory
           .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].INSERT,
-            this.formAddEdit,
+            formModel,
             this.fileListUpload,
             {}
           )
@@ -577,11 +638,12 @@ export default {
           return false
         }
 
-          this.buttonUpdateLoading = true
+        this.buttonUpdateLoading = true
+        const formModel = this.getDeviceModelByForm()
         apiFactory
           .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].UPDATE,
-            this.formAddEdit,
+            formModel,
             this.fileListUpload,
             {}
           )
@@ -617,6 +679,73 @@ export default {
             showAlert(this, ERROR, 'Lỗi! ' + err.message)
           })
       })
+    },
+    initFileBase() {
+      const objTL = {}
+      objTL.id = ''
+      objTL.idReference = 0
+      objTL.fileName = ''
+      objTL.contentType = ''
+      objTL.fileSize = 0
+      objTL.fileData = null
+      objTL.functionCode = MENU_CODE_API      
+      objTL.uid = 0
+      return objTL
+    },
+    getDeviceModelByForm() {
+      let objModel = {}
+      const arrDK =[undefined, null, '']
+      this.formAddEdit.lstFileDelete = this.fileListDelete.join(',')
+      // console.log(this.formAddEdit.ngay_den_cuakhau_dukien)
+
+      const master = this.formAddEdit
+
+      let files = []
+      let i = 0
+      let len = 0
+
+      const filesTmp = this.fileListUpload.filter(obj => arrDK.indexOf(obj.idReference) > -1 || obj.idReference === 0)
+      for (const fileUp of filesTmp) {
+        const objFile = this.initFileBase()
+        objFile.fileName = fileUp.raw.name
+        objFile.contentType = fileUp.raw.type
+        objFile.file_size = fileUp.raw.size
+        objFile.uid = fileUp.raw.uid
+  
+        files.push(objFile)
+      }
+      
+      objModel = master
+      objModel.files = files
+
+      return objModel
+    },
+    getDeviceModelByFormUpdate() {
+      let objModel = {}
+      this.formAddEdit.lstFileDelete = this.fileListDelete.join(',')
+      // console.log(this.formAddEdit.ngay_den_cuakhau_dukien)
+
+      const master = this.formAddEdit
+
+      let files = []
+      let i = 0
+      let len = 0
+
+      const filesTmp = this.fileListUpload
+      for (const fileUp of filesTmp) {
+        const objFile = this.initFileBase()
+        objFile.fileName = fileUp.raw.name
+        objFile.contentType = fileUp.raw.type
+        objFile.file_size = fileUp.raw.size
+        objFile.uid = fileUp.raw.uid
+  
+        files.push(objFile)
+      }
+      
+      objModel = master
+      objModel.files = files
+
+      return objModel
     },
     onSendHoSo(code) {
       showConfirmCustom(
@@ -734,17 +863,38 @@ export default {
       this.disableWhenEdit = true
       this.titleDialog = 'Cập nhật thiết bị'
       this.flagShowDialog = FORM_MODE.EDIT
-      // this.hideColumnTinhTrang(false)
+      // this.hideColumnTinhTrang(false)      
       const param = {
-        // code: code
+        code: row.deviceId
       }
-      this.preEditDetails(row)
-      this.isShowDlgAddEdit = true
+      const pathVariables = {
+        deviceId : row.deviceId
+      }
+      this.iconEditLoading =true
+      apiFactory
+        .callAPIWithPath(ConstantAPI[MENU_CODE_API].ITEM_DETAIL, {}, param, pathVariables)
+        .then(rs => {
+          this.preEditDetails(rs)
+          this.disableAppCodeModeEdit = true;
+          this.iconEditLoading = false
+          this.isShowDlgAddEdit = true
+        })
+        .catch(() => {
+          this.iconEditLoading = false
+          showAlert(this, WARNING, 'Bản ghi không tồn tại trên hệ thống')
+        })
     },
     preEditDetails(rs) {
       const arrDK = [undefined, null, '']
       if (arrDK.indexOf(rs) === -1) {
         this.formAddEdit = rs
+        if (arrDK.indexOf(rs.files) === -1) {
+          for (const file of rs.files) {
+            file.url = ''.concat('data:',file.contentType,';base64,',file.fileData)
+          }          
+        }
+        
+        this.fileListUpload = rs.files
         this.formAddEdit.quantity = '' + this.formAddEdit.quantity;
         this.disableAppCodeModeEdit = true;
         
@@ -875,6 +1025,13 @@ export default {
       if (arrDK.indexOf(rs) === -1) {
         // console.log(rs)
         this.formAddEdit = rs
+        if (arrDK.indexOf(rs.files) === -1) {
+          for (const file of rs.files) {
+            file.url = ''.concat('data:',file.contentType,';base64,',file.fileData)
+          }          
+        }
+        
+        this.fileListUpload = rs.files
         this.formAddEdit.quantity = ''+ this.formAddEdit.quantity
         // File
         //this.getLstAttachment(rs)
@@ -944,7 +1101,6 @@ export default {
     onSelectUpload(loaiTL, idx) {
       this.currentTLKTHS = loaiTL
       this.currentIndex = idx
-      // console.log(loaiTL)
     },
     onBeforeUpload(file) {
       const isIMAGE = file.type === 'image/jpeg' || 'image/gif' || 'image/png'
@@ -989,11 +1145,13 @@ export default {
       } else {
         let lstFileTL = []
         let idLoaiTaiLieu = 0
-        if (idx !== TAI_LIEU_KHAC) {
-          idLoaiTaiLieu = this.lstTaiLieuKemTheo[idx].id
-        }
-        lstFileTL = this.lstAttachment.filter(obj => obj.id_loai_tai_lieu === idLoaiTaiLieu && obj.file_size > 0 && obj.ten_file !== null)
-        if ((files.length + fileList.length + lstFileTL.length) > LIMIT_UPLOAD_FILE) {
+        // if (idx !== TAI_LIEU_KHAC) {
+        //   idLoaiTaiLieu = this.lstTaiLieuKemTheo[idx].id
+        // }
+        //filter(obj => obj.id_loai_tai_lieu === idLoaiTaiLieu && obj.file_size > 0 && obj.ten_file !== null)
+        //lstFileTL = this.lstAttachment.length 
+        const count = (files.length + fileList.length + lstFileTL.length)
+        if (count > LIMIT_UPLOAD_FILE) {
           bol = true
         }
       }
@@ -1071,7 +1229,7 @@ export default {
         reader.readAsBinaryString(f)
       }
     },
-    handleChangeFileTLKTHS(file, fileList) {
+    handleChangeFileTB(file, fileList) {
       this.fileTemp = file.raw
       if (this.fileTemp) {
         // this.fileListUpload = fileList
@@ -1090,9 +1248,9 @@ export default {
             this.$refs.uploadTLKTHS[i].clearFiles()
           }
         } else {
-          file.idTlkths = this.currentTLKTHS.id
-          file.maTlkths = this.currentTLKTHS.ma
-          file.idxTlkths = this.currentIndex
+          // file.idTlkths = this.currentTLKTHS.id
+          // file.maTlkths = this.currentTLKTHS.ma
+          // file.idxTlkths = this.currentIndex
           // file size, uidFile
           this.fileListUpload.push(file)
           // console.log(this.fileListUpload)
@@ -1102,7 +1260,8 @@ export default {
       }
     },
     // How to remove files
-    handleRemoveFileTLKTHS(file, fileList) {
+    handleRemoveFileTB(file, fileList) {
+      this.fileListDelete.push(file.id)
       let lstFile = this.fileListUpload
       lstFile = lstFile.filter(obj => obj !== file)
       this.fileListUpload = lstFile
@@ -1287,23 +1446,7 @@ export default {
       )
 
       return objWithMappedValues
-    },
-    initFileBase() {
-      const objTL = {}
-      objTL.id_tai_lieu = 0
-      objTL.id_phieu_yeu_cau = 0
-      objTL.id_chung_tu_goc = 0
-      objTL.id_loai_tai_lieu = 0
-      objTL.dinh_kem_file = 1
-      objTL.ma_file = ''
-      objTL.ten_file = ''
-      objTL.loai_file = ''
-      objTL.ly_do_khong_dinh_kem = ''
-      objTL.giay_to_khac = ''
-      objTL.file_size = 0
-      objTL.uid = 0
-      return objTL
-    },
+    },    
     getPhieuYeuCauByForm() {
       let objPhieuYeuCau = {}
       this.formAddEdit.lstFileDelete = this.fileListDelete.join(',')

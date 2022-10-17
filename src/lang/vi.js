@@ -84,4 +84,8 @@ export default {
     validOtp: 'Mã xác thực bắt buộc nhập',
     maxlengthOtp: 'Mã xác thực gồm 6 hoặc 8 số'
   },
+  topbar: {
+    profile: 'Thông tin cá nhân',
+    logOut: 'Đăng xuất'
+  }
 }

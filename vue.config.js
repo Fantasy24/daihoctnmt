@@ -98,12 +98,22 @@ module.exports = defineConfig({
     //   }
     // ])
 
-    // config.module
-    //   .rule('vue')
-    //   .test(/\.vue$/)
-    //   .use('vue-loader')
-    //   .loader('vue-loader')
-    //   .end()
+    config.module
+      .rule('vue')
+      .test(/\.vue$/)
+      .use('vue-loader')
+      .loader('vue-loader')
+      .end()
+    config.module.rule('pdf')
+      .test(/\.(pdf)(\?.*)?$/)
+      .use('file-loader')
+      .loader('file-loader')
+      .options({
+        name: 'assets/pdf/[name].[hash:8].[ext]'
+      })
+    // config.module.rule('pdf')
+    //   .test(/\.pdf$/)
+    //   .use('file-loader').loader('file-loader').end()
 
     config.module
       .rule('js')

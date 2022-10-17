@@ -324,3 +324,38 @@ li.el-menu-item .is-active {
 #tab-4{
     padding-right: 20px;
 }
+.el-upload-dragger{
+    width: 50px;
+    height: 30px;
+}
+
+.download-file{
+    color: #409eff !important;
+    background:none !important;
+    border: none !important;
+    cursor: pointer !important;    
+    /* max-width: 90% !important; */
+}
+.download-file:hover{
+   text-decoration: underline;
+}
+.download-file span{
+    overflow: hidden;
+    white-space: pre-wrap;
+}
+.el-upload-list__item-delete{
+    font-size: 14px !important;
+    display: block;
+}
+div.dlg-preview-img{
+    z-index: 9999 !important;
+}
+img.el-upload-list__item-thumbnail{
+    margin-top: -20px;
+    cursor: pointer;
+}
+.el-input.is-disabled .el-input__inner, .el-textarea.is-disabled .el-textarea__inner {   
+    /* color: #C0C4CC; */
+    color: #909399;
+    cursor: not-allowed;
+}

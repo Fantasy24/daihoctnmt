@@ -84,5 +84,9 @@ export default {
   otpForm: {
     validOtp: 'OTP is required',
     maxlengthOtp: 'OTP must be 6 or 8 digits'
+  },
+  topbar: {
+    profile: 'Profile',
+    logOut: 'Logout'
   }
 }

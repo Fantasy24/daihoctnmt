@@ -408,6 +408,146 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <el-form-item label="Tệp đính kèm" prop="fileTB">
+                  <!-- <el-upload
+                    id="fileTB"
+                    ref="uploadFileTB"
+                    v-model="formAddEdit.fileTB"
+                    :auto-upload="false"
+                    :before-upload="onBeforeUpload"
+                    :on-change="handleChangeFileTLKTHS"
+                    :on-remove="handleRemoveFileTLKTHS"
+                    :on-exceed="handleExceedFile"
+                    action="`${process.env.VUE_APP_ZAMMAD}/api/v1/form_submit`"
+                    class="upload-demo"
+                    :limit="10"
+                    accept="image/jpeg,application/pdf"
+                    drag
+                    list-type="picture"
+                  >
+                    <span v-if="isHiddenInput || isHidenGuiHoSo">&nbsp;</span>
+                    <el-button
+                      v-else
+                      id="formAddBtnUploadTk"
+                      slot="trigger"
+                      icon="el-icon-plus"
+                      type="primary"
+                      @click="onSelectUpload(taiLieuKhac, TAI_LIEU_KHAC)"
+                    />
+                  </el-upload> -->
+
+                  <el-upload
+                    id="fileTB"
+                    ref="uploadFileTB"
+                    v-model="formAddEdit.fileTB"
+                    :auto-upload="false"
+                    :before-upload="onBeforeUpload"
+                    :on-change="handleChangeFileTB"
+                    :on-remove="handleRemoveFileTB"
+                    :on-exceed="handleExceedFile"
+                    action="#"
+                    class="upload-demo"
+                    :limit="LIMIT_UPLOAD_FILE"
+                    :file-list="fileListUpload"
+                    :disabled="isHiddenInput"
+                    accept="image/jpeg,application/pdf"
+                    multiple
+                    list-type="picture"
+                  >
+                    <!-- <i slot="default" class="el-icon-plus"></i> -->
+                    <span v-if="isHiddenInput || isHidenGuiHoSo">&nbsp;</span>
+                    <el-button
+                      v-else
+                      id="formAddBtnUploadTk"
+                      slot="trigger"
+                      icon="el-icon-plus"
+                      type="primary"
+                      @click="onSelectUpload(1, 1)"
+                    />
+                    <div v-if="file" slot="file" slot-scope="{ file }">
+                      <img
+                        v-if="checkIsImage(file) === true"
+                        class="el-upload-list__item-thumbnail"
+                        :src="file.url"
+                        alt=""
+                        @click="handlePictureCardPreview(file)"
+                      />
+                      <img
+                        v-if="getFileExtension(file) === 'pdf'"
+                        class="el-upload-list__item-thumbnail"
+                        src="@/assets/icon/pdf72.png"
+                        alt=""
+                        @click="handlePictureCardPreview(file)"
+                      />
+                      <span class="el-upload-list__item-actions">
+                        <!-- <span
+                          class="el-upload-list__item-preview"
+                          @click="handlePictureCardPreview(file)"
+                        >
+                          <i class="el-icon-zoom-in"></i>
+                        </span> -->
+                        <span
+                          v-if="!disabled"
+                          class="download-file el-upload-list__item-name"
+                          @click="handleDownload(file)"
+                        >
+                          {{ file.name || file.fileName }}
+                          <!-- <i class="el-icon-download"></i> -->
+                        </span>
+                        <span
+                          v-if="!disabled"
+                          class="el-upload-list__item-delete"
+                          @click="handleRemoveFileTB(file)"
+                        >
+                          <i class="el-icon-circle-close"></i>
+                        </span>
+                      </span>
+                    </div>
+                  </el-upload>
+                  <el-dialog
+                    width="65%"
+                    :visible.sync="dialogImgPreview"
+                    class="dlg-preview-img"
+                  >
+                    <img
+                      v-if="dialogFileExt !== 'pdf'"
+                      width="100%"
+                      :src="dialogImageUrl"
+                      alt=""
+                    />
+
+                    <el-form
+                      v-if="dialogFileExt === 'pdf'"
+                      id="formAddEdit"
+                      label-width="275px"
+                    >
+                      <iframe
+                        v-if="dialogFileExt === 'pdf'"
+                        :src="dialogImageUrl"
+                        style="width: 100%; height: 500px; border: none"
+                      />
+                    </el-form>
+                    <!-- <iframe id="pdf-iframe" :src="pdfLink"></iframe> -->
+                  </el-dialog>
+
+                  <!-- <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :file-list="fileList"
+                    list-type="picture"
+                  >
+                    <el-button size="small" type="primary"
+                      >Click to upload</el-button
+                    >
+                    <div slot="tip" class="el-upload__tip"></div>
+                  </el-upload> -->
+                </el-form-item>
+                <!-- <div class="alg-left">Giấy tờ khác có liên quan</div> -->
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4"> </el-col>
+            </el-row>
           </el-tabs>
         </el-form>
         <span slot="footer" class="dialog-footer">
