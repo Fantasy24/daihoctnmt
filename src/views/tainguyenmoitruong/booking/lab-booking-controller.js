@@ -123,6 +123,7 @@ export default {
       titleDialogLabList: '',
       titleDialogConfirmQuantity: '',
       titleDialogPrint: '',
+      titleDialogLabHistory: '',
       loading: false,
       isPrint: false,
       showPrint: false,
@@ -635,7 +636,7 @@ export default {
           prop: 'quantity',
           label: 'Số lượng',
           width: '100',
-          align: 'left',
+          align: 'right',
           sortable: true,          
           show: true
         },
@@ -643,7 +644,7 @@ export default {
           prop: 'actualQuantityUsed',
           label: 'Số lượng thực tế sử dụng',
           width: '150',
-          align: 'left',
+          align: 'right',
           sortable: true,          
           show: true
         }        
@@ -677,7 +678,7 @@ export default {
           prop: 'quantity',
           label: 'Số lượng',
           width: '100',
-          align: 'left',
+          align: 'right',
           sortable: true,          
           show: true
         },
@@ -685,7 +686,7 @@ export default {
           prop: 'actualQuantityUsed',
           label: 'Số lượng thực tế sử dụng',
           width: '150',
-          align: 'left',
+          align: 'right',
           sortable: true,          
           show: true
         }
@@ -719,7 +720,7 @@ export default {
           prop: 'quantity',
           label: 'Số lượng',
           width: '100',
-          align: 'left',
+          align: 'right',
           sortable: true,          
           show: true
         },
@@ -727,7 +728,7 @@ export default {
           prop: 'actualQuantityUsed',
           label: 'Số lượng thực tế sử dụng',
           width: '150',
-          align: 'left',
+          align: 'right',
           sortable: true,          
           show: true
         }
@@ -956,6 +957,29 @@ export default {
     },
     labRegistration(item) {
       this.isShowDlgPTN = true;
+      // setTimeout(() => {
+        if (this.$refs.formAddEditPTN) {
+          this.$refs.formAddEditPTN.resetFields()
+        }
+      this.listDataTableTB = []
+      this.listDataTableDC = []
+      this.listDataTableHC = []
+      this.formAddEditPTN.labId = 0;;
+      this.formAddEditPTN.bookingId = 0;
+      this.formAddEditPTN.labName = '';
+      this.formAddEditPTN.bookingUser = '';
+      this.formAddEditPTN.email = '';
+      this.formAddEditPTN.department = '';
+      this.formAddEditPTN.phoneNumber = '';
+      this.formAddEditPTN.bookingDate = null;
+      this.formAddEditPTN.bookingDateTo = null;
+      this.formAddEditPTN.purpose = '';
+      this.formAddEditPTN.pic = '';
+      this.formAddEditPTN.lessonName = '';
+      this.formAddEditPTN.className = '';
+      this.formAddEditPTN.groupStudents = '';
+      this.formAddEditPTN.targets = '';
+      
       this.flagShowDialog = FORM_MODE.CREATE
       this.titleDialogLab = 'Đăng ký phòng thí nghiệm'.concat(' - ', item.labName);
       this.isHiddenInput =false
@@ -964,6 +988,8 @@ export default {
       this.formAddEditPTN.bookingUser = this.$store.getters.userInfo.uid;
       this.formAddEditPTN.email = this.$store.getters.userInfo.ema;
       this.formAddEditPTN.department = 'KHOA_MOI_TRUONG';
+        
+      // }, 1000);      
       
     },
     getListTB(lstValue) {
@@ -1624,7 +1650,9 @@ export default {
     },
 
     resetFrm(formName) {
-      this.$refs[formName].resetFields()
+      if (this.$refs[formName]) {
+        this.$refs[formName].resetFields()
+      }      
     },
 
     changeValue() {

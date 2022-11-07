@@ -421,6 +421,101 @@ function createDateFromStrDateChild(strDate) {
   }
 }
 
+export function createDateYYYYMMDD(strDate)
+{
+  var textDate = strDate.trim();
+  try
+  {
+    /*Format Date YYYYMMDD*/
+      if (textDate.length == 8) {
+          /* '20200515' */
+          var now = new Date();
+          var yyyy = strDate.substring(0, 4);
+          var mm = strDate.substring(4, 6);
+          var dd = strDate.substring(6, 8);
+          var hh = now.getHours();
+          var mi = now.getMinutes();
+          var dt = new Date(parseInt(yyyy, 10),
+              parseInt(mm, 10) - 1,
+              parseInt(dd, 10),
+              hh,
+              mi);
+          return dt;
+      }
+      /*Format Date YYYYMMDD HHMMSS*/
+      if (textDate.length == 15) {
+        var yyyy = strDate.substring(0, 4);
+          var mm = strDate.substring(4, 6);
+          var dd = strDate.substring(6, 8);
+          var hh = strDate.substring(9, 11);
+          var mi = strDate.substring(11, 13);
+          var ss = strDate.substring(13, 15);
+          var dt = new Date(parseInt(yyyy, 10),
+              parseInt(mm, 10) - 1,
+              parseInt(dd, 10),
+              parseInt(hh, 10),
+              parseInt(mi, 10),
+              parseInt(ss, 10));
+          return dt;
+      }     
+  }catch(ex)
+  {
+    
+  } 
+}
+
+export function getDateStringHoursMinutesSecond(date) {
+  try {
+      var strDay = '';
+      var strMonth = '';
+      var strHours = '';
+      var strMinutes = '';
+      var strSecond = '';
+      if (date != null && date != undefined) {
+          var day = date.getDate();
+          var month = date.getMonth();
+          var year = date.getFullYear();
+          var hours = date.getHours();
+          var minutes = date.getMinutes();
+          var second = date.getSeconds();
+          /*(month + 1)*/
+          month = month + 1;
+          /*day*/
+          if (day < 10) {
+              strDay = '0' + day.toString();
+          } else {
+              strDay = day.toString();
+          }
+          /*month*/
+          if (month < 10) {
+              strMonth = '0' + month.toString();
+          } else {
+              strMonth = month.toString();
+          }
+          /*Hours*/
+          if (hours < 10) {
+              strHours = '0' + hours.toString();
+          } else {
+              strHours = hours.toString();
+          }
+          /*Minutes*/
+          if (minutes < 10) {
+              strMinutes = '0' + minutes.toString();
+          } else {
+              strMinutes = minutes.toString();
+          }
+          /*Second*/
+          if (second < 10) {
+            strSecond = '0' + second.toString();
+          } else {
+            strSecond = second.toString();
+          }
+          var dateString = strDay + '/' + strMonth + '/' + year + ' ' + strHours + ':' + strMinutes + ':' + strSecond;
+          return dateString;
+      }
+  } catch (err) {}
+}
+
 export function getDateStringHoursMinutes(date) {
   try {
     var strDay = ''
@@ -465,6 +560,34 @@ export function getDateStringHoursMinutes(date) {
     }
     // eslint-disable-next-line no-empty
   } catch (err) {}
+}
+
+export function subtractDate(dt1,dt2,type)
+{
+  //type: 1-Days, 2-Hours, 3-Minutes, 4-Seconds
+  const arrDK = [undefined,null,""];
+  let num =0;
+  let ret =0;
+  if(arrDK.indexOf(dt1) ==-1 && arrDK.indexOf(dt2) ==-1)
+  {
+    num = dt1 -dt2;
+    switch(type)
+    {
+    case 1:
+      ret = num/(1000*60*60*24);
+      break;
+    case 2:
+      ret = num/(1000*60*60);
+      break;
+    case 3:
+      ret = num/(1000*60);
+      break;
+    case 4:
+      ret = num/(1000);
+      break;
+    }
+  }
+  return ret;
 }
 
 export function formatFullDate_VN(value) {

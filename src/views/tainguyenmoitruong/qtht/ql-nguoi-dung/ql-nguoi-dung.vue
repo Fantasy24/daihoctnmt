@@ -794,6 +794,22 @@
                   >DELETE</el-tag
                 >
               </span>
+              <span v-if="data.rowKey.startsWith('[BTN_DELETE_PTN]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="danger"
+                  >DELETE_PTN</el-tag
+                >
+              </span>
+              <span v-if="data.rowKey.startsWith('[BTN_APPROVE]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="warning"
+                  >APPROVE</el-tag
+                >
+              </span>
               <span v-if="data.rowKey.startsWith('[BTN_APPROVE1]')">
                 <el-tag
                   class="method-label-color"
@@ -808,6 +824,22 @@
                   style="font-weight: bold; border: 2px solid"
                   type="warning"
                   >APPROVE_2</el-tag
+                >
+              </span>
+              <span v-if="data.rowKey.startsWith('[BTN_CONFIRM]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="warning"
+                  >CONFIRM</el-tag
+                >
+              </span>
+              <span v-if="data.rowKey.startsWith('[BTN_REFUSE]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="danger"
+                  >REFUSE</el-tag
                 >
               </span>
               <span v-if="data.rowKey.startsWith('[BTN_SEARCH]')">
@@ -826,12 +858,28 @@
                   >INSERT</el-tag
                 >
               </span>
+              <span v-if="data.rowKey.startsWith('[BTN_INSERT_PTN]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="success"
+                  >INSERT_PTN</el-tag
+                >
+              </span>
               <span v-if="data.rowKey.startsWith('[BTN_UPDATE]')">
                 <el-tag
                   class="method-label-color"
                   style="font-weight: bold; border: 2px solid"
                   type="warning"
                   >UPDATE</el-tag
+                >
+              </span>
+              <span v-if="data.rowKey.startsWith('[BTN_UPDATE_PTN]')">
+                <el-tag
+                  class="method-label-color"
+                  style="font-weight: bold; border: 2px solid"
+                  type="warning"
+                  >UPDATE_PTN</el-tag
                 >
               </span>
               <span v-if="data.rowKey.startsWith('[BTN_USER_GROUP]')">

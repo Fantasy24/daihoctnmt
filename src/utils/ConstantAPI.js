@@ -404,6 +404,48 @@ export const ConstantAPI = {
       buttons: ['[BTN_CONFIRM]BOOKING']
     }
   },
+  REQUISITION: {
+    SEARCH: {
+      url: `${API_DEFAULT}/api/requisition/search`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]REQUISITION']
+    },
+    SEARCH_ALL: {
+      url: `${API_DEFAULT}/api/requisition/search-all`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]REQUISITION']
+    },
+    SELECT_ITEM: {
+      url: `${API_DEFAULT}/api/requisition/select-item`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]REQUISITION', '[BTN_UPDATE]REQUISITION']
+    },
+    INSERT: {
+      url: `${API_DEFAULT}/api/requisition`,
+      method: POST,
+      buttons: ['[BTN_INSERT]REQUISITION']
+    },
+    UPDATE: {
+      url: `${API_DEFAULT}/api/requisition`,
+      method: PUT,
+      buttons: ['[BTN_UPDATE]REQUISITION']
+    },
+    DELETE: {
+      url: `${API_DEFAULT}/api/requisition`,
+      method: DELETE,
+      buttons: ['[BTN_DELETE]REQUISITION']
+    },
+    APPROVE: {
+      url: `${API_DEFAULT}/api/requisition/approve`,
+      method: POST,
+      buttons: ['[BTN_APPROVE]REQUISITION']
+    },
+    REFUSE: {
+      url: `${API_DEFAULT}/api/requisition/refuse`,
+      method: POST,
+      buttons: ['[BTN_REFUSE]REQUISITION']
+    },
+  },
   MASTER_DATA : {
     GET: {
       url: `${API_DEFAULT}/api/master-data`,

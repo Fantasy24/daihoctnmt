@@ -481,6 +481,33 @@
                         alt=""
                         @click="handlePictureCardPreview(file)"
                       />
+                      <img
+                        v-if="getFileExtension(file) === 'pdf'"
+                        class="el-upload-list__item-thumbnail"
+                        src="@/assets/icon/pdf72.png"
+                        alt=""
+                        @click="handlePictureCardPreview(file)"
+                      />
+                      <img
+                        v-if="
+                          getFileExtension(file) === 'xlsx' ||
+                          getFileExtension(file) === 'xls'
+                        "
+                        class="el-upload-list__item-thumbnail"
+                        src="@/assets/icon/excel72.png"
+                        alt=""
+                        @click="handlePictureCardPreview(file)"
+                      />
+                      <img
+                        v-if="
+                          getFileExtension(file) === 'docx' ||
+                          getFileExtension(file) === 'doc'
+                        "
+                        class="el-upload-list__item-thumbnail"
+                        src="@/assets/icon/word72.png"
+                        alt=""
+                        @click="handlePictureCardPreview(file)"
+                      />
                       <span class="el-upload-list__item-actions">
                         <!-- <span
                           class="el-upload-list__item-preview"

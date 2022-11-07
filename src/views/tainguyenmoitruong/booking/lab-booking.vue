@@ -25,7 +25,7 @@
               >Lịch sử đặt phòng
             </el-button>
             <el-button
-              v-if="checkPermissionShowButton('[BTN_INSERT]BOOKING')"
+              v-if="checkPermissionShowButton('[BTN_INSERT_PTN]BOOKING')"
               id="btnAddCo"
               icon="el-icon-plus"
               style="float: right"
@@ -172,8 +172,8 @@
           label-width="170px"
           :disabled="isHidenGuiHoSo"
         >
-          <el-tabs v-model="tabIndex" type="border-card">
-            <el-tab-pane label="Thông tin đăng ký">
+          <el-tabs v-model="tabIndex" type="border-card" :lazy="true">
+            <el-tab-pane label="Thông tin đăng ký" lazy>
               <el-row :gutter="20">
                 <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                   <el-form-item label="Mã cán bộ" prop="bookingUser">
@@ -402,7 +402,7 @@
                 </el-col>
               </el-row> -->
             </el-tab-pane>
-            <el-tab-pane label="Thiết bị sử dụng">
+            <el-tab-pane label="Thiết bị sử dụng" lazy>
               <el-card>
                 <div>
                   <el-table-etc-custom
@@ -521,7 +521,7 @@
               </el-form>
             </el-tab-pane>
 
-            <el-tab-pane label="Dụng cụ sử dụng">
+            <el-tab-pane label="Dụng cụ sử dụng" lazy>
               <el-card>
                 <div>
                   <el-table-etc-custom
@@ -639,7 +639,7 @@
               </el-form>
             </el-tab-pane>
 
-            <el-tab-pane label="Hóa chất sử dụng">
+            <el-tab-pane label="Hóa chất sử dụng" lazy>
               <el-card>
                 <div>
                   <el-table-etc-custom
@@ -1103,7 +1103,7 @@
                 <el-button
                   v-if="
                     flagShowDialog === FORM_MODE.CREATE &&
-                    checkPermissionShowButton('[BTN_INSERT]BOOKING')
+                    checkPermissionShowButton('[BTN_INSERT_PTN]BOOKING')
                   "
                   id="btnSaveCo"
                   :loading="buttonSaveLoading"
@@ -1116,7 +1116,7 @@
                 <el-button
                   v-if="
                     flagShowDialog === FORM_MODE.EDIT &&
-                    checkPermissionShowButton('[BTN_UPDATE]BOOKING')
+                    checkPermissionShowButton('[BTN_UPDATE_PTN]BOOKING')
                   "
                   id="btnUpdateCo"
                   :loading="buttonUpdateLoading"
@@ -1172,7 +1172,9 @@
                     >
                       <el-button
                         id="btnEditCo"
-                        v-if="checkPermissionShowButton('[BTN_UPDATE]BOOKING')"
+                        v-if="
+                          checkPermissionShowButton('[BTN_UPDATE_PTN]BOOKING')
+                        "
                         :loading="iconEditLoading"
                         circle
                         icon="el-icon-edit"
@@ -1190,7 +1192,9 @@
                     >
                       <el-button
                         id="btnDelCo"
-                        v-if="checkPermissionShowButton('[BTN_DELETE]BOOKING')"
+                        v-if="
+                          checkPermissionShowButton('[BTN_DELETE_PTN]BOOKING')
+                        "
                         :loading="iconDelLoading"
                         circle
                         icon="el-icon-delete"
@@ -1221,7 +1225,7 @@
         :title="titleDialogLabList"
         :visible.sync="isShowDlgListLab"
         width="80%"
-        @close="resetForm('formAddEditListLab')"
+        @close="resetForm('formAddEditPTN')"
       >
         <el-card>
           <div>
