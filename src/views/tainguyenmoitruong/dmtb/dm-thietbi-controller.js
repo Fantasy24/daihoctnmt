@@ -355,8 +355,8 @@ export default {
     this.loading = false
     this.joinNameByCodeColumnExcel = this.getListJoinNameByCodeColumnExcel()
     // this.formSearch.maHq = this.$refs.selectHQ.listMaHq[0].code
-    this.fileList = [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
-    this.fileListUpload = [...this.fileList]
+    // this.fileList = [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+    // this.fileListUpload = [...this.fileList]
     console.log(this.$store)
     console.log(this.$store.getters.token)
   },
