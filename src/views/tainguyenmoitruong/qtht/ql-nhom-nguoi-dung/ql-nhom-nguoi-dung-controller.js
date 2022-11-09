@@ -78,6 +78,9 @@ export default {
         roleId: '',
         name: '',
         description: '',
+        quantityWarningNotify: false,
+        approveBookingNotify: false,
+        approveRequisitionNotify: false,
         status: STATUS.ACTIVE
       },
       titleDialog: '',
@@ -199,6 +202,9 @@ export default {
       this.formAddEdit.roleId = ''
       this.formAddEdit.description = ''
       this.formAddEdit.status = '1'
+      this.formAddEdit.quantityWarningNotify = false
+      this.formAddEdit.approveBookingNotify = false
+      this.formAddEdit.approveRequisitionNotify = false
       this.disableAppCodeModeEdit = false
     },
 
@@ -253,6 +259,7 @@ export default {
           return false
         }
         this.loading = true
+        
         apiFactory.callAPI(ConstantAPI[MENU_CODE_API].INSERT, this.formAddEdit).then(() => {
           this.formSearch.appCode = this.formAddEdit.appCode
           this.onSearch()

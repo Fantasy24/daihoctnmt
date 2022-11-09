@@ -494,6 +494,26 @@
                 />
               </el-col>
             </el-row>
+            <el-row :gutter="20">
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <el-checkbox v-model="formAddEdit.quantityWarningNotify"
+                  >Nhận thông báo số lượng thiết bị, dụng cụ, hóa chất sắp
+                  hết</el-checkbox
+                >
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <el-checkbox v-model="formAddEdit.approveBookingNotify"
+                  >Nhận thông báo yêu cầu phê duyệt sử dụng phòng thí
+                  nghiệm</el-checkbox
+                >
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <el-checkbox v-model="formAddEdit.approveRequisitionNotify"
+                  >Nhận thông báo yêu cầu phê duyệt đề xuất mua sắm trang thiết
+                  bị, dụng cụ, hóa chất</el-checkbox
+                >
+              </el-col>
+            </el-row>
           </el-form>
 
           <span slot="footer" class="dialog-footer">
