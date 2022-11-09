@@ -763,6 +763,7 @@ export default {
             this.buttonSaveLoading = false
             this.onSearch('')
             this.isShowDlgAddEdit = false
+            this.$emit("refreshCount");
             // console.log(rs)
           })
           .catch(err => {
@@ -802,6 +803,7 @@ export default {
             this.buttonUpdateLoading = false
             this.onSearch('')
             this.isShowDlgAddEdit = false
+            this.$emit("refreshCount");
           })
           .catch(err => {
             showAlert(this, ERROR, 'Lỗi! ' + err.message)
@@ -834,6 +836,7 @@ export default {
             this.buttonApproveLoading = false
             this.onSearch('')
             this.isShowDlgAddEdit = false
+            this.$emit("refreshCount");
           })
           .catch(err => {
             showAlert(this, ERROR, 'Lỗi! ' + err.message)
@@ -868,6 +871,7 @@ export default {
             this.buttonRefuseLoading = false
             this.onSearch('')
             this.isShowDlgAddEdit = false
+            this.$emit("refreshCount");
           })
           .catch(err => {
             showAlert(this, ERROR, 'Lỗi! ' + err.message)
