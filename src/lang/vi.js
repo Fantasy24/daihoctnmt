@@ -23,7 +23,7 @@ export default {
     regexTaxCode: 'Mã doanh nghiệp chứa ký tự không hợp lệ'
   },
   login: {
-    title: 'Hệ Thống Quản Lý Phòng Thí Nghiệm',
+    title: 'Hệ thống quản lý Phòng thí nghiệm',
     logIn: 'ĐĂNG NHẬP',
     forgotPass: 'GỬI YÊU CẦU ĐẶT LẠI MẬT KHẨU',
     forgotPassLabel: 'Quên mật khẩu?',

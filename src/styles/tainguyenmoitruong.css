@@ -359,3 +359,10 @@ img.el-upload-list__item-thumbnail{
     color: #909399;
     cursor: not-allowed;
 }
+.help-customers span{
+    color: #fff;
+    cursor: pointer;
+}
+.change-language{
+    display: none;
+}
