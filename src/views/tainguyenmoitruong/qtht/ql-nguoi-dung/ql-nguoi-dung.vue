@@ -51,6 +51,18 @@
                 @clear="formSearch.orgCode = `_${$store.getters.org}`"
               /> -->
             </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <select-master-data
+                :is-show-option-all="false"
+                :v-model.sync="formSearch.depCode"
+                label="Khoa"
+                placeholder="Khoa"
+                prop-form="depCode"
+                :required="false"
+                :is-filter="true"
+                :filter-data="masterTypeLabDepartment"
+              />
+            </el-col>
             <el-col :span="12">
               <!-- <el-form-item label="Trạng thái" prop="status">
                 <el-select
@@ -649,6 +661,22 @@
                 :disabled="isHiddenInput"
                 prop-form="status"
                 @change="changeValue"
+              />
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <select-master-data
+                :is-show-option-all="false"
+                :v-model.sync="formAddEdit.depCode"
+                label="Khoa"
+                placeholder="Khoa"
+                prop-form="depCode"
+                :required="true"
+                :disabled="isHiddenInput"
+                :rules="ruleLabDepartment"
+                :is-filter="true"
+                :filter-data="masterTypeLabDepartment"
               />
             </el-col>
           </el-row>

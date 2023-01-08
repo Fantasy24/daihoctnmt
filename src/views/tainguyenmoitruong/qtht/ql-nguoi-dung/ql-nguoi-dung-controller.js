@@ -30,8 +30,11 @@ import checkPermissionShowButton from "ff24-js/src/utils/ECustomsUtils.js";
 import RuleChangePass from "ff24-customs-lib/src/lib-components/BaseFormCustoms/RuleChangePass";
 import TrangThaiRecord from "@/components/BaseFormCustoms/TrangThaiRecord";
 import SelectTrangThai from "../../../../components/CommonComponent/SelectTrangThai";
+import SelectMasterData from '../../../../components/CommonComponent/SelectMasterData'
 
 const MENU_CODE_API = "QLND";
+
+const MASTER_DATA_LAB_DEPARTMENT = 'LAB_DEPARTMENT'
 
 export default {
 	components: {
@@ -43,6 +46,7 @@ export default {
 		RuleChangePass,
 		TrangThaiRecord,
 		SelectTrangThai,
+		SelectMasterData
 	},
 	data() {
 		const STATUS = {
@@ -91,6 +95,7 @@ export default {
 			HEADER_LABEL: "NGƯỜI DÙNG",
 			FORM_MODE,
 			MENU_CODE_API,
+			masterTypeLabDepartment: MASTER_DATA_LAB_DEPARTMENT,
 			isHiddenInput: false,
 			formatFullDate_VN,
 			formSearch: {
@@ -188,6 +193,7 @@ export default {
 				newPassword: [{ validator: validateNewPass }],
 				confirmPassword: [{ validator: validateConfirmPass }],
 			},
+			ruleLabDepartment: [this.requiredRule('Khoa')],
 			statusSelect: [
 				{ key: 1, value: this.$t("baseLabel.labelActive") },
 				{ key: 0, value: this.$t("baseLabel.labelDeActive") },

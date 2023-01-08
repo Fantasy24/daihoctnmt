@@ -18,6 +18,29 @@ export const getListDepartment = JSON.parse(
   localStorage.getItem(LIST_DEPARTMENT)
 )
 
+export const LIST_DEPARTMENT_CUSTOM = [
+  {
+    "propertyName": "Khoa Môi trường",
+    "propertyValue": "KHOA_MOI_TRUONG",
+    "description": "Khoa thí nghiệm",
+    "order": 1,
+    "type": "LAB_DEPARTMENT"
+  },
+  {
+    "propertyName": "Khoa Địa chất",
+    "propertyValue": "KHOA_DIA_CHAT",
+    "description": "Khoa thí nghiệm",
+    "order": 2,
+    "type": "LAB_DEPARTMENT"
+  },
+  {
+    "propertyName": "Khoa Tài nguyên nước",
+    "propertyValue": "KHOA_TN_NUOC",
+    "description": "Khoa thí nghiệm",
+    "order": 3,
+    "type": "LAB_DEPARTMENT"
+  }
+]
 export function getMenuButtonFE() {
   apiFactory
     .get(API_AUTH, `/api/auth/cas/get-menu-group-by-parent-code`, {

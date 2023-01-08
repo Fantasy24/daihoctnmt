@@ -106,6 +106,10 @@ export default {
       type: String,
       default: "",
     },
+    listDataCustom: {
+      type: Array,
+      default: [],
+    },
     getList: Function,
   },
   data() {
@@ -157,6 +161,12 @@ export default {
     },
     loadFilterData(code) {
       const arrDK = [undefined, null, ""];
+      if (
+        arrDK.indexOf(this.listDataCustom) === -1 &&
+        this.listDataCustom.length > 0
+      ) {
+        return this.listDataCustom;
+      }
       const lstMasterDataAll = JSON.parse(
         localStorage.getItem(LIST_MASTER_DATA)
       );
