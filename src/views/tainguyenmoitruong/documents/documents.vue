@@ -114,7 +114,6 @@
                 >
                   <el-button
                     id="btnEditCo"
-                    v-if="checkPermissionShowButton('[BTN_UPDATE]DOCUMENTS')"
                     :loading="iconEditLoading"
                     circle
                     icon="el-icon-download"
