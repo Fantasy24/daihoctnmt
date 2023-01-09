@@ -554,7 +554,7 @@ export default {
       this.isPrint = false
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
-      this.titleDialog = 'Thêm mới Hóa chất'
+      this.titleDialog = 'Thêm mới tài liệu'
       this.flagShowDialog = FORM_MODE.CREATE
       this.isShowDlgAddEdit = true
       this.disableWhenEdit = false
@@ -633,7 +633,7 @@ export default {
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
       this.disableWhenEdit = true
-      this.titleDialog = 'Cập nhật Hóa chất'
+      this.titleDialog = 'Cập nhật tài liệu'
       this.flagShowDialog = FORM_MODE.EDIT
       this.iconEditLoading = true
       // this.hideColumnTinhTrang(false)
@@ -762,7 +762,7 @@ export default {
       this.isHiddenInput = true
       this.flagShowDialog = FORM_MODE.VIEW
       this.isPrint = true
-      this.titleDialog = 'Chi tiết Hóa chất'
+      this.titleDialog = 'Chi tiết tài liệu'
       if (this.$refs.uploadTLKTHS !== undefined && this.$refs.uploadTLKTHS !== null) {
         for (const objUpload of this.$refs.uploadTLKTHS) {
           objUpload.clearFiles()
