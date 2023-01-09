@@ -321,7 +321,7 @@ export default {
         {
 					prop: "status",
 					label: "Trạng thái",
-					width: "100",
+					width: "120",
           align: "center",
           formatter: TrangThaiThietBiRecord,
 					show: true,

@@ -273,7 +273,7 @@ export default {
         {
           prop: 'quantityWarning',
           label: 'Số lượng cảnh báo',
-          width: '120',
+          width: '170',
           align: 'center',
           sortable: true,
           show: true

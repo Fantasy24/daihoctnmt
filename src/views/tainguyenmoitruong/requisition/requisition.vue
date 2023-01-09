@@ -104,7 +104,7 @@
           <div slot="columns">
             <el-table-column
               :label="$t('baseLabel.labelTableAction')"
-              align="center"
+              align="right"
               width="125"
               fixed="right"
             >

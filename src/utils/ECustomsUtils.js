@@ -232,7 +232,7 @@ export function getFileExtension(file) {
   // var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png", ".svg"];
   const fileName = file.name || file.fileName
   const filextend = fileName !==null? fileName.substring(fileName.lastIndexOf(".") + 1) :'';
-  return filextend
+  return filextend.toLowerCase()
 }
 
 export function checkIsValidFileSize(size, maxSize) {

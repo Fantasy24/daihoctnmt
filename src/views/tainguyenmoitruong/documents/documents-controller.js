@@ -10,18 +10,21 @@ import {
 
 import ConstantAPI from '../../../utils/ConstantAPI'
 import TrangThaiRecord from '../../../components/BaseFormCustoms/TrangThaiRecord'
-import TrangThaiDungCuRecord from '../../../components/BaseFormCustoms/TrangThaiDungCuRecord'
 import SelectYesNo from '../../../components/CommonComponent/SelectYesNo'
 import SelectMasterData from '../../../components/CommonComponent/SelectMasterData'
 import SelectTrangThai from "../../../components/CommonComponent/SelectTrangThai";
-import SelectTrangThaiDungCu from "../../../components/CommonComponent/SelectTrangThaiDungCu";
 import checkPermissionShowButton from 'ff24-js/src/utils/ECustomsUtils'
 import DateRangePicker from 'ff24-customs-lib/src/components/DateRangePicker'
+import {
+  API_AUTH,
+} from '@/utils/Constant'
 
 import {
   validateFileExtension,
   maxFileSize,
   checkIsValidFileSize,
+  getFileExtension,
+  allowedImages,
   getNameByIdOnGrid,
   showConfirmCustom,
   getCurrentDateNoTime,
@@ -31,8 +34,9 @@ import { formatFullDate_VN } from '../../../filters/index'
 import { FORM_MODE } from '../../../utils/Constant'
 // import XLSX from 'xlsx'
 import _ from 'lodash'
+import { ref } from 'vue'
 
-const MENU_CODE_API = 'DMDC'
+const MENU_CODE_API = 'DOCUMENTS'
 
 
 const LOAI_NGUOI_KHAI_UQ = 'NDUY'
@@ -51,11 +55,9 @@ const LIMIT_UPLOAD_FILE = 15
 export default {
   components: {
     TrangThaiRecord,
-    TrangThaiDungCuRecord,
     DateRangePicker,
     SelectMasterData,
-    SelectTrangThai,
-    SelectTrangThaiDungCu
+    SelectTrangThai
     //SelectYesNo,
   },
   props: {
@@ -95,6 +97,7 @@ export default {
   data() {
     return {
       ConstantAPI,
+      activeCollapseName: ['1'],
       quocTichLblWidth: '150px',
       dvtLblWidth: '150px',
       titleDialog: '',
@@ -134,16 +137,7 @@ export default {
         { key: 5, value: 'Tiếp nhận yêu cầu PTPL' },
         { key: 8, value: 'Từ chối phê duyệt hồ sơ' },
         { key: 9, value: 'Đã phê duyệt hồ sơ' }
-      ],
-      statusExport: [
-        { key: 1, value: 'Mới' },
-        { key: 2, value: 'Chờ tiếp nhận' },
-        { key: 3, value: 'Yêu cầu bổ sung hồ sơ' },
-        { key: 4, value: 'Từ chối tiếp nhận HS' },
-        { key: 5, value: 'Chờ phê duyệt' },
-        { key: 8, value: 'Từ chối phê duyệt HS' },
-        { key: 9, value: 'Đã phê duyệt HS' }
-      ],
+      ],     
       taiLieuKhac: {
         id: 0,
         ma: 'TL04',
@@ -157,8 +151,6 @@ export default {
       currentIndex: -1,
       lstDVT: [],
       lstXuatXu: [],
-      lstNguoiKhaiLayLaiMau: [],
-      lstLoaiPheDuyet: [],
       excelData: [],
       statusSelect: [
         { key: 1, value: this.$t('baseLabel.labelActive') },
@@ -168,24 +160,18 @@ export default {
       // formSearch: new KeySearchListObj(),
       formSearch: {
         fromToDate: [],
-        soPhieuYeuCau: '',
-        toolCode: '',
-        toolName: '',
-        resourceType: '',
-        unit: '',
-        quantity: '',
-        origin: '',
-        storageLocation: '',
+        code: '',
+        name: '',
+        resourceType: '',       
         status: null,
         maTrangThai: null,
         page: null,
-        size: null,
-        code: null,
-        name: null
+        size: null
       },
-      ngay_thong_bao_ket_qua_pt: null,
-      ngay_dk_to_khai: null,
-      ngay_tiep_nhan_ptpl: null,
+      dialogImageUrl: '',
+      dialogImgPreview: false,
+      dialogFileExt:'',
+      disabled: false,
       fileListUpload: [],
       fileListDelete: [],
       lstAttachment: [],
@@ -198,11 +184,10 @@ export default {
       formAddEdit: {
         id: 0,
         resourceId: 0,
-        toolCode: '',
-        toolName: '',        
+        resourceCode: '',
+        resourceName: '',        
         createdAt: null,
         resourceType: '',
-        so_to_kunithai: '',
         quantity: 0,
         quantityWarning: 0,
         unit: '',
@@ -211,50 +196,11 @@ export default {
         image: '',
         description: '',
         createdBy: '',
-        code: null,
-        name: null,
-        ngay_chung_nhan_xuat_xu: null,
-        dia_diem_lay_mau: '',
-        ngay_lay_mau: null,
-        cong_chuc_hq_lay_mau1: '',
-        cong_chuc_hq_lay_mau2: '',
-        dai_dien_nguoi_khai_hq: '',
-        so_luong_mau: '',
-        dac_diem_quy_cach_dong_goi: '',
-        hinh_thuc_kiem_tra: '',
-        mau_duoc_niem_phong_hq_so: '',
-        nguoi_khai_yeu_cau_lay_lai_mau: null,
-        nguoi_uy_quyen_nhan_lai_mau: '',
-        ngay_gui_yeu_cau: '',
-        ngay_thuc_hien_ptpl: '',
-        so_phieu_tiep_nhan_ptpl: '',
-        so_luong_mau_tiep_nhan_ptpl: '',
-        luu_y_ptpl: '',
-        ly_do_ptpl: '',
-        nguoi_giao_ptpl: '',
-        nguoi_tiep_nhan_ptpl: '',
         giay_to_khac: '',
         fileDinhKem: '',
         lstFileDelete: '',
         is_change_detail: false,
         status: null,
-        ma_trang_thai: null,
-        // thông tin tiếp nhận
-        status_pyc: null,
-        luu_yptpl: '',
-        // thông tin phê duyệt
-        loai_phe_duyet: null,
-        so_phan_cong: '',
-        ngay_phan_cong: null,
-        noi_dung: '',
-        user_phan_cong: '',
-        user_phan_tich: '',
-        user_phan_loai: '',
-        ten_user_phan_cong: '',
-        ten_user_phan_tich: '',
-        ten_user_phan_loai: '',
-        loai_dieu_chinh: null,
-        so_dieu_chinh: '',
         version: null,
         is_latest: null
       },
@@ -274,17 +220,17 @@ export default {
       ruleDVT: [this.requiredRule('Đơn vị tính')],
       ruleOrigin: [this.requiredRule('Xuất xứ')],
       rules: {
-        toolCode: [
-          this.requiredRule('Mã dụng cụ'),
-          this.specialCharRule('Mã dụng cụ')
+        resourceCode: [
+          this.requiredRule('Mã hóa chất'),
+          this.specialCharRule('Mã hóa chất')
         ],
         createdAt: [this.requiredRule('Ngày tạo')],
-        toolName: [this.requiredRule('Tên dụng cụ')],        
-        toolType: [this.requiredRule('Loại dụng cụ')],
+        resourceName: [this.requiredRule('Tên hóa chất')],        
+        resourceType: [this.requiredRule('Loại hóa chất')],
         origin: [this.requiredRule('Xuất xứ')],
         storageLocation: [this.requiredRule('Khu lưu trữ')],
         quantity: [this.requiredRule('Số lượng'), this.validateRegex('^[0-9\.]*$', "Số lượng")],
-        quantityWarning: [this.requiredRule('Số lượng cảnh báo'),this.validateRegex('^[0-9\.]*$',"Số lượng cảnh báo")],
+        quantityWarning: [this.requiredRule('Số lượng cảnh báo'),this.validateRegex('^[0-9\.]*$',"Số lượng cảnh báo")]
       },
       disableWhenEdit: false,
       isHiddenInput: false,
@@ -298,98 +244,47 @@ export default {
       joinNameByCodeColumnExcel: [],
       columns: [
         {
-          prop: 'toolCode',
-          label: 'Mã dụng cụ',
-          width: '150',
+          prop: 'id',
+          label: 'Mã tài liệu',
+          width: '250',
           align: 'center',
           sortable: true,
           show: true
         },
         {
-          prop: 'toolName',
-          label: 'Tên dụng cụ',
-          width: '170',
+          prop: 'fileName',
+          label: 'Tên tài liệu',
+          width: '350',
           align: 'left',
           sortable: true,
           show: true
         },
         {
-          prop: 'quantity',
-          label: 'Số lượng',
-          width: '120',
-          align: 'center',
-          sortable: true,
-          show: true
-        },
-        {
-          prop: 'quantityWarning',
-          label: 'Số lượng cảnh báo',
-          width: '170',
-          align: 'center',
-          sortable: true,
-          show: true
-        },
-        {
-          prop: 'unit',
-          label: 'Đơn vị tính',
-          width: '150',
-          align: 'center',
-          formatter: row => {
-            return getNameByIdOnGrid(
-              row.unit,
-              'propertyValue',
-              'propertyName',
-              this.lstDVT
-            )
-          },
-          sortable: true,
-          show: true
-        },
-        {
-          prop: 'origin',
-          label: 'Xuất xứ',
-          width: '150',
-          formatter: row => {
-            return getNameByIdOnGrid(
-              row.origin,
-              'propertyValue',
-              'propertyName',
-              this.lstXuatXu
-            )
-          },
-          sortable: true,
-          show: true
-        },
-        {
-          prop: 'storageLocation',
-          label: 'Khu lưu trữ',
-          width: '150',
-          align: 'center',
-          sortable: true,
-          show: true
-        },
-        {
-					prop: "status",
-					label: "Trạng thái",
-					width: "120",
-					align: "center",
-					formatter: TrangThaiDungCuRecord,
-					show: true,
-					sortable: true,
-				},
-        {
-          prop: 'description',
-          label: 'Mô tả',
+          prop: 'createdBy',
+          label: 'Người tạo',
           width: '150',
           align: 'left',
           sortable: true,
           show: true
-        },      
+        },        
+        {
+          prop: 'createdAt',
+          label: 'Ngày tạo',
+          width: '150',
+          align: 'center',
+          formatter: row => {
+            return formatFullDate_VN(new Date(row.createdAt))
+          },
+          sortable: true,
+          show: true
+        }     
       ],
+      getFileExtension,
       MENU_CODE_API,
       FORM_MODE,
       STATUS_ROW_UPDATE,
-      TAI_LIEU_KHAC
+      TAI_LIEU_KHAC,
+      LIMIT_UPLOAD_FILE
     }
   },
   created() {
@@ -398,7 +293,7 @@ export default {
   computed: {    
   },
   mounted() {
-    this.resetDateSearch()
+    //this.resetDateSearch()
     this.formSearch.maHqTiepNhan = '_'.concat(this.$store.getters.userInfo.org)
     this.windowHeight = screen.height
     this.loading = false
@@ -418,86 +313,7 @@ export default {
       const m = dt.getMonth()
       const d = dt.getDate()
       this.formSearch.fromToDate = [new Date(y, m, d), new Date(y, m, d)]
-    },
-    onLoadListTaiLieuKemTheo() {
-      if (!this.lstTaiLieuKemTheo.length) {
-        this.loading = true
-        apiFactory
-          .callAPI(ConstantAPI['DMNV'].TAILIEU_HS)
-          .then(rs => {
-            this.loading = false
-            this.$store.dispatch(
-              'common/listCommonData/setDanhSachTaiLieuKemTheo',
-              rs || []
-            )
-
-            this.lstTaiLieuKemTheo = this.$store.state['common'].listCommonData.danhSachTaiLieuKemTheo || []
-            this.lenTLKTHS = this.lstTaiLieuKemTheo.length
-          })
-          .catch(err => {
-            this.loading = false
-            errAlert(this, err)
-            // console.log(err)
-          })
-      }
-    },
-    initQuestion(len) {
-      while (len--) {
-        this.lstCauHoi[len] = this.radioYes
-        this.lstLyDoKhongDinhKem[len] = ''
-      }
-      // setTimeout(function() {
-      //   while (len--) {
-      //     this.lstCauHoi = {}
-      //     this.lstLyDoKhongDinhKem = {}
-      //   }
-      // }, 500)
-    },
-    selectQuestion(idx) {
-      // this.lstCauHoi[idx] = this.radioValue
-      let len = this.lenTLKTHS
-      let fileTlkt = []
-      while (len--) {
-        if (this.lstCauHoi[len] === this.radioYes) {
-          this.lstLyDoKhongDinhKem[len] = ''
-          fileTlkt = this.lstAttachment.filter(obj => obj.id_loai_tai_lieu === this.lstTaiLieuKemTheo[idx].id)
-          for (const objFile of fileTlkt) {
-            this.fileListDelete.push(objFile.id_tai_lieu)
-          }
-        } else {
-          if (
-            this.lstAttachment !== undefined &&
-            this.lstAttachment !== null &&
-            this.lstAttachment.length > 0
-          ) {
-            // Remove Attachment
-            // fileTlkt = this.lstAttachment.filter(obj => obj.id_loai_tai_lieu === this.lstTaiLieuKemTheo[idx].id)
-            this.selectQuestionRemoveAttachment(idx)
-          }
-          if (this.$refs.uploadTLKTHS !== undefined && this.$refs.uploadTLKTHS !== null) {
-            this.$refs.uploadTLKTHS[len].clearFiles()
-          }
-        }
-      }
-      // console.log(this.lstCauHoi)console.log(this.lstLyDoKhongDinhKem)
-    },
-    selectQuestionRemoveAttachment(idx) {
-      const fileTlkt = this.lstAttachment.filter(obj => obj.id_loai_tai_lieu === this.lstTaiLieuKemTheo[idx].id)
-      for (const objFile of fileTlkt) {
-        this.fileListDelete.push(objFile.id_tai_lieu)
-      }
-      this.lstAttachmentGroup[idx] = []
-      this.lstAttachment = this.lstAttachment.filter(obj => obj.id_loai_tai_lieu !== this.lstTaiLieuKemTheo[idx].id)
-      if (fileTlkt.length > 0) {
-        fileTlkt[0].id_tai_lieu = 0
-        fileTlkt[0].dinh_kem_file = 0
-        fileTlkt[0].ma_file = ''
-        fileTlkt[0].ten_file = ''
-        fileTlkt[0].loai_file = ''
-        fileTlkt[0].file_size = 0
-        this.lstAttachment.push(fileTlkt[0])
-      }
-    },
+    },    
     radioChecked(value) {
       this.radioValue = value
     },
@@ -537,14 +353,17 @@ export default {
         this.formSearch.page = mode === '' ? 0 : this.formSearch.page
         this.formSearch.size = this.$refs.tblMain.size
         this.loadDataTable = true
-        const fromToDate = this.formSearch.fromToDate
-        // Custom properties KeySearchObj API        
-        this.formSearch.fromDate = fromToDate[0]
-        this.formSearch.toDate = fromToDate[1]
+        this.formSearch.resourceType = MENU_CODE_API
         apiFactory
-          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, {}, this.formSearch)
+          .callAPI(ConstantAPI[MENU_CODE_API].SEARCH, {},this.formSearch)
           .then(rs => {
-            this.loadDataTable = false
+            this.loadDataTable = false            
+            const arrDK = [undefined, null, '']
+            if (arrDK.indexOf(rs.result) === -1) {
+              for (const file of rs.result) {
+                file.url = ''.concat('data:',file.contentType,';base64,',file.fileData)
+              }          
+            }
             this.listDataTable = rs.result
             // console.log(rs)
             this.total = rs['totalElements']
@@ -612,12 +431,14 @@ export default {
         if (!valid) {
           return false
         }
-        
+
         this.buttonSaveLoading = true
+        const formModel = this.getDeviceModelByForm()
         apiFactory
           .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].INSERT,
-            this.formAddEdit
+            formModel,
+            this.fileListUpload
           )
           .then(rs => {
             showAlert(this, SUCCESS, 'Thêm mới thành công!')
@@ -644,7 +465,8 @@ export default {
         apiFactory
           .callAPIFormFile(
             ConstantAPI[MENU_CODE_API].UPDATE,
-            this.formAddEdit
+            this.formAddEdit,
+            this.fileListUpload
           )
           .then(() => {
             showAlert(this, SUCCESS, 'Cập nhật thành công!')
@@ -660,10 +482,10 @@ export default {
       })
     },
 
-    onDelete(code) {      
+    onDelete(rowData) {      
       showConfirmDelete(this.$confirm, () => {
         const param = {
-          id: code.toolId
+          id: rowData.id
         }
         this.iconDelLoading = true
         apiFactory
@@ -709,7 +531,7 @@ export default {
       this.total = 0
       this.formSearch.orgCode = this.$store.getters.org
       this.formSearch.maHqTiepNhan = '_' + this.$store.getters.userInfo.org
-      this.resetDateSearch()
+      //this.resetDateSearch()
 
       // Reset Component
       this.formSearch.maLoaiNguoiKhai = ''
@@ -732,12 +554,11 @@ export default {
       this.isPrint = false
       this.isHiddenInput = false
       this.isHidenGuiHoSo = false
-      this.titleDialog = 'Thêm mới Dụng cụ'
+      this.titleDialog = 'Thêm mới Hóa chất'
       this.flagShowDialog = FORM_MODE.CREATE
       this.isShowDlgAddEdit = true
       this.disableWhenEdit = false
       this.disableAppCodeModeEdit = false;
-      
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
@@ -765,10 +586,10 @@ export default {
         ' - ' +
         this.$store.getters.userInfo.orgName
       this.formAddEdit.id = 0
-      this.formAddEdit.toolId = 0
-      this.formAddEdit.toolCode = ''
+      this.formAddEdit.resourceId = 0
+      this.formAddEdit.resourceCode = ''
       this.formAddEdit.createdAt = getCurrentDateNoTime()
-      this.formAddEdit.toolName = ''
+      this.formAddEdit.resourceName = ''
       this.formAddEdit.resourceType = ''
       this.formAddEdit.quantity = 0
       this.formAddEdit.quantityWarning = 0
@@ -784,7 +605,7 @@ export default {
       this.formAddEdit.status = '1'
       this.formAddEdit.ma_trang_thai = 1
     },
-    onPrepareEdit(toolId) {
+    onPrepareEdit(code) {
       if (this.$refs.formAddEdit) {
         this.$refs.formAddEdit.resetFields()
       }
@@ -817,7 +638,7 @@ export default {
       this.iconEditLoading = true
       // this.hideColumnTinhTrang(false)
       const param = {
-        id: toolId
+        code: code
       }
       apiFactory
         .callAPI(ConstantAPI[MENU_CODE_API].SELECT_ITEM, {}, param)
@@ -839,8 +660,6 @@ export default {
         this.formAddEdit = rs
         this.formAddEdit.quantity = '' + this.formAddEdit.quantity;
         this.formAddEdit.quantityWarning = '' + this.formAddEdit.quantityWarning;
-        this.formAddEdit.code = rs.toolCode
-        this.formAddEdit.name = rs.toolName
         
         // File
         // this.getLstAttachment(rs)
@@ -943,7 +762,7 @@ export default {
       this.isHiddenInput = true
       this.flagShowDialog = FORM_MODE.VIEW
       this.isPrint = true
-      this.titleDialog = 'Chi tiết Dụng cụ'
+      this.titleDialog = 'Chi tiết Hóa chất'
       if (this.$refs.uploadTLKTHS !== undefined && this.$refs.uploadTLKTHS !== null) {
         for (const objUpload of this.$refs.uploadTLKTHS) {
           objUpload.clearFiles()
@@ -952,7 +771,7 @@ export default {
       }
 
       const param = {
-        id: row.toolId
+        code: row.resourceCode
       }
       this.iconViewLoading = true
       apiFactory
@@ -968,7 +787,7 @@ export default {
         // console.log(rs)
         this.formAddEdit = rs
         this.formAddEdit.quantity = '' + this.formAddEdit.quantity
-        this.formAddEdit.quantityWarning = '' + this.formAddEdit.quantityWarning;
+        this.formAddEdit.quantityWarning = '' + this.formAddEdit.quantityWarning
         // File
         //this.getLstAttachment(rs)
       }
@@ -1082,11 +901,13 @@ export default {
       } else {
         let lstFileTL = []
         let idLoaiTaiLieu = 0
-        if (idx !== TAI_LIEU_KHAC) {
-          idLoaiTaiLieu = this.lstTaiLieuKemTheo[idx].id
-        }
-        lstFileTL = this.lstAttachment.filter(obj => obj.id_loai_tai_lieu === idLoaiTaiLieu && obj.file_size > 0 && obj.ten_file !== null)
-        if ((files.length + fileList.length + lstFileTL.length) > LIMIT_UPLOAD_FILE) {
+        // if (idx !== TAI_LIEU_KHAC) {
+        //   idLoaiTaiLieu = this.lstTaiLieuKemTheo[idx].id
+        // }
+        //filter(obj => obj.id_loai_tai_lieu === idLoaiTaiLieu && obj.file_size > 0 && obj.ten_file !== null)
+        //lstFileTL = this.lstAttachment.length 
+        const count = (files.length + fileList.length + lstFileTL.length)
+        if (count > LIMIT_UPLOAD_FILE) {
           bol = true
         }
       }
@@ -1164,7 +985,7 @@ export default {
         reader.readAsBinaryString(f)
       }
     },
-    handleChangeFileTLKTHS(file, fileList) {
+    handleChangeFileTB(file, fileList) {
       this.fileTemp = file.raw
       if (this.fileTemp) {
         // this.fileListUpload = fileList
@@ -1183,9 +1004,9 @@ export default {
             this.$refs.uploadTLKTHS[i].clearFiles()
           }
         } else {
-          file.idTlkths = this.currentTLKTHS.id
-          file.maTlkths = this.currentTLKTHS.ma
-          file.idxTlkths = this.currentIndex
+          // file.idTlkths = this.currentTLKTHS.id
+          // file.maTlkths = this.currentTLKTHS.ma
+          // file.idxTlkths = this.currentIndex
           // file size, uidFile
           this.fileListUpload.push(file)
           // console.log(this.fileListUpload)
@@ -1195,7 +1016,8 @@ export default {
       }
     },
     // How to remove files
-    handleRemoveFileTLKTHS(file, fileList) {
+    handleRemoveFileTB(file, fileList) {
+      this.fileListDelete.push(file.id)
       let lstFile = this.fileListUpload
       lstFile = lstFile.filter(obj => obj !== file)
       this.fileListUpload = lstFile
@@ -1226,93 +1048,51 @@ export default {
         // this.lstAttachment = this.lstAttachment.filter(item => item !== objFile)
       })
     },
-    getHaiQuanByMa(choose) {
-      const lstHQ = JSON.parse(localStorage.getItem(LIST_CUSTOMS))
-      lstHQ.forEach(hq => {
-        if (choose === hq.code) {
-          choose = hq.name
-        }
-      })
-      return choose
-    },
-    getDvxnkByMa(maDvxnk) {
-      const lstMaDvxnk = maDvxnk.toString().split(' -')
+    checkIsImage(file) {
+      let fileExt = getFileExtension(file)
+      fileExt = '.'.concat(fileExt)
+      if (allowedImages.indexOf(fileExt) > -1) {
+        return true
+      }
+      return false
 
-      const param = {
-        code: lstMaDvxnk[0]
+    },
+    handlePictureCardPreview(file) {
+      
+      const ext = getFileExtension(file)
+      this.dialogFileExt = ext
+      if (ext === 'pdf') {
+        this.dialogImageUrl = file.url
+          //require('@/assets/icon/pdf.png')
       }
-      apiFactory
-        .callAPI(ConstantAPI['DMDC'].SCOMPANY_EXIM, {}, param)
-        .then(rs => {
-          if (rs !== undefined && rs !== null) {
-            this.formAddEdit.ma_dvxnk = ''.concat(
-              rs.result[0].code,
-              ' - ',
-              rs.result[0].name
-            )
-            this.formAddEdit.ten_dvxnk = rs.result[0].name
-          } else {
-            this.formAddEdit.ma_dvxnk = ''
-            this.formAddEdit.ten_dvxnk = ''
-          }
-        })
-        .catch(() => {
-          this.iconEditLoading = false
-          showAlert(this, WARNING, 'Mã đơn vị XNK không tồn tại trên hệ thống')
-          this.formAddEdit.ma_dvxnk = ''
-          this.formAddEdit.ten_dvxnk = ''
-        })
-    },
-    getListDataDVT(lstValue) {
-      this.lstDVT = lstValue.filter(obj => obj.type === MASTER_DATA_DVT);
-      this.lstXuatXu = lstValue.filter(obj => obj.type === MASTER_DATA_ORIGIN);
-    },
-    getListDataHinhThucKiemTra(lstValue) {
-      this.lstHinhThucKiemTra = lstValue
-    },
-    getMaHinhThucKiemTraSelected(choose) {
-      this.lstHinhThucKiemTra.forEach(hinhThuc => {
-        if (Number(choose) === hinhThuc.key) {
-          choose = hinhThuc.label
-        }
-      })
-      return choose
-    },
-    getListNguoiKhaiLayLaiMau(lstValue) {
-      this.lstNguoiKhaiLayLaiMau = lstValue
-    },
-    getListNguoiKhaiLayLaiMauSelected(choose) {
-      this.lstNguoiKhaiLayLaiMau.forEach(obj => {
-        if (Number(choose) === obj.key) {
-          choose = obj.label
-        }
-      })
-      return choose
-    },
-    getLoaiHinhXnkSelected(choose) {
-      this.$store.state['common'].listCommonData.danhSachLoaiHinhXNK.forEach(
-        loaiHinh => {
-          if (Number(choose) === loaiHinh.code) {
-            choose = loaiHinh.name
-          }
-        }
-      )
-      return choose
-    },
-    showHideBtnSend() {
-      const arrDK = [undefined, null, '']
-      if (arrDK.indexOf(this.formAddEdit.status_pyc) === -1) {
-        this.formAddEdit.ma_trang_thai = this.formAddEdit.status_pyc
+      else if (ext === 'doc' || ext === 'docx') {
+        this.dialogImageUrl = require('@/assets/icon/word.png')
       }
-
-      if (
-        arrDK.indexOf(this.formAddEdit.ma_trang_thai) === -1 &&
-        STATUS_BTN_SEND.indexOf(this.formAddEdit.ma_trang_thai) > -1
-      ) {
-        this.isShowBtnSend = true
-      } else {
-        this.isShowBtnSend = false
+      else if (ext === 'xls' || ext === 'xlsx') {
+        this.dialogImageUrl = require('@/assets/icon/excel.png')
       }
+      else if (ext === 'ppt' || ext === 'pptx') {
+        this.dialogImageUrl = require('@/assets/icon/ppt.png')
+      }
+      else if (ext === 'zip' || ext === 'rar') {
+        this.dialogImageUrl = require('@/assets/icon/zip.png')
+      }
+      else if(this.checkIsImage(file)){
+        this.dialogImageUrl = file.url;
+      }
+      else {
+        this.dialogImageUrl = require('@/assets/icon/zip.png')
+      }
+      
+      this.dialogImgPreview = true;
+    },
+    handleDownload(file) {
+      const fileLink = document.createElement('a')
+      fileLink.href = file.url
+      const fileName = file.name || file.fileName
+        fileLink.setAttribute('download', fileName)
+        document.body.appendChild(fileLink)
+        fileLink.click()
     },
     hideshowUpload() {
       if (this.formAddEdit.ma_loai_nguoi_khai === LOAI_NGUOI_KHAI_UQ) {
@@ -1383,189 +1163,43 @@ export default {
     },
     initFileBase() {
       const objTL = {}
-      objTL.id_tai_lieu = 0
-      objTL.id_phieu_yeu_cau = 0
-      objTL.id_chung_tu_goc = 0
-      objTL.id_loai_tai_lieu = 0
-      objTL.dinh_kem_file = 1
-      objTL.ma_file = ''
-      objTL.ten_file = ''
-      objTL.loai_file = ''
-      objTL.ly_do_khong_dinh_kem = ''
-      objTL.giay_to_khac = ''
-      objTL.file_size = 0
+      objTL.id = ''
+      objTL.idReference = 0
+      objTL.fileName = ''
+      objTL.contentType = ''
+      objTL.fileSize = 0
+      objTL.fileData = null
+      objTL.functionCode = MENU_CODE_API      
       objTL.uid = 0
       return objTL
     },
-    getPhieuYeuCauByForm() {
-      let objPhieuYeuCau = {}
+    getDeviceModelByForm() {
+      let objModel = {}
+      const arrDK =[undefined, null, '']
       this.formAddEdit.lstFileDelete = this.fileListDelete.join(',')
       // console.log(this.formAddEdit.ngay_den_cuakhau_dukien)
 
-      const master = this.camelCaseToSnakeCaseDeep(this.formAddEdit)
-      master.hq_yeu_cau_phan_tich = this.$store.getters.userInfo.org
-      // Don vi XNK
-      const lstMaDvxnk = master.ma_dvxnk.toString().split(' -')
-      master.ma_dvxnk = lstMaDvxnk[0]
+      const master = this.formAddEdit
 
       let files = []
       let i = 0
       let len = 0
 
-      len = this.lstTaiLieuKemTheo.length
-      while (i < len) {
-        const objTL = this.initFileBase()
-        objTL.id_loai_tai_lieu = this.lstTaiLieuKemTheo[i].id
-        objTL.dinh_kem_file = parseInt(this.lstCauHoi[i])
-        objTL.ly_do_khong_dinh_kem = this.lstLyDoKhongDinhKem[i]
-
-        files.push(objTL)
-        i++
+      const filesTmp = this.fileListUpload.filter(obj => arrDK.indexOf(obj.idReference) > -1 || obj.idReference === 0)
+      for (const fileUp of filesTmp) {
+        const objFile = this.initFileBase()
+        objFile.fileName = fileUp.raw.name
+        objFile.contentType = fileUp.raw.type
+        objFile.file_size = fileUp.raw.size
+        objFile.uid = fileUp.raw.uid
+  
+        files.push(objFile)
       }
+      
+      objModel = master
+      objModel.files = files
 
-      const filesTmp = this.fileListUpload
-      // File khac
-      files = this.getLstImportFileKhac(files, filesTmp)
-
-      // Xu ly upload multil
-      const lstTaiLieuKemTheo = this.lstTaiLieuKemTheo
-      for (const doc of lstTaiLieuKemTheo) {
-        const fileTlkt = filesTmp.filter(obj => obj.idTlkths === doc.id)
-        if (fileTlkt.length > 0) {
-          // Xoa phan tu khoi tao mac dinh theo loai tai lieu trong files
-          files = files.filter(obj => obj.id_loai_tai_lieu !== doc.id)
-          for (const fileUp of fileTlkt) {
-            const objTL = this.initFileBase()
-            objTL.id_loai_tai_lieu = doc.id
-            objTL.ten_file = fileUp.raw.name
-            objTL.loai_file = fileUp.raw.type
-            objTL.file_size = fileUp.raw.size
-            objTL.uid = fileUp.raw.uid
-
-            files.push(objTL)
-          }
-        }
-      }
-
-      // Truong hop su dung Template
-      if (this.isTemplate) {
-        if (this.formAddEdit.lstFileDelete != null && this.formAddEdit.lstFileDelete.length > 0) {
-          this.lstAttachment = this.lstAttachment.filter(item => this.fileListDelete.indexOf(item.id_tai_lieu) === -1)
-          this.formAddEdit.lstFileDelete = ''
-        }
-        // Lam moi file
-        for (const objFile of this.lstAttachment) {
-          objFile.id_tai_lieu = 0
-          files.push(objFile)
-        }
-      }
-
-      objPhieuYeuCau = master
-      objPhieuYeuCau.cong_chuc_hq_lay_mau1 =
-        objPhieuYeuCau.cong_chuc_hq_lay_mau_1
-      objPhieuYeuCau.cong_chuc_hq_lay_mau2 =
-        objPhieuYeuCau.cong_chuc_hq_lay_mau_2
-      objPhieuYeuCau.files = files
-
-      return objPhieuYeuCau
-    },
-    getLstImportFileKhac(files, filesTmp) {
-      const arrDK = [undefined, null, '']
-
-      let fileTlKhac = filesTmp.filter(obj => obj.idxTlkths === TAI_LIEU_KHAC)
-      if (
-        (arrDK.indexOf(fileTlKhac) === -1 && fileTlKhac.length > 0) ||
-        (this.formAddEdit.giay_to_khac !== null && this.formAddEdit.giay_to_khac.length > 0)
-      ) {
-        if (fileTlKhac.length > 0) {
-          for (const objKhac of fileTlKhac) {
-            const objTLKhac = this.initFileBase()
-            objTLKhac.ten_file = objKhac.raw.name
-            objTLKhac.loai_file = objKhac.raw.type
-            objTLKhac.ly_do_khong_dinh_kem = ''
-            objTLKhac.giay_to_khac = this.formAddEdit.giay_to_khac
-            objTLKhac.file_size = objKhac.raw.size
-            objTLKhac.uid = objKhac.raw.uid
-
-            files.push(objTLKhac)
-          }
-        }
-        if (this.formAddEdit.giay_to_khac !== null && this.formAddEdit.giay_to_khac.length > 0 && fileTlKhac.length === 0) {
-          fileTlKhac = this.lstAttachment.filter(obj => obj.id_loai_tai_lieu === 0)
-          if (fileTlKhac.length === 0) {
-            const objTLKhac = this.initFileBase()
-            objTLKhac.giay_to_khac = this.formAddEdit.giay_to_khac
-
-            files.push(objTLKhac)
-          }
-        }
-      }
-      return files
-    },
-    getPhieuYeuCauByFormUpdate() {
-      let objPhieuYeuCau = {}
-
-      this.formAddEdit.lstFileDelete = this.fileListDelete.join(',')
-      this.formAddEdit.loaiHoSo = MA_CHUC_NANG
-      // console.log(this.formAddEdit.ngay_den_cuakhau_dukien)
-      this.formAddEdit.hq_yeu_cau_phan_tich = this.$store.getters.userInfo.org
-      this.formAddEdit.status = 1
-
-      const master = this.camelCaseToSnakeCaseDeep(this.formAddEdit)
-      // Don vi XNK
-      const lstMaDvxnk = master.ma_dvxnk.toString().split(' -')
-      master.ma_dvxnk = lstMaDvxnk[0]
-
-      // snakeCaseToCamelCaseDeep(obj)
-      objPhieuYeuCau = master
-      objPhieuYeuCau.cong_chuc_hq_lay_mau1 =
-        objPhieuYeuCau.cong_chuc_hq_lay_mau_1
-      objPhieuYeuCau.cong_chuc_hq_lay_mau2 =
-        objPhieuYeuCau.cong_chuc_hq_lay_mau_2
-
-      // Them list File
-      let files = []
-      let filesTmp = this.lstAttachment
-      let len = 0
-      let i = 0
-      if (filesTmp !== undefined && filesTmp !== null) {
-        len = filesTmp.length
-        while (i < len) {
-          files.push(this.camelCaseToSnakeCaseDeep(filesTmp[i]))
-          i++
-        }
-      }
-
-      i = 0
-      len = this.lstTaiLieuKemTheo.length
-      while (i < len) {
-        // Xu ly upload multil
-        for (let j = 0; j < files.length; j++) {
-          if (files[j].id_loai_tai_lieu === this.lstTaiLieuKemTheo[i].id) {
-            files[j].dinh_kem_file = parseInt(this.lstCauHoi[i])
-            files[j].ly_do_khong_dinh_kem = this.lstLyDoKhongDinhKem[i]
-          }
-        }
-        // file.idTlkths
-        i++
-      }
-
-      filesTmp = this.fileListUpload
-
-      // File khac
-      // files = this.getLstFileKhacUpdate(files, filesTmp)
-      files = this.getLstImportFileKhac(files, filesTmp)
-      // Set lai mo ta giay to khac
-      for (const fKhac of files) {
-        if (fKhac.id_loai_tai_lieu === 0) {
-          fKhac.giay_to_khac = this.formAddEdit.giay_to_khac
-        }
-      }
-
-      // Xu ly upload multil
-      files = this.getFileMultilUpload(files, filesTmp)
-      objPhieuYeuCau.files = files
-      return objPhieuYeuCau
+      return objModel
     },
     getFileMultilUpload(files, filesTmp) {
       const lstTaiLieuKemTheo = this.lstTaiLieuKemTheo
@@ -1610,13 +1244,16 @@ export default {
       files[idx].file_size = objValue.raw.size
       files[idx].uid = objValue.raw.uid
     },
-    async downloadFile(attachment) {
-      const param = { maFile: attachment.ma_file }
+    async downloadFile(rowData) {
+      const paramApi = { 
+        url: `${API_AUTH}`+''.concat('/files/',rowData.id),
+        method: 'GET'
+       }
       await apiFactory
         .download(
-          ConstantAPI['DOWNLOAD'].ATTACHMENT,
-          attachment.ten_file,
-          param,
+          paramApi,
+          rowData.fileName,
+          {},
           this
         )
         .catch(err => {

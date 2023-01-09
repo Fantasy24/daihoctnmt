@@ -47,7 +47,11 @@ export const ConstantAPI = {
     PRINT_PHIEU_YC: {
       url: `${API_DEFAULT}/download/export-phieu-ycptpl`,
       method: GET
-    }
+    },
+    DOCUMENTS: {
+      url: `${API_AUTH}/files`,
+      method: GET
+    },
   },
   MASTER: {
     SEARCH_ALL: {
@@ -445,6 +449,38 @@ export const ConstantAPI = {
       method: POST,
       buttons: ['[BTN_REFUSE]REQUISITION']
     },
+  },
+  DOCUMENTS: {
+    SEARCH: {
+      url: `${API_DEFAULT}/api/documents/search`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMHC']
+    },
+    SEARCH_ALL: {
+      url: `${API_DEFAULT}/api/documents/search-all`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMHC']
+    },
+    SELECT_ITEM: {
+      url: `${API_DEFAULT}/api/documents/select-item`,
+      method: GET,
+      buttons: ['[BTN_SEARCH]DMHC', '[BTN_UPDATE]DMHC']
+    },
+    INSERT: {
+      url: `${API_DEFAULT}/api/documents/`,
+      method: POST,
+      buttons: ['[BTN_INSERT]DMHC']
+    },
+    UPDATE: {
+      url: `${API_DEFAULT}/api/documents/`,
+      method: PUT,
+      buttons: ['[BTN_UPDATE]DMHC']
+    },
+    DELETE: {
+      url: `${API_DEFAULT}/api/documents/`,
+      method: DELETE,
+      buttons: ['[BTN_DELETE]DMHC']
+    }    
   },
   MASTER_DATA : {
     GET: {
