@@ -987,7 +987,7 @@ export default {
       this.formAddEditPTN.labName = item.labName
       this.formAddEditPTN.bookingUser = this.$store.getters.userInfo.uid;
       this.formAddEditPTN.email = this.$store.getters.userInfo.ema;
-      this.formAddEditPTN.department = 'KHOA_MOI_TRUONG';
+      this.formAddEditPTN.department = this.$store.getters.userInfo.dep;
         
       // }, 1000);      
       

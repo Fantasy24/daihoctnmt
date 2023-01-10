@@ -220,11 +220,11 @@
                   />
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                  <el-form-item label="email" prop="email">
+                  <el-form-item label="Email" prop="email">
                     <el-input-etc
                       id="email"
                       :v-model.sync="formAddEditPTN.email"
-                      placeholder="email"
+                      placeholder="Email"
                       :maxlength="50"
                       :require="true"
                       :disabled="true"

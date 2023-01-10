@@ -51,7 +51,7 @@
                 @clear="formSearch.orgCode = `_${$store.getters.org}`"
               /> -->
             </el-col>
-            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <el-col v-if="false" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
               <select-master-data
                 :is-show-option-all="false"
                 :v-model.sync="formSearch.depCode"
@@ -665,7 +665,7 @@
             </el-col>
           </el-row>
           <el-row :gutter="20">
-            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <el-col v-if="false" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
               <select-master-data
                 :is-show-option-all="false"
                 :v-model.sync="formAddEdit.depCode"

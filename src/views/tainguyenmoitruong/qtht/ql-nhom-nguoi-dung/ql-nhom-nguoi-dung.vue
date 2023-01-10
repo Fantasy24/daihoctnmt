@@ -169,15 +169,14 @@
                     >
                       Sửa
                     </el-dropdown-item>
-                    <el-dropdown-item
+                    <!-- :disabled="scope.row.status === 0" -->
+                    <!-- <el-dropdown-item
                       icon="el-icon-delete"
                       v-if="checkPermissionShowButton('[BTN_DELETE]QLNND')"
                       @click.native="onDelete(scope.row)"
                     >
-                      <!-- :disabled="scope.row.status === 0" -->
-
                       Xóa
-                    </el-dropdown-item>
+                    </el-dropdown-item> -->
                     <el-dropdown-item
                       icon="el-icon-view"
                       @click.native="onView(scope.row)"
