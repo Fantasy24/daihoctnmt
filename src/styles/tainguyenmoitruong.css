@@ -366,3 +366,6 @@ img.el-upload-list__item-thumbnail{
 .change-language{
     display: none;
 }
+.rightPanel-container{
+    display: none;
+}
